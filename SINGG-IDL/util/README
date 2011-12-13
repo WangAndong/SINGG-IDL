@@ -1,0 +1,52 @@
+This directory contains general purpose and miscellaneous IDL programs. 
+
+angstsym.pro        -- function to return a string that will print the
+		       angstrom symbol in plots.
+calc_cumalitive_plot.pro -- Calculate quantities to plot in a cumulative
+                            distribution plot (Meurer)
+circle.pro          -- Returns the coordinates of a closed circle.
+clip_fitexy.pro     -- Iterative clipping driver for astrolib code 
+		       fitexy.pro (Meurer)
+colwrite.pro        -- Write a free-format ASCII data file with columns
+		       of data. (McCann)
+create_struct2.pro  -- Create an IDL structure from a list of tag names
+		       and dimensions  (W. Landsman?, modified).
+ddmmyy.pro          -- convert day, month, year to ddmmyy (Meurer).
+degsexi.pro         -- Convert an array in degrees to a sexigessimal string
+		       array (Meurer)
+free_all.pro        -- Free logical units 100 - 128 (Meurer)
+gettok_old.pro      -- Old version of astrolib program gettok
+		       (Landsman/Lindler)
+grm_avsigclip.pro   -- Returns sigma clipped average and sigma of an
+		       array (Meurer).
+inside.pro          -- Determine if a vector of points is within a
+		       polygon (Krane/Connelly).
+iter_sixlin.pro     -- iterative clipping driver to sixlin.pro (Meurer).
+keywait.pro         -- Prompt and wait for any key to be pressed (McCann?)
+ljust.pro           -- left justify a string (Meurer)
+percentile.pro      -- Determine percentiles of a distribution. (Meurer)
+psend.pro           -- End a postscript plot (Hartig, modified)
+psl.pro             -- setup a landscape postscript plot (Hartig, modified)
+psp.pro             -- setup a portrait postscript plot (Hartig, modified)
+read_fmr.pro        -- function to read an ascii "machine readble"
+		       format file into a data structure.
+reform_tabsep.pro   -- reformat tab separated file to space separated
+		       (Meurer)
+rxy.pro             -- Calculate correlation coefficient (Meurer)
+setplotcolors.pro   -- Loads a base color table and then modifies it to 
+		       have colors with RGB values specified in table (Seibert).
+sexideg.pro         -- convert a sexigessimal string (array) to degrees (Meurer)
+sixsig.pro          -- determine x,y dispersions from sixlin.pro fits
+		       (Meurer).
+ssqrt.pro           -- signed sqrt function = sign(x)*sqrt(abs(x)) (Meurer)
+sym.pro             -- create an extended choice of plotting symbols
+		       (Schultz/Burgh)
+test_sym.pro        -- test plots with sym (Meurer)
+tvscale.pro         -- enable the TVSCL command in IDL to be a
+		       completely device-independent and
+		       color-decomposition-state independent
+		       command. (Fanning)    
+vlsr.pro            -- Calculate the line-of-sight velocity difference 
+		       between a geocentric observer and a target at
+		       RA,Dec in the LSR frame.(Author: ?)
+

@@ -1,0 +1,38 @@
+# add or remove plotting colors as desired
+# based on unix file /usr/openwin/lib/rgb.txt
+#
+# naming conventions: l=light, d=dark, nospaces
+#
+# Mark Seibert (July,2000)
+# 
+255 255 255		white
+  0   0   0		black
+112 128 144		slate
+211 211 211		lgray
+190 190 190		gray
+169 169 169             dgray
+173 216 230		lblue
+  0   0 255		blue
+  0   0 139             dblue
+144 255 255		lcyan
+  0 255 255		cyan
+0   139 139             dcyan
+144 238 144             lgreen
+  0 255   0		green
+  0 190   0		dgreen
+255 255 100		lyellow
+255 255   0		yellow
+255 215   0 		dyellow
+210 180 140		tan
+165  42  42		brown
+255 165   0		orange
+255 140   0		dorange
+255   0   0		red
+139   0   0             dred
+255 182 193		lpink
+255 192 203		pink
+255  20 147		dpink
+255   0 255		magenta
+139   0 139             dmagenta
+160  32 240		purple
+
