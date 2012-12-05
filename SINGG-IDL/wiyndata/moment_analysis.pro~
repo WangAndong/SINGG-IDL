@@ -1,0 +1,7 @@
+PRO moment_analysis, fgaus
+
+   strgapos   = strpos(fgaus, 'gauss')
+   ffits      = strmid(fgaus, 0, strgapos) + 'obj' + strmid(fgaus, strgapos+5, 13) $
+     + '.co.cr.ms.fits'
+
+END

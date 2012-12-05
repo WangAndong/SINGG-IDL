@@ -1,0 +1,25 @@
+surfprofgen_test.pro = Ji Hoon's Test program for making uniformly
+masked surface brightness profiles and comparing them to the single band
+surface brightness profiles.
+
+It calls the following procedures
+* calc_growth.pro : Dan Hanish's code to generate enclosed flux and
+  surface brightness profiles.
+* read_profile_header.pro : Dan Hanish's code to read the header of a
+  profile ascii file and store the info in an IDL data structure.
+* pfplt_extractprof.pro : My code to extract a surface brightness
+  profile and header information from a surface brightness profile ascii
+  file made with Dan's code.
+* fits_read.pro : ASTROLIB code to read fits iamge and header
+* xyad.pro : ASTROLIB code to convert pixel -> sky coords
+* adxy.pro : ASTROLIB code to convert sky -> pixel coords
+* restore.pro : restores an IDL session.
+
+Comments
+* This code starts with the images and masks _after_ being convolved to
+  a common seeing.
+  + Need to get Ji Hoon's code for doing that...
+* It seems to only use the R and Halpha masks to make a common mask.
+
+
+ 

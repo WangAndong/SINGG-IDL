@@ -1,0 +1,392 @@
+SINGG script instructions
+D. Hanish, 6/19/03
+     updated 7/3/06
+(Do not remove tag under penalty of law)
+
+There are several distinct scripts that must be run, in a specific
+order.  These will be generally be listed by their single-galaxy
+routines, even though there are higher driver scripts for each..  Note
+that all filenames are defaults; many of these can be overridden with
+optional arguments in the corresponding scripts.
+
+First, the directory structure:
+(BASE)             In my case, /data1/acs22/hanish/
+  Sources
+    J???????       links to the important .fits images
+  STD		   links to standards
+  Unknown	   links to images not used for anything
+  Run*
+    Raw            
+      Night?       raw images, one directory per night
+    Proc1          
+      Obj          object images after overscan/dark/flat correction
+      Ref          zero/flat images after overscan (and zero) corrections
+    Proc2          contains the list??.in,Run*.log,Run*.out,keywords??.txt,
+                     proc2_notes, etc.; keep backups of these.
+      Obj          housekeeper outputs and their WCS products
+      Ref          basic_mask.fits and its counterparts, plus segmentation
+                     images for each object image
+    Proc3          contains the Run*.catalog, Run*.lis, Run*_net.lis files
+      J???????     singg_combine outputs, plus all of the
+                      random crap made along the way from the original obj's 
+                      (sh.fits, sh.mask.fits, buff.fits.stars, buff.match)
+    Proc4          contains the Run*_sky.out file and STD-related files
+      J???????     sky_calibration and ssflux outputs, and the ellipse file;
+                      that is, everything requiring aperture info or masking
+
+Before starting, some basic setup must occur.  Generally speaking,
+each of these is a one-time step, not something that'll need to be
+done for individual galaxies.
+
+S1> The user must create his own personal SINGG file directory.
+    Nothing is written to this area, but the scripts need many data
+    files to be placed here, including hdr_template2.dat and most of
+    our databases.  This directory is independent of which run of data
+    you are doing.  The name of this directory must be placed as a
+    system variable in the ~/.idlstartup file in your home directory.
+    Add the following:
+    DEFSYSV,"!singgdir","/home/hanish/singg/"
+    with "/home/hanish/singg" replaced by the directory you used.  
+    Additionally, set the SINGG plot output directory:
+    DEFSYSV,"!outdir!,"/home/hanish/outputs/"
+    with, again, the path replaced by whatever you use.
+    Many scripts need these variables to be set.
+S2> Make sure your astro-lib library is installed and up-to-date.  For
+    example, there was an error in medarr.pro which was only fixed in
+    June 2003; if your version of this file still has a line
+    containing "arg_present", change this to "keyword_set".  Likewise,
+    observatory.pro had an error in its error statement.
+S3> Make sure the "filtcoef" directory exists, and the filter
+    coefficient files for all galaxies are placed there.  The default
+    location is !singgdir/filtcoef, so unless you want to make your
+    own, make a symbolic link inside !singgdir to the right place.
+S4> Make sure the Proc1 directories (raw images that have been
+    overscan-corrected, bias-subtracted, and flat-fielded) all exist
+    in a single directory tree.  If need be, this can be mimicked off
+    of the current directory through creative use of symbolic links.
+
+Now, time to start the actual processing.
+1> Go into your base directory (the one in the structure above
+   labelled (BASE), obviously).  All scripts should be executed from
+   this location unless specified otherwise; while most of the scripts
+   can handle having all of the inputs and outputs found in the local
+   directory, this isn't a given.  Plus, it's just sloppy, and you
+   should know better.  Many scripts create a few temporary files
+   (mostly from the WCS/SExtractor logic) in the working directory,
+   and so you should make sure to have write permissions to the
+   directory this is done from.
+2> HK_SETUP
+   This script sets up the environment needed for HOUSEKEEPER (3).  It
+   is only run once, and sets up all runs at the same time.
+  Arguments:
+   The only mandatory argument is the root directory of the Proc1
+   repository.  (in my case, '/data1/acs36/meurer/SINGG/').  The base
+   output directory can be set using the 'outdir' optional argument,
+   if the script cannot be run from the location specified.
+  Files Created:
+   This will create the directory structure listed above (except for the
+   Proc3 and Proc4 subdirectories) and create one basic_mask.fits image
+   for each run, in the Proc2/Ref directory.
+3> HOUSEKEEPER
+   Performs the basic Proc2 processing on all Proc1 images within a
+   single run.  There is no single-galaxy equivalent; the base
+   HOUSEKEEPER script processes a single run of data, and its driver,
+   HK_ALL, processes all available runs at once.  Processing time for
+   HK_ALL is just under one hour per run.  Note that a single galaxy
+   COULD be processed by custom-making a one-line 'listin' file, but
+   there'd be no easy way to integrate the results with the .log file.
+  Arguments:
+   HK_ALL has all of the arguments pre-set already, with both
+   'datadir' and 'runlist' pre-set to our existing SINGG values,
+   although these can be overridden by optional arguments.
+   HOUSEKEEPER, on the other hand, has five required arguments:
+    listin: input list of files; 'list??.in' is the usual name.
+    filqa: QA input file; 'qa_run??.txt' is the usual, when these exist.
+    filrkwd: keyword file; 'keywords??.txt' is the usual
+    fillog: output log file; 'run??.log'
+    listout: output list file; 'run??.out'
+   and two optional ones:
+    indir: input directory (datadir+/Run??/Proc1/)
+    outdir: output (normally, off current directory)
+  Files Needed:
+   (data base)/Run??/Proc1/(Obj/Ref)/obj????.fits.gz
+   Run*/Proc2/list??.in from HK_SETUP (2)
+   !singgdir+'proc2_header.dbd'
+  Files Created:
+   Run*/Proc2/Obj/obj???????.fits
+   Run*/Proc2/Obj/obj???????.fits.stars
+   Run*/Proc2/Obj/obj???????.hdr
+   STD/obj???????.fits
+   Unknown/obj???????.fits
+   Sources/Jwhatever/(lots of links)
+   Run*/Proc2/Run*.log
+   Run*/Proc2/Run*.out
+   !singgdir+'proc2header.db*'
+3.5A> BUILD_PROC2_DB
+   Remakes the proc2_header database, even though housekeeper built
+   this as it went along.
+  Files Needed:
+   !singgdir+'proc2_header.dbd'
+   Run*/Proc2/Obj/obj???????.fits from HOUSEKEEPER (3) (headers only)
+  Files Created:
+   !singgdir+'proc2header.db*'
+3.5B> HK_RELINK
+   Remakes the symbolic links housekeeper would have created in
+   HK_WRITEIM, just to be sure.
+  Files Needed:
+   Run*/Proc2/Obj/obj???????.fits from HOUSEKEEPER (3) (headers only)
+  Files Created:
+   STD/obj???????.fits
+   Unknown/obj???????.fits
+   Sources/Jwhatever/(lots of links)
+4> PROC3_SETUP
+   Sets up the last few directories and the list files for the next
+   parts.  Like the HK_SETUP (2) script, this is run once, from the
+   base directory, and sets up all runs at the same time.
+   This also acts as a wrapper for the MAKE_FILTER_MASKS routine.
+  Optional Input:
+   runlist: list of input runs to use.  By default, this'll include
+    all of the non-SSO data.
+  Files Needed:
+   Run*/Proc2/Obj/obj???????.fits from HOUSEKEEPER (3) (headers only)
+   Run*/Proc2/Ref/basic_mask.fits from HK_SETUP (2)
+  Files Created:
+   Run*/Proc2/Ref/mask_*.fits
+   Run*/Proc2/Obj/obj_*.lis
+   Run*/Proc3/Jwhatever/obj_*.lis
+   Run*/Proc3/Run*.lis and Run*/Proc3/Run*_net.lis
+   Run*/Proc3/Run*.catalog
+   symbolic links in Sources/Jwhatever for later steps' outputs.
+4.5> User Interaction
+   The user must check the .catalog file.  The reference image number
+   should correspond to a centrally-located continuum image, but this
+   should be double-checked.  Also, the masks will simply be the
+   appropriate filter-specific mask, but some galaxies contain
+   features that require a specialized mask (such as one that masks
+   the columns along one edge).
+5> HUMP_CREATE
+   Creates the "hump" correction image for a given run.
+   HUMP_CREATE_ALL loops over all runs.
+  Files Needed:
+   Run*/Proc2/Obj/obj_*.lis from PROC3_SETUP (4)
+   Run*/Proc2/Obj/obj???????.fits
+  Files Created:
+   Run*/Proc2/Ref/obj???????.seg.fits
+   Run*/Proc2/Obj/obj???????_old.fits
+   Run*/Proc2/Ref/hump_r*.fits
+6> HUMP_CORRECT
+   Corrects each Proc2/Obj/ image using a 6568/28 filter for light leak
+   contamination, by subtracting an appropriately-scaled hump_r*.fits
+   image.
+  Files Needed:
+   Run*/Proc2/Obj/obj???????_old.fits from HUMP_CREATE (5)
+   Run*/Proc2/Ref/obj???????.seg.fits
+  Files Created:
+   Run*/Proc2/Obj/obj???????.fits
+7> SINGG_COMBINE
+   Combines object images into three primary output files: a continuum
+   (R-band) image, a narrow-band image, and a continuum-subtracted
+   image.  This script can use local files (if INDIR and OUTDIR aren't
+   set), but normally it'd be run from a higher directory with
+   arguments specified.  The RUN_COMBINE wrapper executes the script
+   for all objects within each run, and RUN_COMBINE_ALL executes
+   RUN_COMBINE for all non-SSO runs with our usual options.
+  Arguments:
+   FILTER,RFILE,NFILE, and SFILE must be specified any time multiple
+   filter combinations were used for a given galaxy.
+   BUFFER should be large enough to ensure images aren't truncated.
+   If not explicitly set, I just have it assuming 150 pixels, because
+   that's the size I always use.  Just set buffer=0 if you don't want this.
+   REFIMAGE should be specified if you don't want it to use what it
+   thinks is the middle image.
+   Know what?  Just use the RUN_COMBINE wrapper, which uses the
+   catalog file.
+  Files Needed:
+   Run*/Proc2/Obj/obj???????.fits (AFTER HOUSEKEEPER(3) has been run)
+   Run*/Proc3/Jwhatever/obj_*.lis from PROC3_SETUP (4)
+   Run*/Proc2/Ref/mask_*.fits from PROC3_SETUP (4)
+  Files Created:
+   Run*/Proc3/Jwhatever/J*_*.fits (R, 6???, Rsub being the usual ones)
+   Run*/Proc3/Jwhatever/obj????????sh.fits
+   Run*/Proc3/Jwhatever/obj????????sh.mask.fits
+7.5> User Interaction
+   There actually isn't any real interaction required here, beyond the
+   most basic checks for cosmic ray removal or bad columns in the
+   combined images.  The reason I put this break here is that it's the
+   break between the Proc3 and Proc4 stages; once the previous steps
+   have been done to our satisfaction, we'll NEVER need to go back.
+   On the other hand, expect everything after this step to need to be
+   re-done several times, whenever some perceived flaw in the output
+   requires re-running PROC4 (8) and then everything after that point.
+8> PROC4
+   Interactively defines ellipses, creates exclusion and inclusion
+   masks, does your taxes, washes your car, and neuters your dog.
+   It's the Duct Tape of scripts; it can do practically anything you
+   want, it's just kinda ugly and'll probably need to be fixed again
+   by someone who knows what he's doing.  The key is the amount of
+   feedback it gives along the way, like the surface brightness radial
+   profiles and data outputs along the right margin.  As with all of
+   our other scripts, there are RUN_PROC4 and RUN_PROC4_ALL wrappers,
+   but since this script is by definition completely interactive, it's
+   not like those do anything but help you keep it all in the right
+   order.  It's HIGHLY recommended that you re-run this one this one a
+   few times on each galaxy, tweaking ellipses and masks as you go.
+  NB#1: This script requires a manual all of its own.  But one key thing
+   to note is that the IDL terminal (the xterm you spawned the process
+   in) will give a lot of necessary feedback as you go, as well as
+   telling you when to click.  So, make sure that the bottom couple
+   lines of that xterm are visible while the script is running.  The
+   latest command sent to this window will be duplicated in a small
+   text window below the top buttons, but you'll often want to see the
+   previous messages.
+  Arguments:
+   Beyond all of the usual optional overrides for filenames and flags
+   for debug output, the only argument of note is /SILENT, which skips
+   the entire interactive mode logic.  However, if there's no ellipse
+   file and you skip this, it can't exactly write one for you, so I
+   really wouldn't recommend it the first time through.
+  Files Needed:
+   Run*/Proc3/Jwhatever/J*_*.fits created by SINGG_COMBINE (7)
+   Run*/Proc3/Jwhatever/J*_*.pl.fits created by SINGG_COMBINE (7)
+  Files Created:
+   Run*/Proc4/Jwhatever/J*_*mask.fits
+   Run*/Proc4/Jwhatever/J*_?sub_override.fits
+   and a whole bunch of other intermediate product files.
+  NB#2: This script combines the functionality of many earlier
+   scripts.  However, several of these should still be used.  The best
+   example of this is SINGG_QA, which remakes the QA-plot part of the
+   PROC4 logic for all of the SINGG galaxies.  Since SINGG_QA also
+   sets up the required webpages, it should be run at least once,
+   after PROC4 has been performed on each galaxy at least once; at
+   that point, any later uses of PROC4 will automatically update any
+   files needed.
+9> SKY_CALIBRATION
+   This script has a simple purpose: measure the sky levels in
+   the three input images, and subtract.  It is interactive, with the
+   user selecting the point along the surface brightness curve where
+   it "levels off", but manual overrides are available as well.  And
+   not that it should be any surprise at this point, but there are
+   RUN_SKY and RUN_SKY_ALL wrappers for it with all of the usual
+   features to choose from.
+  Arguments:
+   As always, you can specify file names to override the defaults, or
+   different directory paths.  The only notable arguments are:
+   /FAST: skips interactive mode
+   /BOXDUMP: dumps the X/Y/val arrays for the 35x35 boxing
+   OUTPUT: designates the sky.out file for this run (NOT this object)
+  Files Needed:
+   Run*/Proc3/Jwhatever/J*_*.fits from SINGG_COMBINE (7)
+   Run*/Proc3/Jwhatever/J*_ellipse.dat from PROC4 (8)
+   Run*/Proc3/Jwhatever/J*_*mask.fits from PROC4 (8)
+  Files Created:
+   Run*/Proc3/Jwhatever/J*_*_ss.fits
+10> SINGG_FLUXCAL
+   Adds photometry keywords to headers, most notably PHOTFLUX and
+   PHOTFLAM, the unit-response keywords necessary to turn the count
+   rate images into physical units.  The script is actually a wrapper
+   for the "std_measure", "fc_photqual",and "singg_filtcoef" routines.
+  Arguments:
+   As always, you can specify a list of runs to process.
+   /FORCE: Normally, once the intermediate run-specific outputs are
+   created (run??_all.par, std_measure.out, std_measure.dat, etc.) we
+   don't need to remake them.  This overrides that.
+  Files Needed:
+   Run*/Proc2/Obj/std.lis (made by hand)
+   Run*/Proc2/Obj/obj???????.fits (standard images only)
+   Run*/Proc3/Run*.catalog
+   Run*/Proc4/Jwhatever/J*_*_ss.fits from SKY_CALIBRATION (9)
+  Files Created:
+   edits headers of sky-subtracted input images
+   Run*/Proc4/(std_measure.dat,std_measure.out,run*_all.par, and 
+               .png/.html pages needed to debug them)
+11> BUILD_HEADER_DB
+   Creates the "proc3_header" database.  Actually, this is more of a
+   proc4 database, as it includes the sky level information and
+   photometry keywords, but we're not changing the name.  Since
+   headers didn't really change between Proc2 and Proc3, this isn't
+   exactly a big deal.  Run from the base directory, and it processes
+   all runs at once.
+  Arguments:
+   Just the usual RUNLIST override and a /VERBOSE option for debugging
+  Files Needed:
+   Run*/Proc4/Jwhatever/J*_*_ss.fits from SKY_CALIBRATION (9)
+   !singgdir+'proc3_header.dbd'
+  Files Created:
+   !singgdir+'proc3_header.db*'
+12> SSFLUX
+   Measures the flux curves of growth within our apertures, and the
+   flux in any external inclusion regions.  The user specifies the
+   radius at which the curves flatten, to designate an "edge".  And
+   not like it needs to be said at this point, but there are RUN_FLUX
+   and RUN_FLUX_ALL scripts.
+  Arguments:
+   All of the usual filename overrides and /FAST setups.  The /TV
+   option shows you the final 3-color image, although SINGG_QA and
+   PROC4 (8) do that already.
+  Files Needed:
+   Run*/Proc4/Jwhatever/J*_*_ss.fits from SKY_CALIBRATION (9)
+   Run*/Proc3/Jwhatever/J*_*mask.fits from PROC4 (8)
+  Files Created:
+   Run*/Proc4/Jwhatever/J*.profile
+13> BUILD_FLUX_DB
+   Creates the "singg_flux" database, containing the outputs of the
+   SSFLUX (12) routine in a more easily accessible form.
+   Specifically, it includes the contents of the header blocks within
+   the *.profile files, plus some choice variables from the image
+   headers.  Run from the base directory, and it processes all runs.
+  Arguments:
+   Just the usual RUNLIST override.
+  Files Needed:
+   Run*/Proc4/Jwhatever/J*_*_ss.fits from SKY_CALIBRATION (9)
+   Run*/Proc4/Jwhatever/J*.profile from SSFLUX (12)
+   !singgdir+'singg_flux.dbd'
+  Files Created:
+   !singgdir+'singg_flux.db*'
+14> BUILD_DERIVED_DB
+   Takes the "singg_flux" database from BUILD_FLUX_DB (13), and
+   converts the various values within to more usable formats to
+   generate the "singg_derived" database.  No files are read other
+   than the database reads, and so no path issues arise; the script
+   can be run from anywhere.
+  NB#1: The BUILD_SR1 script and its equivalents simply take the
+   "singg_derived" database and filter out invalid galaxies.
+  Arguments:
+   A /SILENT command, and a /GOOD flag that mimics the BUILD_SR1 logic
+   by only including entries we haven't flagged as "bad".
+  Files Needed:
+   !singgdir+'singg_derived.dbd'
+   !singgdir+'singg_flux.db*' from BUILD_FLUX_DB (13)
+  Files Created:
+   !singgdir+'singg_derived.db*'
+15> CALC_SFD0
+   The point of the whole thing.  This script calculates the local
+   star formation density from the "singg_flux" database.  There are
+   no paths to worry about, and it's mainly a question of plots
+   written to !outdir or to the terminal.
+  Arguments:
+   Overrides of the cosmology/setup values (H0,HIMF,MONTE), plus a few:
+   /DATA gives a lot of extra, needed info and dumps it to a file.
+   /PS skips the plot windows and just dumps a postscript image.
+  Files Needed:
+   !singgdir+'singg_flux.db*' from BUILD_FLUX_DB (13)
+  Files Created:
+   !singgdir+'sfrd.dat', if /DATA was set
+   !outdir+'gastime.eps'
+   !outdir+'ldensity.eps'
+  NB#1: This can't easily be re-worked to use "singg_derived", because
+   of the monte carlo logic, since singg_derived doesn't randomize
+   anything as it goes.  You'd have to re-derive everything in terms of
+   its singg_flux components anyway.
+16> MAKE_SFRD_PLOTS
+   Makes a whole bunch of useful plots from the "singg_derived"
+   database, as well as dumping a lot of good info to the screen.  Of
+   course, I've continued to add plots to this whole thing, so it's
+   really sloppy when it's not in /PS mode.  Since this isn't reading
+   any non-database files, run it anywhere.
+  Arguments:
+   The only one that matters is /PS, which switches the plots around,
+   makes fewer of them, and dumps them to a few files.
+  Files Needed:
+   !singgdir+'singg_flux.db*' from BUILD_DERIVED_DB (14)
+  Files Created:
+   !outdir+(lots of .eps files)

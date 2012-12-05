@@ -1,0 +1,97 @@
+SSOUP Programming Things To Do
+------------------------------
+
+* Reintegrate dust corrected surface brightness profiles to get dust
+  corrected aperture fluxes.  [SSOUP_CALPROF.PRO]
+  # Done 5/2011
+
+* Calculate flux/surface brightness upper limits. 
+  + ideally the Halpha error model will be fixed ...
+
+* Halpha/FUV plot improvements
+  + indicate upper limits 
+    [SSOUP_CALPROF.PRO, SSOUP_PLOTHAFUV.PRO, SSOUP_MULTI_PLOTHAFUV.PRO]
+    # Done 5/2011
+  + indicate integrated fluxes 
+  + have a set minimum delta-r, and/or delta-L(FUV)
+    - minimum delta-r set by seeing currently
+    - want to avoid the case where ring size is smaller than size of HII
+      regions. 
+    - Also want to avoid case where there is likely to be less than 1 O
+      star in ring (this can be set by having a minimum delta-L_FUV).
+
+* Stand alone or initial SExtractor pipeline
+  + SE input file band dependent
+
+* Stand alone or initial moment analysis pipeline
+  + gives approx isophote shapes
+
+* Stand alone mask tool
+  + maybe get from ZZ
+
+* Stand alone ap adjustment tool
+  + would require ap parameters to be allowed to be set in parameter
+    file, or some other override from DB values
+  + Maybe start with Hanish code
+  + Draw radial profiles of SB from boxes
+  + allow user to enter new skyord
+    - show effect on radial profiles, 3 color images
+    - autoimated minimisation of sky order
+
+* Allow new sky models
+  + skymod_<band> = poly (current default)
+  + skymod_<band> = radial (polynomial in radius, will need im center)
+  + skymod_<band> = mixed (polynomials in both radius and cartesian,
+                           careful of degenericies...)
+
+* Improve handling of multiple galaxies
+  + consistent masking when calculating sky
+  + separate plots for each galaxy
+
+* Write out model FIR surface brightness and enclosed flux profile
+  [SSOUP_CALPROF.PRO] 
+  + calculate modeled FIR flux.
+
+* Make plots of enclosed quantities (with and without dust correction)
+  + fluxes/mag (FUV, NUV, R, Halpha)
+  + color (FUV-NUV, NUV-R, EW(Halpha), Halpha/FUV)
+  + calculate and show R_20, R_80: radii containing 20% and 80% of fluxes
+
+* Improve the error models in the Halpha profiles.
+  + need to account for error in the continuum subtraction
+
+* Model fits to surface brightness profiles
+  + kron radius, aperture, fluxes
+  + exponential fit
+  + sersic profile fit
+
+* Make QA plots for the sky fitting
+  + show measurements in boxes
+    # Done 8/2012
+  + show model in boxes 
+    # Done 8/2012
+  + show residuals in boxes
+    # Done 8/2012
+  + overlay apertures
+  + overlay masks
+  + show rejected boxes
+
+* Put input parameters in a structure
+  - this will make it easier to add parameters
+
+* Save results for each galaxy as an IDL saveset?
+  - stores at machine accuracy...
+
+* Compile results to a database (IDL, or SQL?)
+
+* Generalize to add other bands
+  + most likely add-ons
+    - WISE mid-IR four bands
+    - Pan-STARRS1, grizy 5 bands
+    - POGS stellar mass maps, SF maps
+  + Needs to work whether or not bands are there
+
+* Put it in to SVN or GitHub
+
+* Stand-alone (probably) pipeline for 2D modelling (Galfit) 
+

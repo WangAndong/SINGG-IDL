@@ -1,0 +1,36 @@
+# The following gives:
+# column_number name = description [units]
+#
+#  1 sma    = semi major axis [arcsec]
+#  2 mu_R   = R band surface brightness [ABmag arcsec^-2]
+#  3 err    = error in mu_R (column 2) [mag]
+#  4 lSHa   = log10(Halpha Surface brightness [erg cm^-2 s^-1 arcsec^-2])
+#  5 etot   = total error in LSHa (column 4) [dex]
+#  6 esky   = contribution to error on LSHa (column 4) from photon statitistics and sky [dex]
+#  7 ecnt   = contribution to error on LSHa (column 4) from continuum subtraction [dex]
+#  8 mu_nuv = NUV band surface brightness [ABmag arcsec^-2]
+#  9 err    = error on mu_nuv (column 8) [mag]
+# 10 mu_fuv = FUV band surface brightness [ABmag arcsec^-2]
+# 11 err    = error on mu_fuv (column 8) [mag]
+# 12 C(f-n) = surface colour FUV-NUV (column 10 - column 8) [ABmag]
+# 13 err    = error on C(f-n) (column 12) [mag]
+# 14 C(n-R) = surface colour NUV-R (column 8 - column 2) [ABmag]
+# 15 err    = error on C(n-R) (column 14) [mag]
+# 16 lHa/R  = log(SHa / surface brightness in R) [log(Angstroms)]
+# 17 err    = error on LHa/R (column 16) [dex]
+# 18 lHa/f  = log(SHa / surface brightness in FUV) [log(Angstroms)]
+# 19 err    = error on LHa/f (column 18) [dex]
+#
+# The following "magic values" are used
+#   9.999 in a surface brightness error column (columns 3, 5, 6, 7, 9, 11)
+#         means the value is an upper limit to the linear surface brightness. 
+#   9.999 in an error to surface color or equivalent width (columns 13, 15, 17, 19)
+#         means that the quantities in bothe numerator and denominator are 
+#         undetected and therefore the surface color or equivalent width is undefined.
+# -99.999 in a surface color or equivalent width column (12, 14, 16, 18) marks 
+#         an undefined quantity (see above).
+#   7.777 indicates that the preceding surface color or equivalent width is
+#         a lower limit
+#   8.888 indicates that the preceding surface color or equivalent width is 
+#         an upper limit
+

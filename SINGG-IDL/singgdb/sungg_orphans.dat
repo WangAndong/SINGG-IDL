@@ -1,0 +1,96 @@
+Hi Zheng and Ivy,
+
+On my various train and plane trips in to & through Europe I managed to
+get the check for SUNGG orphans completed. The resulst are in the two
+tables below. 
+
+The first table are Halpha detectiuons that we have not yet measured on
+our images.  I think these are all galaxies that are not in
+singg_derived, but can be seen in the Halpha images. Here the most
+relevant columns are #2 "orphan" which gives the name of the object; #3,
+#4 (RA, Dec) the coordinates from the SINGG data; #6, #7 (SNAME_a,
+SNAME_b) which gives the SINGG galaxy name of the object in the galex
+exposure that is closest to the orphan or has the longest exposure.
+that should help you find the right frames to measure.
+
+The second set are the extra HIPASS galaxies that are in one of the
+frames that we have measured (or should be in those frames).  Here
+column #2 (fieldname) is the GALEX tile name (or part of it); #3,#4 are
+now from HOPCAT; #6 is the HIPASS name; and #7, #8 give the names of the
+HIPASS galaxy that we have (or should have) measured in the frame.
+
+In both cases, I have searched for the galex tile that has a center
+nearest to or alternatively the longest exposure.  I am not sure which
+of these you have used in the measurements.  In most cases there
+is only one overlap, so there is no difference.  
+
+Zheng - do you have time to measure these?
+
+cheers
+
+-- Gerhardt
+
+# Halpha detections not measured in the FUV
+# 
+#glxtile orphan             RA         Dec      HIPASS     SNAME_a        SNAME_b        n_a n_b
+   7087  J0400-52:S9       60.33038  -52.79614  J0400-52   J0400-52:S1    J0400-52:S1      6  6
+   7218  J0403-43:S2       60.88594  -43.39975  J0403-43   J0403-43:S1    J0403-43:S1      1  1
+   8164  J0443-05:S5       70.93758   -5.32831  J0443-05   J0443-05:S1    J0443-05:S1      4  4
+  16034  J1051-17:S9      162.98558  -17.08431  J1051-17   J1051-17:S1    J1051-17:S1      7  7
+  16267  J1059-09:S10     164.76100   -9.88886  J1059-09   J1059-09:S1    J1059-09:S1      8  8
+  16267  J1059-09:S9      164.68621   -9.89128  J1059-09   J1059-09:S1    J1059-09:S1      8  8
+  18844  J1225-06:S2      186.46088   -6.48956  J1225-06   J1225-06       J1225-06         1  1
+  19619  J1250-20:S6      192.69112  -20.39169  J1250-20   J1250-20:S1    J1250-20:S1      5  5
+  19619  J1250-20:S7      192.69550  -20.38678  J1250-20   J1250-20:S1    J1250-20:S1      5  5
+  20000  J1304-10:S2      196.17175  -10.36283  J1304-10   J1304-10       --               1  0
+  21715  J1408-21:S5      212.16592  -21.63731  J1408-21   J1408-21:S1    J1408-21:S1      4  4
+  28662  J1956-50:S4      298.94133  -50.10431  J1956-50   J1956-50:S1    J1956-50:S1      3  3
+  33592  J2318-42a:S4     349.71017  -42.39731  J2318-42a  J2318-42a:S1   J2318-42a:S2     3  2
+  19997  J1304-10:S2      196.17175  -10.36283  J1304-10   --             J1304-10         0  1
+  20965  J1339-31:S3      204.90208  -31.57064  J1339-31   J1339-31:S1    J1339-31:S1      3  3
+# HIPASS galaxies not measured in UV
+# 
+#glxtile      fieldname               RA         Dec      nm  HIPASS     HNAME_a    HNAME_b      n_a n_b
+  31868       AIS_380_sg67          332.69708  -66.86917   1  J2210-66   J2214-66   J2214-66      1   1
+   8548       AIS_421_sg27           74.51750  -63.91900   1  J0458-64   J0503-63   J0503-63      2   2
+   8548       AIS_421_sg27           75.37417  -63.29342   1  J0501-63   J0503-63   J0503-63      2   2
+  28896       RCS_IC4951            301.46625  -61.42711   1  J2005-61   J2009-61   --            1   0
+    219       AIS_396_sg79            2.66917  -59.69475   1  J0010-59   J0008-59   J0008-59      1   1
+  29300       AIS_364_sg14          306.94000  -52.38417   1  J2027-52   J2027-51   J2027-51      2   2
+  31979       AIS_362_sg38          334.39250  -45.54717   1  J2217-45b  J2220-46   J2220-46      1   1
+  29222       UVE_NGC6902           305.77875  -43.86928   1  J2023-43   J2024-43   --            1   0
+  33469       GI1_009084_NGC7531    348.09833  -43.77747   1  J2312-43   J2314-43   J2314-43      1   1
+  29222       UVE_NGC6902           306.30000  -43.25731   1  J2025-43   J2024-43   --            1   0
+  32951       AIS_400_sg37          343.94208  -42.64114   1  J2255-42   J2257-42   J2257-42      1   1
+  33510       NGA_NGC7552           349.04500  -42.58608   1  J2316-42   --         J2318-42a     0   1
+  33592       GI1_009083_NGC7590    349.83792  -42.25697   1  J2318-42b  J2318-42a  J2318-42a     3   2
+   7383       GI1_009017_HPJ0411m3   62.19000  -35.38911   1  J0408-35   J0411-35   J0411-35      1   1
+   8632       NGA_NGC1800            76.27917  -31.78442   1  J0505-31   J0506-31   J0506-31      1   1
+   1614       MIS2DFSGP_30859_0370   12.67583  -31.32892   1  J0050-31   J0052-31   J0052-31      1   1
+   8436       AIS_304_sg27           73.66833  -28.65547   1  J0454-28   J0455-28   J0455-28      1   1
+   8436       AIS_304_sg27           74.14083  -28.50408   1  J0456-28   J0455-28   J0455-28      1   1
+  20896       GI1_047094_ESO444_G0  203.83125  -28.02203   1  J1335-28   J1337-28   J1337-28      1   1
+   6553       GI1_009075_NGC1371     54.22458  -24.91258   1  J0336-24   J0335-24   J0335-24      1   1
+    381       GI4_095001_NGC0045      3.96208  -22.91936   1  J0015-22   J0014-23   J0014-23      1   1
+   4378       GI1_009072_NGC0908     35.47292  -20.82303   1  J0221-20   J0223-21   J0223-21      1   1
+   1548       GI1_009002_UGCA015     11.89625  -20.42781   1  J0047-20   --         J0049-20      0   1
+  22895       AIS_347_sg05          221.89750  -18.07078   1  J1447-18   J1447-17   J1447-17      1   1
+  16831       GI1_009037_HPJ1118m1  169.89250  -17.51042   1  J1119-17   J1118-17   J1118-17      2   2
+  19938       GI1_047084_UGCA319    195.79792  -17.37569   2  J1303-17a  --         J1303-17b     0   1
+   1226       GI1_009077_NGC0210      9.91917  -14.23700   2  J0039-14b  J0040-13   J0039-14a     1   2
+  19901       GI1_009114_NGC4904    195.23500  -13.94494   1  J1301-13b  J1300-13   J1300-13      2   2
+  18731       GI5_064022_NSV05572   185.18500  -13.80514   1  J1220-13   --         J1223-13      0   1
+  19901       GI1_009114_NGC4904    195.27958  -13.51778   1  J1300-13B  J1300-13   J1300-13      2   2
+  17802       AIS_321_sg51          178.14125  -12.66258   1  J1152-12   J1150-12   J1150-12      1   1
+  19722       GI1_009031_UGCA307    193.72417  -12.50478   1  J1254-12   J1253-12   J1253-12      1   1
+  19854       GI1_009043_UGCA312    195.07167  -12.34656   1  J1300-12   J1259-12   J1259-12      1   1
+   4156       AIS_273_sg39           34.08375  -10.99917   1  J0216-11b  J0216-11c  J0216-11c     1   1
+  20038       GI1_009036_NGC4948    196.27333   -8.16119   1  J1305-08   J1305-07   J1305-07      1   1
+  20038       GI1_009036_NGC4948    196.07958   -7.64956   1  J1304-07   J1305-07   J1305-07      1   1
+   3173       GI1_009012_HPJ0140m0   25.27792   -5.56850   1  J0141-05   J0140-05   J0140-05      2   2
+  14020       AIS_212_sg66          145.84292   -5.28303   1  J0943-05a  J0943-05b  J0943-05b     1   1
+  19878       AIS_229_sg92          195.38875   -4.77469   1  J1301-04   J1258-04   --            1   0
+  19634       AIS_229_sg58          192.97500   -4.57689   1  J1251-04   J1249-04b  J1249-04b     1   1
+  17853       NGA_UGC6879           177.98375   -2.64244   1  J1151-02   J1152-02   J1152-02      1   1
+  19073       GI1_097006_NGC4517    188.11708    0.38894   2  J1232+00a  --         J1232+00b     0   1
+   2275       GI1_009070_NGC0428     17.87792    1.32206   1  J0111+01   J0112+00   --            1   0

@@ -1,0 +1,36 @@
+PRO fit_plot_vel, fileno, inguess
+   folders    = ['Run0410_n','Run0503_n','Run0603_n']
+   runno      = fix(strmid(fileno, 1, 1))
+   nightno    = strmid(fileno, 3, 1)
+   filelist = 'exptimes.dat'
+   ;
+   ; load list of filenames
+   readcol, filelist, hipassid, galid1, galid2, filename, $
+     nexp, texp, format=format1, /silent
+   readcol, filelist, temphi, tempga1, tempga2, tempga3, tempga4, $
+     tempfile, tempnexp, temptexp, format=format2, /silent
+   hipassid = [hipassid, temphi]
+   galid    = [galid1+' '+galid2, $
+               tempga1+' '+tempga2+' '+tempga3+' '+tempga4]
+   filename = [filename, tempfile]
+   thisfile   = where(strmid(filename,3) EQ fileno)
+   ;
+   ; make strings
+   fgaus      = '../'+folders(runno-1)+nightno+'/gauss'+fileno+'.dat'
+   ffit       = '../'+folders(runno-1)+nightno+'/vrot'+fileno+'.dat'
+   ffit       = '../'+folders(runno-1)+nightno+'/comb'+fileno+'.dat'
+   fad        = '../'+folders(runno-1)+nightno+'/obj'+fileno+'.co.cr.ms.fits'
+   fps        = 'ps/vrot'+fileno+'.ps'
+   fjpg       = 'jpg/vrot'+fileno+'.jpg'
+   background = hipassid(thisfile)
+   title      = hipassid(thisfile) + ' (' + galid(thisfile) + ')'
+   ;
+   ; do it
+   fitresult  = fitfibvel(fgaus, inguess, outfile=ffit, uncert=uncert)
+   plot_rot, fitresult, errors=uncert, hardfile=fps, background=background, $
+     fieldad=fad, title=title, fcomb=fcomb
+   
+
+
+
+END

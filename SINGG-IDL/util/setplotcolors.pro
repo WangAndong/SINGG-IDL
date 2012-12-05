@@ -52,7 +52,9 @@ PRO setplotcolors, basetable, list=list, test=test, gray=gray,$
 ; Added grayscale, low & colors keyword options (MS 6/01)
 ;
 ; put setplotcolors_rgb.dat in directory given by !idata system variable
-fname = !idata+'setplotcolors_rgb.dat'
+
+;TODO: remove this stupid hack
+fname = '/Users/sandrews/IDL/Pro/Work/util/setplotcolors_rgb.dat'
 
 ;read color names & RGB values (0-255)
 readcol,fname,c_R,c_G,c_B,c_name,format='I,I,I,A',/silent

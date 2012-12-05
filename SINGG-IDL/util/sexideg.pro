@@ -3,6 +3,8 @@ FUNCTION sexideg, str, delim=delim
    ; convert a sexigessimal string (array) to degrees
    ; invalid values set to -999.99999
    ;
+   ; G. Meurer ??/20?? (JHU) originally written
+   ; G. Meurer 10/2012 (ICRAR/UWA) fix bug with leading sign
    invalid = -999.99999d0
    ;
    ; set default delimiter
@@ -20,7 +22,9 @@ FUNCTION sexideg, str, delim=delim
          ;
          ; first delimiter found, extract degrees and read
          s  = strmid(ss, 0, p1)
-         IF strmid(s, 0, 1) EQ '-' THEN sgn = -1.0d0 ELSE sgn = 1.0d0
+         s0 = strmid(s, 0, 1)                             ; bug fix
+         if s0 eq '-' or s0 eq '+' then s = strmid(s, 1)  ; to strip leading sign
+         IF s0 EQ '-' THEN sgn = -1.0d0 ELSE sgn = 1.0d0
          reads, s, val, format='(f)'
          deg[i] = double(abs(val))
          ll = ll - p1 - 1

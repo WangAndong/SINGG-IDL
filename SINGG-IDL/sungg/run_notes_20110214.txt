@@ -1,0 +1,14 @@
+J0005-28
+========
+* too much UV masking?
+* is sky in counts or counts/s, before or after initial skysub
+* why -51 in residual sky? R band
+* Does Halpha sky error include cont subtraction?
+* What is sky and sigma in last box2boxbg output
+* HDR_TEMPLATE not writing (or reading) keywords: (E)SKYPAR{6,7,8,9}
+*  "      DATEEND, PHOTGW, PHOTRW
+* center masked in hrn yuck !!!
+  **** need code to fix/edit masks
+* what's up with the edge: is it masked or not?
+ 
+

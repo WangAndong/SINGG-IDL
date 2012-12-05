@@ -1,0 +1,1204 @@
+MK_MASTER_SAMPLE: starting 
+MK_MASTER_SAMPLE: going to working directory /Volumes/Data/meurer/SINGG/WIYN/Sample/
+MK_MASTER_SAMPLE: getting SINGG sample 
+MK_MASTER_SAMPLE: number of HIPASS targets in SINGG_sample:          468
+MK_MASTER_SAMPLE: getting data from SINGG_derived
+MK_MASTER_SAMPLE: Number of galaxies in SINGG_derived: 412
+MK_MASTER_SAMPLE: first pass at compiling master sample
+MK_MASTER_SAMPLE: Number of galaxies still to observe for SINGG : 176
+MK_MASTER_SAMPLE: Number of galaxies in first pass of master sample: 588
+MK_MASTER_SAMPLE: opening GALEX tile database: galexgr6_seibert_coadd and cross matching
+MK_MASTER_SAMPLE: Opening SUNGG_derived and cross matching ...
+MK_MASTER_SAMPLE: setting UV positions where need be
+MK_MASTER_SAMPLE: will get HOPCAT positions for           144  sources with only HIPASS positions at this stage
+MK_MASTER_SAMPLE: replacing HIPASS positions with HOPCAT positions for N_sources = 130
+MK_MASTER_SAMPLE: Starting search for extra HIPASS targets in unique galex tiles...
+MK_MASTER_SAMPLE: will search 425 galex tiles for HOPCAT matches.
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0140-05"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0209-10"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0221-05"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0224-24"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0230-02"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0234-10"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0258-74"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0325-52"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0325-52"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0342-13"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0359-45"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0403-43"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0409-56"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0409-56"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0443-05"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0503-63"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0514-61"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J0940-03"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1005-16"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1026-19"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1026-19"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1051-17"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1054-18"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1059-09"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1103-23"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1118-17"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1122-04"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1131-02"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1250-20"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1300-13"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1339-31"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1355-23"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1404-24"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1403-06"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1408-21"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1419-26"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1422-17"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1509-11"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1513-20"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J1956-50"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J2030-33"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J2149-60"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J2202-20"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J2207-43"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J2242-30"
+MK_MASTER_SAMPLE: **** warning multiple matches to existing list for: "J2242-30"
+MK_MASTER_SAMPLE: Number of extra HOPCAT targets to measure: 89
+MK_MASTER_SAMPLE: all extra HOPCAT targets were matched
+MK_MASTER_SAMPLE: master sample size is now: 677
+MK_MASTER_SAMPLE: setting IRAS+AKARI match radius 
+MK_MASTER_SAMPLE: calculating Galactic longtitude and latitude and foreground dust absorption
+MK_MASTER_SAMPLE: Opening IRAS database : iras_psc   and extracting key quantities
+  J0333-50       number matching = 1
+  J0507-37       number matching = 1
+  J0256-54       number matching = 1
+  J0409-56       number matching = 1
+  J0441-02       number matching = 1
+  J0349-48       number matching = 1
+  J0506-31       number matching = 1
+  J2052-69       number matching = 1
+  J0510-31       number matching = 1
+  J0209-10       number matching = 2
+  J0209-10       number matching = 1
+  J0209-10       number matching = 1
+  J0209-10       number matching = 1
+  J0317-22       number matching = 1
+  J0216-11c      number matching = 1
+  J0412+02       number matching = 1
+  J1131-02       number matching = 1
+  J0224-24       number matching = 1
+  J0503-63       number matching = 1
+  J0943-05b      number matching = 1
+  J0221-05       number matching = 1
+  J0342-13       number matching = 1
+  J1051-19       number matching = 1
+  J0507-16       number matching = 1
+  J0943-09b      number matching = 1
+  J1109-23       number matching = 1
+  J1105-00       number matching = 2
+  J0454-53       number matching = 1
+  J1337-29       number matching = 3
+  J0403-43       number matching = 2
+  J0403-43       number matching = 1
+  J0459-26       number matching = 1
+  J0355-42       number matching = 1
+  J0512-32       number matching = 1
+  J1231-08       number matching = 1
+  J1318-21       number matching = 1
+  J1304-10       number matching = 1
+  J1300-13       number matching = 1
+  J1403-06       number matching = 1
+  J1403-06       number matching = 1
+  J2024-43       number matching = 1
+  J2030-33       number matching = 1
+  J2044-68       number matching = 1
+  J2152-55       number matching = 1
+  J2135-63       number matching = 1
+  J1152-02       number matching = 1
+  J0135-41       number matching = 1
+  J0320-52       number matching = 1
+  J1954-58       number matching = 2
+  J2102-16       number matching = 1
+  J2214-66       number matching = 1
+  J0039-14a      number matching = 1
+  J0240-08       number matching = 1
+  J2220-46       number matching = 1
+  J2149-60       number matching = 1
+  J2149-60       number matching = 1
+  J2202-20       number matching = 1
+  J2257-41       number matching = 1
+  J0317-41       number matching = 1
+  J0404-02       number matching = 1
+  J2136-54       number matching = 1
+  J0539-58       number matching = 1
+  J1159-19       number matching = 1
+  J0437-09       number matching = 1
+  J0443-05       number matching = 1
+  J1250-14       number matching = 1
+  J1251-26       number matching = 1
+  J1404-24       number matching = 1
+  J1404-24       number matching = 1
+  J0512-57       number matching = 1
+  J0504-16       number matching = 1
+  J1059-09       number matching = 1
+  J1059-09       number matching = 1
+  J1059-09       number matching = 1
+  J1249-04b      number matching = 1
+  J0953+01       number matching = 1
+  J0942+00       number matching = 1
+  J1255+00       number matching = 2
+  J1320-12       number matching = 1
+  J1338-17       number matching = 1
+  J1338-09       number matching = 1
+  J1447-17       number matching = 1
+  J1621-02       number matching = 1
+  J1513-20       number matching = 1
+  J2056-16       number matching = 1
+  J1444+01       number matching = 1
+  J1445+01       number matching = 1
+  J1442-08       number matching = 1
+  J1509-11       number matching = 1
+  J2215-45a      number matching = 2
+  J2215-45a      number matching = 2
+  J2318-42a      number matching = 1
+  J2318-42a      number matching = 1
+  J2318-42a      number matching = 1
+  J2025-24       number matching = 1
+  J2129-52       number matching = 1
+  J0101-07       number matching = 1
+  J0406-52       number matching = 1
+  J1500+01       number matching = 1
+  J2034-31       number matching = 1
+  J2031-30       number matching = 1
+  J2031-30       number matching = 1
+  J2235-26       number matching = 1
+  J2127-60       number matching = 1
+  J2233-40       number matching = 1
+  J2357-32       number matching = 1
+  J0052-31       number matching = 1
+  J1423+01       number matching = 1
+  J2242-30       number matching = 1
+  J0014-23       number matching = 3
+  J0317-66       number matching = 1
+  J0258-74       number matching = 1
+  J0307-31       number matching = 1
+  J0436-03       number matching = 1
+  J0454-12       number matching = 1
+  J0205-55a      number matching = 1
+  J0205-55a      number matching = 1
+  J0404-54       number matching = 1
+  J0547-51       number matching = 1
+  J0242+00       number matching = 1
+  J0241+00       number matching = 1
+  J0344-44       number matching = 1
+  J0406-21       number matching = 1
+  J0449-31       number matching = 1
+  J1147-16       number matching = 1
+  J0331-51       number matching = 1
+  J1247-03       number matching = 1
+  J0510-36       number matching = 1
+  J1158-19b      number matching = 1
+  J1254-10a      number matching = 1
+  J1123-08       number matching = 1
+  J1417-13       number matching = 1
+  J1455-19       number matching = 1
+  J0335-24       number matching = 1
+  J0419-54       number matching = 1
+  J0445-59       number matching = 1
+  J1153-28       number matching = 1
+  J1200-01       number matching = 1
+  J1205-14       number matching = 1
+  J1329-17       number matching = 1
+  J0451-33       number matching = 1
+  J1042-23       number matching = 1
+  J1419-26       number matching = 1
+  J1250-20       number matching = 1
+  J1250-20       number matching = 1
+  J0217-76       number matching = 1
+  J0411-32       number matching = 2
+  J0411-32       number matching = 1
+  J1026-19       number matching = 1
+  J1232+00b      number matching = 3
+  J1408-21       number matching = 1
+  J1408-21       number matching = 1
+  J1232-07       number matching = 1
+  J0505-37       number matching = 1
+  J1103-23       number matching = 1
+  J1103-23       number matching = 1
+  J1051-17       number matching = 1
+  J1301-32       number matching = 1
+  J0047-25       number matching = 3
+  J2027-51       number matching = 1
+  J2027-51       number matching = 1
+  J2337-47       number matching = 1
+  J0230-02       number matching = 1
+  J0234-10       number matching = 1
+  J0246-30       number matching = 1
+  J0328-08       number matching = 1
+  J2302-40       number matching = 1
+  J2259-37       number matching = 1
+  J0325-52       number matching = 1
+  J1339-31A      number matching = 1
+  J0533-36       number matching = 1
+  J1242-00       number matching = 1
+  J0516-37       number matching = 1
+  J1206-22       number matching = 2
+  J1234+02A      number matching = 1
+  J0546-52       number matching = 1
+  J0105-06       number matching = 1
+  J0112+00       number matching = 1
+  J0239-08       number matching = 1
+  J0243+01       number matching = 1
+  J0310-53       number matching = 1
+  J0313-57       number matching = 1
+  J0319-49       number matching = 1
+  J0331-30       number matching = 1
+  J0336-43       number matching = 1
+  J0339-31       number matching = 1
+  J0342-47       number matching = 1
+  J0352-47       number matching = 1
+  J0354-36b      number matching = 1
+  J0357-46       number matching = 1
+  J0357-48       number matching = 1
+  J0358-44       number matching = 1
+  J0400-49       number matching = 1
+  J0412-57       number matching = 1
+  J0417-50       number matching = 1
+  J0448-59       number matching = 1
+  J0506-59       number matching = 1
+  J0519-32       number matching = 1
+  J0521-36       number matching = 1
+  J0539-41       number matching = 1
+  J1208-09       number matching = 1
+  J1239-00       number matching = 1
+  J1240-05a      number matching = 1
+  J1249-10       number matching = 1
+  J1253+01       number matching = 1
+  J1256-07       number matching = 1
+  J1300-00       number matching = 1
+  J1305-06       number matching = 1
+  J1309-10       number matching = 1
+  J1326+02A      number matching = 1
+  J2302-39       number matching = 1
+  J0030-33       number matching = 1
+  J0034-08       number matching = 1
+  J0040-13       number matching = 1
+  J0059-07       number matching = 1
+  J0130-22       number matching = 1
+  J0134-29       number matching = 1
+  J0147-52       number matching = 1
+  J0223-21       number matching = 1
+  J0246-07       number matching = 1
+  J0257-02       number matching = 1
+  J0302-22       number matching = 1
+  J0302-18       number matching = 1
+  J0309-20       number matching = 1
+  J0310-22       number matching = 1
+  J0314-02       number matching = 1
+  J0318-27       number matching = 1
+  J0323-36       number matching = 1
+  J0333-36       number matching = 1
+  J0337-24       number matching = 1
+  J0338-26       number matching = 1
+  J0342-29       number matching = 1
+  J0417-55       number matching = 1
+  J0452-25       number matching = 1
+  J0515-30       number matching = 1
+  J1152-04       number matching = 1
+  J1156-19a      number matching = 1
+  J1201-18       number matching = 1
+  J1210-29       number matching = 1
+  J1245-00       number matching = 1
+  J1249-08       number matching = 1
+  J1249-11       number matching = 1
+  J1251-06       number matching = 1
+  J1304-03       number matching = 1
+  J1309-28       number matching = 1
+  J1315-23       number matching = 1
+  J1345-05       number matching = 1
+  J1352-01       number matching = 1
+  J1411-01       number matching = 1
+  J2256-37       number matching = 1
+  J2314-43       number matching = 1
+  J2319-08       number matching = 1
+  J0122+00       number matching = 1
+  J1250-10       number matching = 1
+  J1339-11       number matching = 1
+  J1352-06       number matching = 1
+  J1406-05       number matching = 1
+  J1424-03       number matching = 1
+  J1513-15       number matching = 1
+  J1521-13       number matching = 1
+  J2002-65       number matching = 1
+  J2101-72       number matching = 1
+  J2130-43b      number matching = 1
+  J2144-75       number matching = 1
+  J2347-30       number matching = 1
+  J0031-10       number matching = 1
+  J0311-08       number matching = 1
+  J1109-00       number matching = 1
+  J2003-54       number matching = 1
+  J2038-52       number matching = 1
+  J2115-47       number matching = 1
+  J2136-76       number matching = 1
+  J2217-15       number matching = 1
+  J0056-09       number matching = 1
+  J2000-47       number matching = 1
+  J2356-00       number matching = 1
+  J0125-18       number matching = 1
+  J0212-22       number matching = 1
+  J2210-66       number matching = 1
+  J0458-64       number matching = 1
+  J0501-63       number matching = 1
+  J0415-56       number matching = 1
+  J2027-52       number matching = 1
+  J0352-44       number matching = 1
+  J2159-43       number matching = 1
+  J2130-43a      number matching = 1
+  J2130-43b      number matching = 1
+  J2255-42       number matching = 1
+  J2316-42       number matching = 1
+  J2318-42a      number matching = 1
+  J2318-42b      number matching = 1
+  J0233-39       number matching = 1
+  J2257-37       number matching = 1
+  J0354-36b      number matching = 1
+  J0456-28       number matching = 1
+  J1306-28       number matching = 1
+  J1307-28       number matching = 1
+  J0221-20       number matching = 1
+  J0047-20       number matching = 1
+  J1447-18       number matching = 1
+  J0039-14b      number matching = 1
+  J0039-14a      number matching = 1
+  J1301-13b      number matching = 1
+  J0216-11c      number matching = 1
+  J1254-10a      number matching = 1
+  J1256-08       number matching = 1
+  J1304-07       number matching = 1
+  J1408-06       number matching = 1
+  J0943-05b      number matching = 1
+  J1240-05a      number matching = 1
+  J1250-05       number matching = 1
+  J1249-05       number matching = 1
+  J1240-05b      number matching = 1
+  J1249-04b      number matching = 1
+  J1243-00       number matching = 1
+  J1232+00b      number matching = 1
+  J0111+01       number matching = 1
+MK_MASTER_SAMPLE: Comparison of old versus new IRAS entries: 
+ J0333-50       18432  18432
+ J0256-54       14528  14528
+ J0441-02       26665  26665
+ J0506-31       29914  29914
+ J2052-69       224535  224535
+ J0510-31       30477  30477
+ J0209-10       10039  10039
+ J0209-10       10034  10034
+ J0209-10       10010  10010
+ J0209-10       10010  10010
+ J0317-22       16513  16513
+ J0216-11c      10576  10576
+ J0412+02       23074  23074
+ J1131-02       84980  84980
+ J0224-24       11326  11326
+ J0503-63       29691  29691
+ J0221-05       11017  11017
+ J0342-13       19473  19473
+ J1051-19       80527  80527
+ J0507-16       30044  30044
+ J0943-09b      72973  72973
+ J1109-23       82655  82655
+ J0454-53       28374  28374
+ J0459-26       29002  29002
+ J0355-42       21169  21169
+ J0512-32       30646  30646
+ J1231-08       91465  91465
+ J1318-21       96896  96896
+ J1304-10       95160  95160
+ J1300-13       94776  94776
+ J1403-06       102404  102404
+ J1403-06       102404  102404
+ J2024-43       219229  219229
+ J2030-33       220815  220815
+ J2044-68       223244  223244
+ J2152-55       232971  232971
+ J2135-63       230805  230805
+ J1152-02       87290  87290
+ J0135-41       7414  7414
+ J0320-52       16922  16922
+ J1954-58       210439  210439
+ J2102-16       226343  226343
+ J2214-66       235409  235409
+ J0039-14a      2904  2904
+ J0240-08       12776  12776
+ J2149-60       232606  232606
+ J2149-60       232608  232608
+ J2202-20       234230  234230
+ J0317-41       16579  16579
+ J0404-02       22066  22066
+ J0539-58       36006  36006
+ J0437-09       26255  26255
+ J0443-05       26953  26953
+ J1250-14       93504  93504
+ J1251-26       93650  93650
+ J0512-57       30804  30804
+ J1059-09       81429  81429
+ J1059-09       81369  81369
+ J1249-04b      93457  93457
+ J0953+01       74133  74133
+ J1255+00       94076  94076
+ J1320-12       97085  97085
+ J1338-17       99329  99329
+ J1447-17       108525  108525
+ J1621-02       126946  126946
+ J1513-20       112682  112682
+ J1445+01       108189  108189
+ J1442-08       107762  107762
+ J1509-11       112002  112002
+ J2318-42a      241945  241945
+ J2318-42a      241991  241991
+ J2318-42a      242040  242040
+ J2025-24       219533  219533
+ J0406-52       22430  22430
+ J2235-26       237692  237692
+ J2127-60       229719  229719
+ J2233-40       237485  237485
+ J2357-32       245525  245525
+ J0052-31       4063  4063
+ J2242-30       238314  238314
+ J0014-23       979  979
+ J0258-74       14815  14815
+ J0307-31       15446  15446
+ J0436-03       26138  26138
+ J0454-12       28264  28264
+ J0205-55a      9733  9733
+ J0205-55a      9679  9679
+ J0205-55a      9733  -1
+ J0242+00       12985  12985
+ J0241+00       12899  12899
+ J0449-31       27745  27745
+ J1147-16       86702  86702
+ J0331-51       18220  18220
+ J1247-03       93273  93273
+ J0510-36       30412  30412
+ J1158-19b      87957  87957
+ J1254-10a      93973  93973
+ J1417-13       104315  104315
+ J1455-19       109689  109689
+ J0335-24       18571  18571
+ J0419-54       24174  24174
+ J0445-59       27374  27374
+ J1153-28       87386  87386
+ J1200-01       88092  88092
+ J1329-17       98251  98251
+ J0451-33       27987  27987
+ J1042-23       79594  79594
+ J1419-26       104512  104512
+ J1250-20       93582  93582
+ J0217-76       10918  10918
+ J1232+00b      91647  91647
+ J1408-21       103119  103119
+ J0505-37       29775  29775
+ J1103-23       81930  81930
+ J1103-23       81980  81980
+ J1051-17       80508  80508
+ J1301-32       94824  94824
+ J2027-51       220106  220106
+ J2027-51       219981  219981
+ J2337-47       243771  243771
+ J0230-02       11856  11856
+ J0234-10       12211  12211
+ J0246-30       13416  13416
+ J0328-08       17710  17710
+ J2302-40       240302  240302
+ J2259-37       239946  239946
+ J0325-52       17538  17538
+ J0533-36       34312  34312
+ J0516-37       31301  31301
+ J1206-22       88720  88720
+ J1234+02A      91831  91831
+ J0546-52       37215  37215
+MK_MASTER_SAMPLE: number of cases where entiras disagrees with entiras_old : 1
+  J0205-55a      9733  -1
+MK_MASTER_SAMPLE: finished matching to IRAS.  Number of matches = 317
+MK_MASTER_SAMPLE: matching to AKARI IRC database
+MK_MASTER_SAMPLE: finished matching to AKARI IRC.  Number of matches = 69
+MK_MASTER_SAMPLE: matching to AKARI FIS database
+MK_MASTER_SAMPLE: finished matching to AKARI FIS.  Number of matches = 306
+MK_MASTER_SAMPLE: reading in S4G sample file: /Volumes/Data/meurer/SINGG/Sample/s4g_table1.dat
+MK_MASTER_SAMPLE: adopted match: 7  ESO409-015 -> J0005-28     
+MK_MASTER_SAMPLE: adopted match: 17  NGC0045 -> J0014-23     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC0045 has N = 2 matches within search rad [arcmin] = 47.3218 all associated...
+MK_MASTER_SAMPLE: adopted match: 30  NGC0131 -> J0030-33     
+MK_MASTER_SAMPLE: adopted match: 31  NGC0134 -> J0030-33     
+MK_MASTER_SAMPLE: adopted match: 40  NGC0157 -> J0034-08     
+MK_MASTER_SAMPLE: adopted match: 42  NGC0178 -> J0039-14a    
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC0178 has N = 3 matches within search rad [arcmin] = 15.6697 all associated...
+MK_MASTER_SAMPLE: adopted match: 43  NGC0210 -> J0040-13     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC0210 has N = 4 matches within search rad [arcmin] = 37.5890 all associated...
+MK_MASTER_SAMPLE: adopted match: 48  IC1574 -> J0043-22     
+MK_MASTER_SAMPLE: adopted match: 49  NGC0244 -> J0045-15     
+MK_MASTER_SAMPLE: adopted match: 54  NGC0247 -> J0047-20
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC0247 has N = 3 matches within search rad [arcmin] = 146.238 all associated...
+MK_MASTER_SAMPLE: adopted match: 56  NGC0253 -> J0047-25     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC0253 has N = 2 matches within search rad [arcmin] = 197.270 all associated...
+MK_MASTER_SAMPLE: adopted match: 58  PGC002805 -> J0047-09     
+MK_MASTER_SAMPLE: adopted match: 59  ESO540-031 -> J0049-20     
+MK_MASTER_SAMPLE: adopted match: 65  NGC0289 -> J0052-31     
+MK_MASTER_SAMPLE: adopted match: 72  NGC0337 -> J0059-07     
+MK_MASTER_SAMPLE: adopted match: 74  NGC0337A -> J0101-07     
+MK_MASTER_SAMPLE: adopted match: 76  IC1613 -> J0111+01
+MK_MASTER_SAMPLE: adopted match: 77  PGC003853 -> J0105-06     
+MK_MASTER_SAMPLE: NOTE: S4G source=PGC003853 has N = 2 matches within search rad [arcmin] = 12.4469 all associated...
+MK_MASTER_SAMPLE: adopted match: 78  PGC003855 -> J0104-06
+MK_MASTER_SAMPLE: NOTE: S4G source=PGC003855 has N = 2 matches within search rad [arcmin] = 10.1172 all associated...
+MK_MASTER_SAMPLE: adopted match: 82  NGC0428 -> J0112+00     
+MK_MASTER_SAMPLE: adopted match: 95  NGC0493 -> J0122+00     
+MK_MASTER_SAMPLE: adopted match: 110  NGC0578 -> J0130-22     
+MK_MASTER_SAMPLE: adopted match: 119  NGC0613 -> J0134-29     
+MK_MASTER_SAMPLE: adopted match: 120  NGC0625 -> J0135-41     
+MK_MASTER_SAMPLE: adopted match: 127  PGC006190 -> J0140-05:S2  
+MK_MASTER_SAMPLE: NOTE: S4G source=PGC006190 has N = 3 matches within search rad [arcmin] = 14.9645 all associated...
+MK_MASTER_SAMPLE: adopted match: 128  PGC006228 -> J0141-05
+MK_MASTER_SAMPLE: NOTE: S4G source=PGC006228 has N = 2 matches within search rad [arcmin] = 14.2910 all associated...
+MK_MASTER_SAMPLE: adopted match: 135  ESO245-005 -> J0145-43     
+MK_MASTER_SAMPLE: adopted match: 139  NGC0685 -> J0147-52     
+MK_MASTER_SAMPLE: adopted match: 172  PGC007900 -> J0204-06     
+MK_MASTER_SAMPLE: adopted match: 177  ESO298-015 -> J0210-40     
+MK_MASTER_SAMPLE: adopted match: 192  NGC0895 -> J0221-05:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC0895 has N = 2 matches within search rad [arcmin] = 24.8348 all associated...
+MK_MASTER_SAMPLE: adopted match: 193  NGC0899 -> J0221-20
+MK_MASTER_SAMPLE: adopted match: 194  IC0223 -> J0221-20
+MK_MASTER_SAMPLE: adopted match: 197  NGC0908 -> J0223-21     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC0908 has N = 2 matches within search rad [arcmin] = 47.3218 all associated...
+MK_MASTER_SAMPLE: adopted match: 213  NGC0986A -> J0232-39     
+MK_MASTER_SAMPLE: adopted match: 214  NGC0986 -> J0233-39
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC0986 has N = 2 matches within search rad [arcmin] = 28.5142 all associated...
+MK_MASTER_SAMPLE: adopted match: 223  NGC1032 -> J0240+01     
+MK_MASTER_SAMPLE: adopted match: 224  NGC1035 -> J0239-08     
+MK_MASTER_SAMPLE: adopted match: 225  NGC1042 -> J0240-08     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1042 has N = 2 matches within search rad [arcmin] = 29.1784 all associated...
+MK_MASTER_SAMPLE: adopted match: 228  NGC1051 -> J0241-06     
+MK_MASTER_SAMPLE: adopted match: 229  NGC1052 -> J0240-08     
+MK_MASTER_SAMPLE: adopted match: 230  NGC1055 -> J0241+00     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1055 has N = 4 matches within search rad [arcmin] = 51.8873 all associated...
+MK_MASTER_SAMPLE: adopted match: 232  NGC1068 -> J0242+00     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1068 has N = 2 matches within search rad [arcmin] = 46.2446 all associated...
+MK_MASTER_SAMPLE: adopted match: 234  NGC1073 -> J0243+01     
+MK_MASTER_SAMPLE: adopted match: 236  NGC1084 -> J0246-07     
+MK_MASTER_SAMPLE: adopted match: 237  NGC1097 -> J0246-30     
+MK_MASTER_SAMPLE: adopted match: 241  UGC02302 -> J0249+02     
+MK_MASTER_SAMPLE: NOTE: S4G source=UGC02302 has N = 2 matches within search rad [arcmin] = 35.8973 all associated...
+MK_MASTER_SAMPLE: adopted match: 242  NGC1110 -> J0249-07     
+MK_MASTER_SAMPLE: adopted match: 248  ESO154-023 -> J0256-54     
+MK_MASTER_SAMPLE: adopted match: 250  IC1870 -> J0257-02     
+MK_MASTER_SAMPLE: adopted match: 256  ESO480-020 -> J0302-22     
+MK_MASTER_SAMPLE: adopted match: 257  NGC1187 -> J0302-22     
+MK_MASTER_SAMPLE: adopted match: 258  NGC1179 -> J0302-18     
+MK_MASTER_SAMPLE: adopted match: 261  ESO248-002 -> J0305-45     
+MK_MASTER_SAMPLE: adopted match: 267  ESO300-014 -> J0309-41     
+MK_MASTER_SAMPLE: adopted match: 268  NGC1232 -> J0309-20     
+MK_MASTER_SAMPLE: adopted match: 269  NGC1249 -> J0310-53     
+MK_MASTER_SAMPLE: adopted match: 270  IC1898 -> J0310-22     
+MK_MASTER_SAMPLE: adopted match: 271  ESO357-007 -> J0310-33     
+MK_MASTER_SAMPLE: adopted match: 273  ESO116-012 -> J0313-57     
+MK_MASTER_SAMPLE: adopted match: 277  NGC1253 -> J0314-02     
+MK_MASTER_SAMPLE: adopted match: 278  PGC012068 -> J0314-04     
+MK_MASTER_SAMPLE: adopted match: 281  NGC1291 -> J0317-41     
+MK_MASTER_SAMPLE: adopted match: 282  NGC1292 -> J0318-27     
+MK_MASTER_SAMPLE: adopted match: 283  NGC1313 -> J0317-66     
+MK_MASTER_SAMPLE: adopted match: 285  IC1914 -> J0319-49     
+MK_MASTER_SAMPLE: adopted match: 290  NGC1311 -> J0320-52     
+MK_MASTER_SAMPLE: adopted match: 294  PGC012608 -> J0322-15a
+MK_MASTER_SAMPLE: adopted match: 300  NGC1326 -> J0323-36     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1326 has N = 4 matches within search rad [arcmin] = 31.9935 all associated...
+MK_MASTER_SAMPLE: adopted match: 301  NGC1325 -> J0324-21b
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1325 has N = 2 matches within search rad [arcmin] = 31.9935 all associated...
+MK_MASTER_SAMPLE: adopted match: 303  NGC1325A -> J0324-21b
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1325A has N = 2 matches within search rad [arcmin] = 14.2910 all associated...
+MK_MASTER_SAMPLE: adopted match: 305  NGC1326A -> J0325-36b:S2 
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1326A has N = 3 matches within search rad [arcmin] = 15.6697 all associated...
+MK_MASTER_SAMPLE: adopted match: 306  NGC1326B -> J0325-36b:S1 
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1326B has N = 4 matches within search rad [arcmin] = 29.1784 all associated...
+MK_MASTER_SAMPLE: adopted match: 308  IC1933 -> J0325-52:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=IC1933 has N = 2 matches within search rad [arcmin] = 17.1815 all associated...
+MK_MASTER_SAMPLE: adopted match: 310  NGC1332 -> J0324-21b
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1332 has N = 2 matches within search rad [arcmin] = 40.2774 all associated...
+MK_MASTER_SAMPLE: adopted match: 314  NGC1337 -> J0328-08     
+MK_MASTER_SAMPLE: adopted match: 324  ESO418-008 -> J0331-30     
+MK_MASTER_SAMPLE: adopted match: 325  IC1954 -> J0331-51     
+MK_MASTER_SAMPLE: adopted match: 331  IC1959 -> J0333-50     
+MK_MASTER_SAMPLE: adopted match: 334  NGC1365 -> J0333-36     
+MK_MASTER_SAMPLE: adopted match: 338  NGC1367 -> J0335-24     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1367 has N = 2 matches within search rad [arcmin] = 36.7334 all associated...
+MK_MASTER_SAMPLE: adopted match: 342  IC1970 -> J0336-43     
+MK_MASTER_SAMPLE: adopted match: 343  ESO482-013 -> J0336-24
+MK_MASTER_SAMPLE: adopted match: 344  ESO249-008 -> J0337-43     
+MK_MASTER_SAMPLE: adopted match: 345  NGC1385 -> J0337-24     
+MK_MASTER_SAMPLE: adopted match: 347  NGC1398 -> J0338-26     
+MK_MASTER_SAMPLE: adopted match: 348  NGC1406 -> J0339-31     
+MK_MASTER_SAMPLE: adopted match: 357  NGC1433 -> J0342-47     
+MK_MASTER_SAMPLE: adopted match: 358  NGC1425 -> J0342-29     
+MK_MASTER_SAMPLE: adopted match: 359  NGC1421 -> J0342-13:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1421 has N = 2 matches within search rad [arcmin] = 26.6110 all associated...
+MK_MASTER_SAMPLE: adopted match: 364  ESO358-054 -> J0342-36     
+MK_MASTER_SAMPLE: adopted match: 365  PGC013684 -> J0343-15     
+MK_MASTER_SAMPLE: adopted match: 369  NGC1448 -> J0344-44     
+MK_MASTER_SAMPLE: adopted match: 370  ESO358-060 -> J0345-35     
+MK_MASTER_SAMPLE: adopted match: 379  ESO302-009 -> J0347-38     
+MK_MASTER_SAMPLE: adopted match: 381  IC2000 -> J0349-48     
+MK_MASTER_SAMPLE: NOTE: S4G source=IC2000 has N = 2 matches within search rad [arcmin] = 36.7334 all associated...
+MK_MASTER_SAMPLE: adopted match: 384  ESO302-014 -> J0351-38     
+MK_MASTER_SAMPLE: adopted match: 387  NGC1476 -> J0352-44
+MK_MASTER_SAMPLE: adopted match: 388  NGC1483 -> J0352-47     
+MK_MASTER_SAMPLE: adopted match: 390  ESO249-026 -> J0354-43     
+MK_MASTER_SAMPLE: adopted match: 391  NGC1484 -> J0354-36b
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1484 has N = 2 matches within search rad [arcmin] = 20.6567 all associated...
+MK_MASTER_SAMPLE: adopted match: 392  ESO249-027 -> J0354-44     
+MK_MASTER_SAMPLE: adopted match: 396  NGC1487 -> J0355-42     
+MK_MASTER_SAMPLE: adopted match: 397  ESO302-021 -> J0355-40     
+MK_MASTER_SAMPLE: adopted match: 398  NGC1493 -> J0357-46     
+MK_MASTER_SAMPLE: adopted match: 399  NGC1494 -> J0357-48     
+MK_MASTER_SAMPLE: adopted match: 400  NGC1495 -> J0358-44     
+MK_MASTER_SAMPLE: adopted match: 401  ESO249-035 -> J0359-45:S2  
+MK_MASTER_SAMPLE: NOTE: S4G source=ESO249-035 has N = 2 matches within search rad [arcmin] = 11.8867 all associated...
+MK_MASTER_SAMPLE: adopted match: 402  ESO249-036 -> J0359-45:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=ESO249-036 has N = 2 matches within search rad [arcmin] = 8.81173 all associated...
+MK_MASTER_SAMPLE: adopted match: 407  NGC1510 -> J0403-43:S2  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1510 has N = 2 matches within search rad [arcmin] = 9.88693 all associated...
+MK_MASTER_SAMPLE: adopted match: 408  NGC1512 -> J0403-43:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1512 has N = 2 matches within search rad [arcmin] = 50.7062 all associated...
+MK_MASTER_SAMPLE: adopted match: 409  NGC1515 -> J0404-54     
+MK_MASTER_SAMPLE: adopted match: 410  NGC1507 -> J0404-02     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1507 has N = 2 matches within search rad [arcmin] = 26.6110 all associated...
+MK_MASTER_SAMPLE: adopted match: 413  NGC1518 -> J0406-21     
+MK_MASTER_SAMPLE: adopted match: 414  IC2032 -> J0407-55     
+MK_MASTER_SAMPLE: adopted match: 417  ESO359-022 -> J0408-35
+MK_MASTER_SAMPLE: adopted match: 418  NGC1533 -> J0409-56:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1533 has N = 2 matches within search rad [arcmin] = 24.2695 all associated...
+MK_MASTER_SAMPLE: adopted match: 423  NGC1532 -> J0411-32:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1532 has N = 2 matches within search rad [arcmin] = 84.1514 all associated...
+MK_MASTER_SAMPLE: adopted match: 428  NGC1553 -> J0417-55     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1553 has N = 2 matches within search rad [arcmin] = 46.2446 all associated...
+MK_MASTER_SAMPLE: adopted match: 432  NGC1556 -> J0417-50     
+MK_MASTER_SAMPLE: adopted match: 433  IC2058 -> J0417-55     
+MK_MASTER_SAMPLE: adopted match: 434  NGC1566 -> J0419-54     
+MK_MASTER_SAMPLE: adopted match: 435  ESO550-024 -> J0421-21     
+MK_MASTER_SAMPLE: adopted match: 439  NGC1592 -> J0429-27     
+MK_MASTER_SAMPLE: adopted match: 440  UGC03070 -> J0430-01     
+MK_MASTER_SAMPLE: adopted match: 447  NGC1637 -> J0441-02     
+MK_MASTER_SAMPLE: adopted match: 451  NGC1672 -> J0445-59     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1672 has N = 2 matches within search rad [arcmin] = 46.2446 all associated...
+MK_MASTER_SAMPLE: adopted match: 453  NGC1688 -> J0448-59     
+MK_MASTER_SAMPLE: adopted match: 456  NGC1679 -> J0449-31     
+MK_MASTER_SAMPLE: adopted match: 458  ESO361-015 -> J0451-33     
+MK_MASTER_SAMPLE: adopted match: 461  ESO485-021 -> J0452-25     
+MK_MASTER_SAMPLE: adopted match: 462  NGC1705 -> J0454-53     
+MK_MASTER_SAMPLE: adopted match: 465  PGC016389 -> J0457-42     
+MK_MASTER_SAMPLE: adopted match: 467  NGC1744 -> J0459-26     
+MK_MASTER_SAMPLE: adopted match: 468  ESO085-030 -> J0501-63
+MK_MASTER_SAMPLE: adopted match: 470  ESO486-021 -> J0503-25     
+MK_MASTER_SAMPLE: adopted match: 471  NGC1792 -> J0505-37     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1792 has N = 3 matches within search rad [arcmin] = 47.3218 all associated...
+MK_MASTER_SAMPLE: adopted match: 472  NGC1800 -> J0506-31     
+MK_MASTER_SAMPLE: adopted match: 473  ESO422-033 -> J0506-27     
+MK_MASTER_SAMPLE: adopted match: 474  NGC1824 -> J0506-59     
+MK_MASTER_SAMPLE: adopted match: 475  NGC1808 -> J0507-37     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC1808 has N = 2 matches within search rad [arcmin] = 41.2156 all associated...
+MK_MASTER_SAMPLE: adopted match: 477  PGC016784 -> J0507-16     
+MK_MASTER_SAMPLE: adopted match: 478  ESO305-009 -> J0508-38     
+MK_MASTER_SAMPLE: adopted match: 479  NGC1827 -> J0510-36     
+MK_MASTER_SAMPLE: adopted match: 480  ESO422-041 -> J0510-31     
+MK_MASTER_SAMPLE: adopted match: 482  ESO362-009 -> J0512-32     
+MK_MASTER_SAMPLE: adopted match: 483  NGC1853 -> J0512-57     
+MK_MASTER_SAMPLE: adopted match: 484  ESO305-017 -> J0515-41     
+MK_MASTER_SAMPLE: adopted match: 485  ESO423-002 -> J0515-30     
+MK_MASTER_SAMPLE: adopted match: 486  ESO362-011 -> J0516-37     
+MK_MASTER_SAMPLE: adopted match: 488  NGC1879 -> J0519-32     
+MK_MASTER_SAMPLE: adopted match: 489  ESO362-019 -> J0521-36     
+MK_MASTER_SAMPLE: adopted match: 490  IC2135 -> J0533-36     
+MK_MASTER_SAMPLE: adopted match: 491  ESO120-012 -> J0539-58     
+MK_MASTER_SAMPLE: adopted match: 492  ESO159-025 -> J0543-52     
+MK_MASTER_SAMPLE: adopted match: 493  NGC2101 -> J0546-52     
+MK_MASTER_SAMPLE: adopted match: 494  NGC2104 -> J0547-51:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC2104 has N = 2 matches within search rad [arcmin] = 16.0347 all associated...
+MK_MASTER_SAMPLE: adopted match: 495  ESO120-021 -> J0553-59     
+MK_MASTER_SAMPLE: adopted match: 619  NGC2967 -> J0942+00     
+MK_MASTER_SAMPLE: adopted match: 627  PGC027810 -> J0943-09b    
+MK_MASTER_SAMPLE: adopted match: 628  PGC027825 -> J0943-05a
+MK_MASTER_SAMPLE: adopted match: 629  PGC027833 -> J0943-05b
+MK_MASTER_SAMPLE: NOTE: S4G source=PGC027833 has N = 2 matches within search rad [arcmin] = 14.9645 all associated...
+MK_MASTER_SAMPLE: adopted match: 649  NGC3044 -> J0953+01     
+MK_MASTER_SAMPLE: adopted match: 677  PGC029086 -> J1002-06     
+MK_MASTER_SAMPLE: adopted match: 705  IC0600 -> J1017-03     
+MK_MASTER_SAMPLE: adopted match: 713  ESO567-048 -> J1019-17     
+MK_MASTER_SAMPLE: adopted match: 765  ESO501-079 -> J1041-23     
+MK_MASTER_SAMPLE: adopted match: 767  ESO501-080 -> J1042-23     
+MK_MASTER_SAMPLE: adopted match: 783  NGC3365 -> J1046+01     
+MK_MASTER_SAMPLE: adopted match: 808  ESO569-014 -> J1051-19     
+MK_MASTER_SAMPLE: adopted match: 842  NGC3511 -> J1103-23:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC3511 has N = 2 matches within search rad [arcmin] = 45.1920 all associated...
+MK_MASTER_SAMPLE: adopted match: 845  NGC3513 -> J1103-23:S2  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC3513 has N = 2 matches within search rad [arcmin] = 21.1379 all associated...
+MK_MASTER_SAMPLE: adopted match: 849  NGC3521 -> J1105-00     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC3521 has N = 2 matches within search rad [arcmin] = 62.3823 all associated...
+MK_MASTER_SAMPLE: adopted match: 859  ESO502-020 -> J1109-22     
+MK_MASTER_SAMPLE: adopted match: 860  IC2627 -> J1109-23     
+MK_MASTER_SAMPLE: adopted match: 886  ESO570-019 -> J1120-21     
+MK_MASTER_SAMPLE: adopted match: 919  PGC035271 -> J1127-04     
+MK_MASTER_SAMPLE: adopted match: 989  NGC3887 -> J1147-16     
+MK_MASTER_SAMPLE: adopted match: 1022  PGC037238 -> J1152-04     
+MK_MASTER_SAMPLE: adopted match: 1024  ESO440-027 -> J1153-28     
+MK_MASTER_SAMPLE: adopted match: 1042  NGC3981 -> J1156-19a    
+MK_MASTER_SAMPLE: adopted match: 1064  ESO572-034 -> J1158-19b    
+MK_MASTER_SAMPLE: adopted match: 1068  NGC4027 -> J1159-19:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4027 has N = 5 matches within search rad [arcmin] = 26.6110 all associated...
+MK_MASTER_SAMPLE: adopted match: 1069  NGC4030 -> J1200-01     
+MK_MASTER_SAMPLE: adopted match: 1078  NGC4038 -> J1201-18     
+MK_MASTER_SAMPLE: adopted match: 1079  NGC4039 -> J1201-18     
+MK_MASTER_SAMPLE: adopted match: 1106  NGC4094 -> J1205-14     
+MK_MASTER_SAMPLE: adopted match: 1110  ESO505-013 -> J1206-22     
+MK_MASTER_SAMPLE: adopted match: 1120  NGC4116 -> J1208+02     
+MK_MASTER_SAMPLE: adopted match: 1122  NGC4123 -> J1208+02     
+MK_MASTER_SAMPLE: adopted match: 1127  NGC4129 -> J1208-09     
+MK_MASTER_SAMPLE: adopted match: 1143  IC0764 -> J1210-29     
+MK_MASTER_SAMPLE: adopted match: 1193  PGC039317 -> J1216-11     
+MK_MASTER_SAMPLE: adopted match: 1211  UGC07332 -> J1217+00     
+MK_MASTER_SAMPLE: adopted match: 1229  PGC039799 -> J1220+00     
+MK_MASTER_SAMPLE: adopted match: 1351  NGC4487 -> J1231-08     
+MK_MASTER_SAMPLE: adopted match: 1361  NGC4504 -> J1232-07     
+MK_MASTER_SAMPLE: adopted match: 1364  NGC4517A -> J1232+00a
+MK_MASTER_SAMPLE: adopted match: 1369  NGC4437 -> J1232+00b    
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4437 has N = 3 matches within search rad [arcmin] = 68.4008 all associated...
+MK_MASTER_SAMPLE: adopted match: 1374  PGC041725 -> J1233-04     
+MK_MASTER_SAMPLE: adopted match: 1384  NGC4527 -> J1234+02B    
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4527 has N = 3 matches within search rad [arcmin] = 47.3218 all associated...
+MK_MASTER_SAMPLE: adopted match: 1388  NGC4533 -> J1234+02A:S2 
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4533 has N = 2 matches within search rad [arcmin] = 13.6478 all associated...
+MK_MASTER_SAMPLE: adopted match: 1389  NGC4536 -> J1234+02A:S1 
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4536 has N = 3 matches within search rad [arcmin] = 53.0959 all associated...
+MK_MASTER_SAMPLE: adopted match: 1402  PGC041965 -> J1235-07     
+MK_MASTER_SAMPLE: adopted match: 1417  ESO442-013 -> J1237-28     
+MK_MASTER_SAMPLE: adopted match: 1428  NGC4592 -> J1239-00     
+MK_MASTER_SAMPLE: adopted match: 1436  NGC4597 -> J1240-05a    
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4597 has N = 2 matches within search rad [arcmin] = 26.6110 all associated...
+MK_MASTER_SAMPLE: adopted match: 1438  NGC4602 -> J1240-05b
+MK_MASTER_SAMPLE: adopted match: 1451  NGC4632 -> J1242-00:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4632 has N = 2 matches within search rad [arcmin] = 19.2780 all associated...
+MK_MASTER_SAMPLE: adopted match: 1452  NGC4629 -> J1242-01     
+MK_MASTER_SAMPLE: adopted match: 1459  NGC4642 -> J1243-00
+MK_MASTER_SAMPLE: adopted match: 1464  NGC4653 -> J1243-00
+MK_MASTER_SAMPLE: adopted match: 1467  PGC042868 -> J1244-05     
+MK_MASTER_SAMPLE: adopted match: 1469  UGC07911 -> J1244+00     
+MK_MASTER_SAMPLE: adopted match: 1474  NGC4666 -> J1245-00     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4666 has N = 2 matches within search rad [arcmin] = 37.5890 all associated...
+MK_MASTER_SAMPLE: adopted match: 1475  NGC4668 -> J1245-00     
+MK_MASTER_SAMPLE: adopted match: 1489  NGC4691 -> J1247-03     
+MK_MASTER_SAMPLE: adopted match: 1494  NGC4699 -> J1249-08     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4699 has N = 2 matches within search rad [arcmin] = 35.8973 all associated...
+MK_MASTER_SAMPLE: adopted match: 1495  NGC4700 -> J1249-11     
+MK_MASTER_SAMPLE: adopted match: 1498  PGC043345 -> J1249-10     
+MK_MASTER_SAMPLE: adopted match: 1504  PGC043458 -> J1250-10     
+MK_MASTER_SAMPLE: adopted match: 1507  NGC4731 -> J1251-06     
+MK_MASTER_SAMPLE: adopted match: 1508  NGC4723 -> J1251-13     
+MK_MASTER_SAMPLE: adopted match: 1510  NGC4722 -> J1251-13     
+MK_MASTER_SAMPLE: adopted match: 1519  NGC4771 -> J1253+01     
+MK_MASTER_SAMPLE: adopted match: 1523  PGC043851 -> J1253-12     
+MK_MASTER_SAMPLE: adopted match: 1525  NGC4781 -> J1254-10a
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4781 has N = 2 matches within search rad [arcmin] = 27.2309 all associated...
+MK_MASTER_SAMPLE: adopted match: 1537  UGC08041 -> J1255+00     
+MK_MASTER_SAMPLE: adopted match: 1546  IC3908 -> J1256-07     
+MK_MASTER_SAMPLE: adopted match: 1548  NGC4818 -> J1256-08
+MK_MASTER_SAMPLE: adopted match: 1550  PGC044278 -> J1257-05     
+MK_MASTER_SAMPLE: adopted match: 1560  PGC044735 -> J1300-12
+MK_MASTER_SAMPLE: adopted match: 1562  NGC4897 -> J1300-13:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4897 has N = 3 matches within search rad [arcmin] = 19.7270 all associated...
+MK_MASTER_SAMPLE: adopted match: 1563  NGC4899 -> J1301-13b
+MK_MASTER_SAMPLE: adopted match: 1564  NGC4904 -> J1300-00     
+MK_MASTER_SAMPLE: adopted match: 1566  UGC08127 -> J1301-01     
+MK_MASTER_SAMPLE: adopted match: 1568  PGC044906 -> J1301-04
+MK_MASTER_SAMPLE: adopted match: 1571  NGC4920 -> J1302-11a
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4920 has N = 2 matches within search rad [arcmin] = 8.03639 all associated...
+MK_MASTER_SAMPLE: adopted match: 1577  PGC045084 -> J1303-17b
+MK_MASTER_SAMPLE: NOTE: S4G source=PGC045084 has N = 4 matches within search rad [arcmin] = 50.7062 all associated...
+MK_MASTER_SAMPLE: adopted match: 1581  NGC4942 -> J1304-07
+MK_MASTER_SAMPLE: adopted match: 1582  PGC045195 -> J1304-03     
+MK_MASTER_SAMPLE: adopted match: 1583  NGC4948 -> J1305-07     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4948 has N = 2 matches within search rad [arcmin] = 16.4082 all associated...
+MK_MASTER_SAMPLE: adopted match: 1584  NGC4948A -> J1305-08
+MK_MASTER_SAMPLE: adopted match: 1585  NGC4951 -> J1305-06     
+MK_MASTER_SAMPLE: adopted match: 1589  NGC4958 -> J1305-08
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC4958 has N = 3 matches within search rad [arcmin] = 35.0801 all associated...
+MK_MASTER_SAMPLE: adopted match: 1591  PGC045359 -> J1306-17     
+MK_MASTER_SAMPLE: adopted match: 1593  ESO443-069 -> J1306-28
+MK_MASTER_SAMPLE: adopted match: 1595  NGC4965 -> J1307-28
+MK_MASTER_SAMPLE: adopted match: 1601  NGC4980 -> J1309-28     
+MK_MASTER_SAMPLE: adopted match: 1605  PGC045652 -> J1309-10     
+MK_MASTER_SAMPLE: adopted match: 1637  NGC5042 -> J1315-23     
+MK_MASTER_SAMPLE: adopted match: 1647  PGC046382 -> J1318-08     
+MK_MASTER_SAMPLE: adopted match: 1649  NGC5068 -> J1318-21     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC5068 has N = 3 matches within search rad [arcmin] = 55.5983 all associated...
+MK_MASTER_SAMPLE: adopted match: 1654  NGC5084 -> J1320-21     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC5084 has N = 3 matches within search rad [arcmin] = 75.0000 all associated...
+MK_MASTER_SAMPLE: adopted match: 1656  NGC5088 -> J1320-12:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC5088 has N = 2 matches within search rad [arcmin] = 13.9657 all associated...
+MK_MASTER_SAMPLE: adopted match: 1660  ESO576-040 -> J1320-21     
+MK_MASTER_SAMPLE: adopted match: 1677  NGC5147 -> J1326+02A    
+MK_MASTER_SAMPLE: adopted match: 1678  ESO576-059 -> J1326-22     
+MK_MASTER_SAMPLE: adopted match: 1688  NGC5170 -> J1329-17     
+MK_MASTER_SAMPLE: adopted match: 1708  NGC5236 -> J1337-29     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC5236 has N = 6 matches within search rad [arcmin] = 116.161 all associated...
+MK_MASTER_SAMPLE: adopted match: 1712  NGC5247 -> J1338-17     
+MK_MASTER_SAMPLE: adopted match: 1713  PGC048179 -> J1338-09     
+MK_MASTER_SAMPLE: adopted match: 1718  NGC5254 -> J1339-11     
+MK_MASTER_SAMPLE: adopted match: 1720  NGC5253 -> J1339-31A    
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC5253 has N = 3 matches within search rad [arcmin] = 34.2816 all associated...
+MK_MASTER_SAMPLE: adopted match: 1724  NGC5264 -> J1341-29     
+MK_MASTER_SAMPLE: adopted match: 1747  NGC5334 -> J1352-01     
+MK_MASTER_SAMPLE: adopted match: 1787  NGC5426 -> J1403-06:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC5426 has N = 4 matches within search rad [arcmin] = 23.1772 all associated...
+MK_MASTER_SAMPLE: adopted match: 1788  NGC5427 -> J1403-06:S2  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC5427 has N = 4 matches within search rad [arcmin] = 27.2309 all associated...
+MK_MASTER_SAMPLE: adopted match: 1789  ESO510-058 -> J1404-24:S2  
+MK_MASTER_SAMPLE: NOTE: S4G source=ESO510-058 has N = 3 matches within search rad [arcmin] = 9.01698 all associated...
+MK_MASTER_SAMPLE: adopted match: 1791  ESO510-059 -> J1404-24:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=ESO510-059 has N = 3 matches within search rad [arcmin] = 17.1815 all associated...
+MK_MASTER_SAMPLE: adopted match: 1798  NGC5468 -> J1406-05     
+MK_MASTER_SAMPLE: adopted match: 1800  NGC5472 -> J1406-05     
+MK_MASTER_SAMPLE: adopted match: 1803  NGC5476 -> J1408-06
+MK_MASTER_SAMPLE: adopted match: 1808  NGC5496 -> J1411-01     
+MK_MASTER_SAMPLE: adopted match: 1834  UGC09215 -> J1423+01     
+MK_MASTER_SAMPLE: adopted match: 1839  NGC5604 -> J1424-03     
+MK_MASTER_SAMPLE: adopted match: 1853  UGC09299 -> J1429-00     
+MK_MASTER_SAMPLE: adopted match: 1894  NGC5729 -> J1442-08     
+MK_MASTER_SAMPLE: adopted match: 1898  NGC5740 -> J1444+01     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC5740 has N = 2 matches within search rad [arcmin] = 20.1865 all associated...
+MK_MASTER_SAMPLE: adopted match: 1899  NGC5746 -> J1445+01     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC5746 has N = 2 matches within search rad [arcmin] = 54.3327 all associated...
+MK_MASTER_SAMPLE: adopted match: 1903  PGC052809 -> J1447-17     
+MK_MASTER_SAMPLE: adopted match: 1907  ESO580-030 -> J1447-18
+MK_MASTER_SAMPLE: adopted match: 1934  NGC5806 -> J1500+01     
+MK_MASTER_SAMPLE: adopted match: 1952  NGC5861 -> J1509-11:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC5861 has N = 2 matches within search rad [arcmin] = 20.6567 all associated...
+MK_MASTER_SAMPLE: adopted match: 1961  ESO581-025 -> J1513-20:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=ESO581-025 has N = 3 matches within search rad [arcmin] = 24.2695 all associated...
+MK_MASTER_SAMPLE: adopted match: 1963  NGC5892 -> J1513-15     
+MK_MASTER_SAMPLE: adopted match: 1972  NGC5916A -> J1521-13     
+MK_MASTER_SAMPLE: adopted match: 1973  NGC5915 -> J1521-13     
+MK_MASTER_SAMPLE: adopted match: 1975  NGC5916 -> J1521-13     
+MK_MASTER_SAMPLE: adopted match: 2032  NGC6118 -> J1621-02     
+MK_MASTER_SAMPLE: adopted match: 2067  IC4901 -> J1954-58     
+MK_MASTER_SAMPLE: adopted match: 2068  IC4951 -> J2009-61     
+MK_MASTER_SAMPLE: adopted match: 2078  NGC6902B -> J2023-43
+MK_MASTER_SAMPLE: adopted match: 2079  NGC6902 -> J2024-43     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC6902 has N = 2 matches within search rad [arcmin] = 20.1865 all associated...
+MK_MASTER_SAMPLE: adopted match: 2083  NGC6923 -> J2031-30:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC6923 has N = 2 matches within search rad [arcmin] = 19.2780 all associated...
+MK_MASTER_SAMPLE: adopted match: 2084  ESO462-031 -> J2031-30:S2  
+MK_MASTER_SAMPLE: NOTE: S4G source=ESO462-031 has N = 2 matches within search rad [arcmin] = 12.1636 all associated...
+MK_MASTER_SAMPLE: adopted match: 2086  NGC6925 -> J2034-31     
+MK_MASTER_SAMPLE: adopted match: 2094  IC5052 -> J2052-69     
+MK_MASTER_SAMPLE: NOTE: S4G source=IC5052 has N = 2 matches within search rad [arcmin] = 53.0959 all associated...
+MK_MASTER_SAMPLE: adopted match: 2097  IC5078 -> J2102-16     
+MK_MASTER_SAMPLE: adopted match: 2112  NGC7059 -> J2127-60     
+MK_MASTER_SAMPLE: adopted match: 2114  NGC7064 -> J2129-52     
+MK_MASTER_SAMPLE: adopted match: 2115  NGC7070 -> J2130-43b    
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7070 has N = 3 matches within search rad [arcmin] = 18.8391 all associated...
+MK_MASTER_SAMPLE: adopted match: 2119  NGC7090 -> J2136-54     
+MK_MASTER_SAMPLE: adopted match: 2124  NGC7098 -> J2144-75     
+MK_MASTER_SAMPLE: adopted match: 2129  NGC7140 -> J2152-55     
+MK_MASTER_SAMPLE: adopted match: 2138  NGC7162 -> J2159-43
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7162 has N = 2 matches within search rad [arcmin] = 23.1772 all associated...
+MK_MASTER_SAMPLE: adopted match: 2140  NGC7162A -> J2200-43     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7162A has N = 2 matches within search rad [arcmin] = 17.9912 all associated...
+MK_MASTER_SAMPLE: adopted match: 2147  ESO601-007 -> J2202-20:S2  
+MK_MASTER_SAMPLE: adopted match: 2149  NGC7184 -> J2202-20:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7184 has N = 2 matches within search rad [arcmin] = 45.1920 all associated...
+MK_MASTER_SAMPLE: adopted match: 2172  IC5176 -> J2214-66     
+MK_MASTER_SAMPLE: NOTE: S4G source=IC5176 has N = 2 matches within search rad [arcmin] = 33.5013 all associated...
+MK_MASTER_SAMPLE: adopted match: 2173  NGC7233 -> J2215-45a:S2 
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7233 has N = 3 matches within search rad [arcmin] = 13.3371 all associated...
+MK_MASTER_SAMPLE: adopted match: 2175  NGC7232B -> J2215-45b    
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7232B has N = 3 matches within search rad [arcmin] = 12.7368 all associated...
+MK_MASTER_SAMPLE: adopted match: 2182  IC5201 -> J2220-46     
+MK_MASTER_SAMPLE: NOTE: S4G source=IC5201 has N = 2 matches within search rad [arcmin] = 49.5520 all associated...
+MK_MASTER_SAMPLE: adopted match: 2196  NGC7307 -> J2233-40:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7307 has N = 3 matches within search rad [arcmin] = 28.5142 all associated...
+MK_MASTER_SAMPLE: adopted match: 2197  PGC069224 -> J2234-04     
+MK_MASTER_SAMPLE: adopted match: 2199  NGC7314 -> J2235-26     
+MK_MASTER_SAMPLE: adopted match: 2205  PGC069415 -> J2239-04     
+MK_MASTER_SAMPLE: adopted match: 2211  NGC7361 -> J2242-30:S1  
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7361 has N = 2 matches within search rad [arcmin] = 23.7171 all associated...
+MK_MASTER_SAMPLE: adopted match: 2218  IC5249 -> J2247-64     
+MK_MASTER_SAMPLE: adopted match: 2223  NGC7412 -> J2255-42
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7412 has N = 2 matches within search rad [arcmin] = 28.5142 all associated...
+MK_MASTER_SAMPLE: adopted match: 2225  NGC7418 -> J2256-37     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7418 has N = 3 matches within search rad [arcmin] = 27.2309 all associated...
+MK_MASTER_SAMPLE: adopted match: 2227  NGC7418A -> J2256-36a
+MK_MASTER_SAMPLE: adopted match: 2228  IC5264 -> J2256-36a
+MK_MASTER_SAMPLE: adopted match: 2229  NGC7421 -> J2257-37
+MK_MASTER_SAMPLE: adopted match: 2230  IC5267 -> J2257-42     
+MK_MASTER_SAMPLE: adopted match: 2231  NGC7424 -> J2257-41     
+MK_MASTER_SAMPLE: adopted match: 2238  IC5273 -> J2259-37     
+MK_MASTER_SAMPLE: adopted match: 2246  NGC7456 -> J2302-39     
+MK_MASTER_SAMPLE: adopted match: 2247  ESO406-042 -> J2302-37     
+MK_MASTER_SAMPLE: adopted match: 2248  NGC7462 -> J2302-40     
+MK_MASTER_SAMPLE: adopted match: 2261  NGC7531 -> J2314-43     
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7531 has N = 2 matches within search rad [arcmin] = 28.5142 all associated...
+MK_MASTER_SAMPLE: adopted match: 2262  NGC7552 -> J2316-42
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7552 has N = 2 matches within search rad [arcmin] = 29.1784 all associated...
+MK_MASTER_SAMPLE: adopted match: 2264  NGC7582 -> J2318-42a:S1 
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7582 has N = 6 matches within search rad [arcmin] = 42.1756 all associated...
+MK_MASTER_SAMPLE: adopted match: 2265  NGC7590 -> J2318-42a:S2 
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7590 has N = 5 matches within search rad [arcmin] = 22.6496 all associated...
+MK_MASTER_SAMPLE: adopted match: 2266  NGC7606 -> J2319-08     
+MK_MASTER_SAMPLE: adopted match: 2267  NGC7599 -> J2318-42b
+MK_MASTER_SAMPLE: NOTE: S4G source=NGC7599 has N = 5 matches within search rad [arcmin] = 34.2816 all associated...
+MK_MASTER_SAMPLE: adopted match: 2276  ESO347-017 -> J2326-37     
+MK_MASTER_SAMPLE: adopted match: 2286  IC5332 -> J2334-36     
+MK_MASTER_SAMPLE: adopted match: 2294  NGC7713 -> J2336-37a    
+MK_MASTER_SAMPLE: adopted match: 2302  ESO240-011 -> J2337-47     
+MK_MASTER_SAMPLE: adopted match: 2312  ESO471-006 -> J2343-31     
+MK_MASTER_SAMPLE: adopted match: 2319  NGC7755 -> J2347-30     
+MK_MASTER_SAMPLE: adopted match: 2323  ESO149-003 -> J2352-52     
+MK_MASTER_SAMPLE: adopted match: 2329  NGC7793 -> J2357-32     
+MK_MASTER_SAMPLE: reading in LVHIS sample file: /Volumes/Data/meurer/SINGG/Sample/lvhis.dat
+MK_MASTER_SAMPLE: J0001-15*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0009-24*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0015-39*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0054-37*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0237-61*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0258-49*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0321-66*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0403-43*: LVHIS with multiple matches, N = 2
+MK_MASTER_SAMPLE: J0605-33*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0607-34*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0610-34*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0615-57*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0639-40*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0705-58*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0731-68*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J0926-76*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1043-37*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1047-38*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1057-48*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1118-32*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1131-31*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1132-32*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1137-39*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1154-33*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1204-35*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1214-38*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1219-79*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1244-35*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1246-33*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1247-77*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1305-40*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1305-49*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1310-46A*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1321-36*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1324-30*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1324-42*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1326-30A*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1327-41*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1334-45*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1336-29*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1337-39*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1337-42*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1340-28*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1345-41*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1348-53*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1349-36*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1351-47*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1403-41*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1413-65*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1428-46*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1434-49*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1441-62*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1443-44*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1501-48*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1514-46*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1526-51*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1620-60*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1747-64*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1802-39*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J1944-14*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J2003-31*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J2202-51*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: J2326-32*: LVHIS source with no matches in supersingg_master
+MK_MASTER_SAMPLE: reading in SIGRID sample file: /Volumes/Data/meurer/SINGG/Sample/SIGRID_f8shortA.dat
+MK_MASTER_SAMPLE: J0002-52*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0023-27*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0107+01*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0110-42*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0206-60*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0231-54*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0253-09*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0255-10*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0305-19*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0427-22*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0428-46*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0434-65*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0446-35*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0448+00*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0523-34*: SIGRID with multiple matches, N = 2
+MK_MASTER_SAMPLE: J0527-20*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0558-12*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0615-57*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0617-17*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0848-26*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0903-23*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0927-32*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0931-34*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J0940-03*: SIGRID with multiple matches, N = 2
+MK_MASTER_SAMPLE: J0944-00b*: SIGRID with multiple matches, N = 2
+MK_MASTER_SAMPLE: J1103-34*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J1111-24*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J1118-17*: SIGRID with multiple matches, N = 2
+MK_MASTER_SAMPLE: J1137-39*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J1142-19*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J1244-35*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J1305-40*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J1350-35*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J1355-23*: SIGRID with multiple matches, N = 2
+MK_MASTER_SAMPLE: J1443-33*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J2003-31*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J2207-43*: SIGRID with multiple matches, N = 2
+MK_MASTER_SAMPLE: J2259-13*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J2311-42*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: J2334-45b*: SIGRID with multiple matches, N = 2
+MK_MASTER_SAMPLE: J2349-22*: SIGRID with no matches in supersingg_master 
+MK_MASTER_SAMPLE: reading in MHONGOOSE selection file: /Volumes/Data/meurer/SINGG/Sample/gmd.txt
+MK_MASTER_SAMPLE: adopted match ESO409-IG015  00:05:31.9 -28:05:53 -> J0005-28     
+MK_MASTER_SAMPLE: adopted match ESO349-G031  00:08:13.4 -34:34:42 -> J0008-34     
+MK_MASTER_SAMPLE: adopted match MCG-04-02-003  00:19:11.5 -22:40:06 -> J0019-22     
+MK_MASTER_SAMPLE: adopted match ESO473-G024  00:31:22.5 -22:45:57 -> J0031-22     
+MK_MASTER_SAMPLE: adopted match NGC0178  00:39:08.4 -14:10:22 -> J0039-14a    
+MK_MASTER_SAMPLE: WARNING! MHONGOOSE source=NGC0178 has more than 1 match; N = 2
+MK_MASTER_SAMPLE: adopted match NGC0253  00:47:33.1 -25:17:18 -> J0047-25     
+MK_MASTER_SAMPLE: adopted match UGCA015  00:49:49.2 -21:00:54 -> J0049-20     
+MK_MASTER_SAMPLE: adopted match NGC0289  00:52:42.4 -31:12:21 -> J0052-31     
+MK_MASTER_SAMPLE: adopted match NGC0625  01:35:04.6 -41:26:10 -> J0135-41     
+MK_MASTER_SAMPLE: adopted match ESO245-G005  01:45:03.7 -43:35:53 -> J0145-43     
+MK_MASTER_SAMPLE: adopted match NGC1097  02:46:19.0 -30:16:30 -> J0246-30     
+MK_MASTER_SAMPLE: adopted match ESO300-G014  03:09:37.9 -41:01:50 -> J0309-41     
+MK_MASTER_SAMPLE: adopted match ESO357-G007  03:10:24.4 -33:09:22 -> J0310-33     
+MK_MASTER_SAMPLE: adopted match ESO300-G016  03:10:10.5 -40:00:11 -> J0310-39     
+MK_MASTER_SAMPLE: adopted match FCCB0035  03:17:30.5 -37:50:38 -> J0317-37     
+MK_MASTER_SAMPLE: adopted match NGC1291  03:17:18.6 -41:06:29 -> J0317-41     
+MK_MASTER_SAMPLE: adopted match NGC1313  03:18:16.1 -66:29:54 -> J0317-66     
+MK_MASTER_SAMPLE: adopted match NGC1311  03:20:07.0 -52:11:08 -> J0320-52     
+MK_MASTER_SAMPLE: adopted match IC1933  03:25:39.9 -52:47:08 -> J0325-52:S1  
+MK_MASTER_SAMPLE: WARNING! MHONGOOSE source=IC1933 has more than 1 match; N = 2
+MK_MASTER_SAMPLE: including all 2SINGG galaxies associated with J0325-52   as MHONGOOSE selected:
+                    J0325-52:S1  
+                    J0325-52:S2  
+MK_MASTER_SAMPLE: adopted match IC1954  03:31:31.4 -51:54:17 -> J0331-51     
+MK_MASTER_SAMPLE: adopted match IC1959  03:33:12.6 -50:24:51 -> J0333-50     
+MK_MASTER_SAMPLE: adopted match ESO200-G045  03:35:02.3 -51:27:13 -> J0334-51     
+MK_MASTER_SAMPLE: adopted match NGC1371  03:35:01.3 -24:56:00 -> J0335-24     
+MK_MASTER_SAMPLE: adopted match IC2000  03:49:07.7 -48:51:29 -> J0349-48     
+MK_MASTER_SAMPLE: adopted match ESO302-G014  03:51:40.9 -38:27:08 -> J0351-38     
+MK_MASTER_SAMPLE: adopted match ESO249-G026  03:54:12.9 -43:45:28 -> J0354-43     
+MK_MASTER_SAMPLE: adopted match NGC1487  03:55:46.1 -42:22:05 -> J0355-42     
+MK_MASTER_SAMPLE: adopted match ESO249-G036  03:59:15.6 -45:52:21 -> J0359-45:S1  
+MK_MASTER_SAMPLE: WARNING! MHONGOOSE source=ESO249-G036 has more than 1 match; N = 2
+MK_MASTER_SAMPLE: including all 2SINGG galaxies associated with J0359-45   as MHONGOOSE selected:
+                    J0359-45:S1  
+                    J0359-45:S2  
+MK_MASTER_SAMPLE: adopted match NGC1512  04:03:54.3 -43:20:56 -> J0403-43:S1  
+MK_MASTER_SAMPLE: including all 2SINGG galaxies associated with J0403-43   as MHONGOOSE selected:
+                    J0403-43:S1  
+                    J0403-43:S2  
+MK_MASTER_SAMPLE: adopted match NGC1518  04:06:49.7 -21:10:22 -> J0406-21     
+MK_MASTER_SAMPLE: adopted match NGC1522  04:06:07.9 -52:40:06 -> J0406-52     
+MK_MASTER_SAMPLE: adopted match NGC1533  04:09:51.8 -56:07:06 -> J0409-56:S1  
+MK_MASTER_SAMPLE: including all 2SINGG galaxies associated with J0409-56   as MHONGOOSE selected:
+                    J0409-56:S1  
+                    J0409-56:S2  
+MK_MASTER_SAMPLE: adopted match ESO359-G024  04:10:57.5 -35:49:52 -> J0411-35     
+MK_MASTER_SAMPLE: adopted match NGC1566  04:20:00.4 -54:56:16 -> J0419-54     
+MK_MASTER_SAMPLE: adopted match UGCA090  04:21:13.6 -21:50:46 -> J0421-21     
+MK_MASTER_SAMPLE: adopted match NGC1592  04:29:40.1 -27:24:31 -> J0429-27     
+MK_MASTER_SAMPLE: adopted match NGC1672  04:45:42.5 -59:14:50 -> J0445-59     
+MK_MASTER_SAMPLE: adopted match NGC1679  04:49:54.6 -31:57:53 -> J0449-31     
+MK_MASTER_SAMPLE: adopted match NGC1705  04:54:13.5 -53:21:40 -> J0454-53     
+MK_MASTER_SAMPLE: adopted match NGC1744  04:59:57.8 -26:01:20 -> J0459-26     
+MK_MASTER_SAMPLE: adopted match NGC1792  05:05:14.4 -37:58:51 -> J0505-37     
+MK_MASTER_SAMPLE: adopted match ESO422-G033  05:06:49.6 -27:39:29 -> J0506-27     
+MK_MASTER_SAMPLE: adopted match NGC1800  05:06:25.7 -31:57:15 -> J0506-31     
+MK_MASTER_SAMPLE: adopted match NGC1808  05:07:42.3 -37:30:47 -> J0507-37     
+MK_MASTER_SAMPLE: adopted match ESO305-G009  05:08:07.6 -38:18:33 -> J0508-38     
+MK_MASTER_SAMPLE: adopted match NGC1827  05:10:04.6 -36:57:37 -> J0510-36     
+MK_MASTER_SAMPLE: adopted match UGCA106  05:11:59.3 -32:58:21 -> J0512-32     
+MK_MASTER_SAMPLE: adopted match ESO305-G017  05:15:00.6 -41:23:33 -> J0515-41     
+MK_MASTER_SAMPLE: adopted match ESO362-G011  05:16:38.8 -37:06:09 -> J0516-37     
+MK_MASTER_SAMPLE: adopted match NGC2101  05:46:24.2 -52:05:19 -> J0546-52     
+MK_MASTER_SAMPLE: adopted match NGC2104  05:47:04.7 -51:33:11 -> J0547-51:S1  
+MK_MASTER_SAMPLE: including all 2SINGG galaxies associated with J0547-51   as MHONGOOSE selected:
+                    J0547-51:S1  
+                    J0547-51:S2  
+MK_MASTER_SAMPLE: adopted match NGC3355  10:41:26.0 -23:23:03 -> J1041-23     
+MK_MASTER_SAMPLE: adopted match ESO501-G080  10:42:38.1 -23:56:08 -> J1042-23     
+MK_MASTER_SAMPLE: adopted match NGC3511  11:03:23.8 -23:05:12 -> J1103-23:S1  
+MK_MASTER_SAMPLE: including all 2SINGG galaxies associated with J1103-23   as MHONGOOSE selected:
+                    J1103-23:S1  
+                    J1103-23:S2  
+MK_MASTER_SAMPLE: adopted match NGC3513  11:03:46.1 -23:14:44 -> J1103-23:S2  
+MK_MASTER_SAMPLE: including all 2SINGG galaxies associated with J1103-23   as MHONGOOSE selected:
+                    J1103-23:S1  
+                    J1103-23:S2  
+MK_MASTER_SAMPLE: adopted match [KKS2000]23  11:06:12.0 -14:24:26 -> J1106-14     
+MK_MASTER_SAMPLE: adopted match HIPASSJ1107-17  11:07:03.8 -17:36:22 -> J1107-17     
+MK_MASTER_SAMPLE: adopted match HIPASSJ1118-17  11:18:03.1 -17:38:31 -> J1118-17:S1  
+MK_MASTER_SAMPLE: WARNING! MHONGOOSE source=HIPASSJ1118-17 has more than 1 match; N = 2
+MK_MASTER_SAMPLE: including all 2SINGG galaxies associated with J1118-17   as MHONGOOSE selected:
+                    J1118-17:S1  
+                    J1118-17:S2  
+MK_MASTER_SAMPLE: adopted match NGC3887  11:47:04.6 -16:51:17 -> J1147-16     
+MK_MASTER_SAMPLE: adopted match UGCA250  11:53:24.1 -28:33:11 -> J1153-28     
+MK_MASTER_SAMPLE: adopted match UGCA270  12:06:07.2 -22:50:58 -> J1206-22     
+MK_MASTER_SAMPLE: adopted match UGCA307  12:53:57.3 -12:06:21 -> J1253-12     
+MK_MASTER_SAMPLE: adopted match NGC4781  12:54:23.7 -10:32:14 -> J1254-10a    
+MK_MASTER_SAMPLE: WARNING! MHONGOOSE source=NGC4781 has more than 1 match; N = 2
+MK_MASTER_SAMPLE: adopted match UGCA320  13:03:16.7 -17:25:23 -> J1303-17b
+MK_MASTER_SAMPLE: WARNING! MHONGOOSE source=UGCA320 has more than 1 match; N = 3
+MK_MASTER_SAMPLE: adopted match MCG-03-34-002  13:07:56.7 -16:41:21 -> J1308-16     
+MK_MASTER_SAMPLE: adopted match NGC5068  13:18:54.8 -21:02:21 -> J1318-21     
+MK_MASTER_SAMPLE: adopted match [KK98]195  13:21:08.2 -31:31:45 -> J1321-31     
+MK_MASTER_SAMPLE: adopted match NGC5170  13:29:48.8 -17:57:59 -> J1329-17     
+MK_MASTER_SAMPLE: adopted match ESO444-G084  13:37:20.0 -28:02:42 -> J1337-28     
+MK_MASTER_SAMPLE: adopted match MESSIER083  13:37:00.9 -29:51:56 -> J1337-29     
+MK_MASTER_SAMPLE: adopted match NGC5253  13:39:56.0 -31:38:24 -> J1339-31A    
+MK_MASTER_SAMPLE: adopted match ESO510-IG052  14:03:34.6 -27:16:47 -> J1403-27     
+MK_MASTER_SAMPLE: adopted match IC4951  20:09:31.8 -61:51:02 -> J2009-61     
+MK_MASTER_SAMPLE: adopted match NGC7059  21:27:21.5 -60:00:52 -> J2127-60     
+MK_MASTER_SAMPLE: adopted match NGC7064  21:29:03.0 -52:46:03 -> J2129-52     
+MK_MASTER_SAMPLE: adopted match NGC7090  21:36:28.9 -54:33:26 -> J2136-54     
+MK_MASTER_SAMPLE: adopted match IC5176  22:14:55.9 -66:50:58 -> J2214-66     
+MK_MASTER_SAMPLE: adopted match ESO238-G005  22:22:30.1 -48:24:18 -> J2222-48     
+MK_MASTER_SAMPLE: adopted match NGC7314  22:35:46.2 -26:03:02 -> J2235-26     
+MK_MASTER_SAMPLE: adopted match NGC7361  22:42:17.9 -30:03:28 -> J2242-30:S1  
+MK_MASTER_SAMPLE: WARNING! MHONGOOSE source=NGC7361 has more than 1 match; N = 2
+MK_MASTER_SAMPLE: including all 2SINGG galaxies associated with J2242-30   as MHONGOOSE selected:
+                    J2242-30:S1  
+                    J2242-30:S2  
+MK_MASTER_SAMPLE: adopted match MCG-05-54-004  22:54:45.2 -26:53:25 -> J2254-26     
+MK_MASTER_SAMPLE: adopted match ESO406-G022  22:55:52.6 -34:33:18 -> J2255-34     
+MK_MASTER_SAMPLE: adopted match NGC7424  22:57:18.4 -41:04:14 -> J2257-41     
+MK_MASTER_SAMPLE: adopted match NGC7582  23:18:23.5 -42:22:14 -> J2318-42a:S1 
+MK_MASTER_SAMPLE: including all 3SINGG galaxies associated with J2318-42a  as MHONGOOSE selected:
+                    J2318-42a:S1 
+                    J2318-42a:S2 
+                    J2318-42a:S3 
+MK_MASTER_SAMPLE: adopted match NGC7590  23:18:54.8 -42:14:21 -> J2318-42a:S2 
+MK_MASTER_SAMPLE: WARNING! MHONGOOSE source=NGC7590 has more than 1 match; N = 2
+MK_MASTER_SAMPLE: including all 3SINGG galaxies associated with J2318-42a  as MHONGOOSE selected:
+                    J2318-42a:S1 
+                    J2318-42a:S2 
+                    J2318-42a:S3 
+MK_MASTER_SAMPLE: adopted match ESO347-G017  23:26:56.2 -37:20:49 -> J2326-37     
+MK_MASTER_SAMPLE: adopted match ESO348-G009  23:49:23.5 -37:46:19 -> J2349-37     
+MK_MASTER_SAMPLE: adopted match NGC7793  23:57:49.8 -32:35:28 -> J2357-32     
+MK_MASTER_SAMPLE: Writing DBD file
+MK_MASTER_SAMPLE: Writing database: supersingg_master
+MK_MASTER_SAMPLE: returning to starting diriectory /Users/meurer/IDL/Pro/Work/singgdb
+MK_MASTER_SAMPLE: finished.

@@ -1,0 +1,72 @@
+1. Object name
+
+2. Summary table (from singg_derived, singg_derived_sr1, proc3_header)
+   + version (SR1, SR2)
+   + file names (Rsub, nb, cont)
+   + Object name
+   + RA, DEC
+   + Log(Halpha flux)
+   + m_R
+   + PA, a/b
+   + R_max
+   + R_e
+   + seeing
+   + airmass
+   * Should probably make this table separately 
+
+For each *sub_ss.fits file
+
+3. SR2 3 color    4. Finder chart
+   image with 	     with numbers
+   aps
+
+5. table with numbers in item 3
+   and corresponding source names
+
+6. Thumbnails of sqrt, lin, and log images
+   put in a row linked to full images.
+
+(7. Gray scale images of R, NB, net images
+    thumbnails linked to full images
+    + ds9 command line that will display all images)
+
+(8. thumbnails and links to predecessor images)
+
+(9. Inclusion mask* sqrt images, 
+    one for each source.)
+
+(10. Radial profiles)
+
+(11. SE catalog CMD
+     Use color + S/N cut to identify likely 
+     Halpha sources.)
+
+---------------------------------------------------------------------------
+
+METHOD
+
+* Use proc3_header_database as driver
+
+* get unique target names
+
+* Loop through target names
+
+  * Gather (or derive) info needed to make SR2 web page
+    + name of 3 color image with aps
+    + name of other three color images
+    + name of finder chart
+    + name of object table
+    + directory to make to put all results
+    + run id
+    + NB filter
+    + continuum filter
+  
+  * routine to make web page
+    + make directory (nuke if already there), enter it
+    + link images
+    + open page
+    + write html header
+    + format table
+    + write rest of page
+    + footer with creation date
+    + link page to index.html for that directory

@@ -1,0 +1,270 @@
+PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fplot
+  ;
+  ; plot surface brightness and surface colour profiles
+  ;
+  ; G. Meurer 6/2010
+  snlimit   = 3.0
+  fmti      = '(f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f)'
+  prog      = 'SSOUP_PLOTSPROFS: '
+  plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
+  ;
+  ; some plot parameters
+  aa        = angstsym()
+  rtitle    = '!3 semi-major axis [arcsec]'
+  hftitle   = '!3 log(F!dH!4a!3!n/f!dFUV!n,f!dR!N ['+aa+'])'
+  abtitle   = '!4 l!3 [ABmag arcssec!u-2!n]'
+  abctitle  = '!3 surface colour'
+  charsize  = 2.0
+  symsize   = 1.3
+  thick     = 2
+  ;
+  ; maximum allowed errors
+  eloglim   = alog10(1.0+1.0/snlimit) ; max error in log fluxes or surface brightness
+  emaglim   = 2.5*eloglim             ; max error in flux and surface brightness magnitude 
+  ecloglim  = sqrt(2.0)*eloglim       ; max error in log ratios
+  ecmaglim  = sqrt(2.0)*emaglim       ; max error in colors
+  ;
+  ; read in profile files
+  plog,ll,prog,'reading in (not dust corrected) surface brightness profile file: '+fsprof
+  readcol, fsprof, sma, sr, esr, sha, eshas, eshac, eshat, snuv, esnuv, sfuv, esfuv, $
+           scfn, escfn, scnr, escnr, slewr, eslewr, slewf, eslewf, format=fmti
+  np        = n_elements(sma)
+  plog,ll,prog,'reading in (dust corrected) surface brightness profile file: '+fsprof0
+  readcol, fsprof0, sma0, sr0, esr0, sha0, eshas0, eshac0, eshat0, snuv0, esnuv0, sfuv0, esfuv0, $
+           scfn0, escfn0, scnr0, escnr0, slewr0, eslewr0, slewf0, eslewf0, format=fmti
+  np0       = n_elements(sma0)
+  ;
+  ; determine max radii and corresponding pointers
+  plog,ll,prog,'determining maxima radii'
+  ;jj        = where(esr GE emaglim, njj)
+  ;IF njj GT 0 THEN jmax_r = min(jj) - 1 ELSE jmax_r = np-1
+  ;rmax_r    = sma[jmax_r]
+  ;
+  ;jj        = where(eshat GE eloglim, njj)
+  ;IF njj GT 0 THEN jmax_h = min(jj) - 1 ELSE jmax_h = np-1
+  ;rmax_h    = sma[jmax_h]
+  ;
+  ;jj        = where(esnuv GE emaglim, njj)
+  ;IF njj GT 0 THEN jmax_n = min(jj) - 1 ELSE jmax_n = np-1
+  ;rmax_n    = sma[jmax_n]
+  ;
+  ;jj        = where(esfuv GE emaglim, njj)
+  ;IF njj GT 0 THEN jmax_f = min(jj) - 1 ELSE jmax_f = np-1
+  ;rmax_f    = sma[jmax_f]
+  ;
+  jj        = where(esr LE emaglim, njj)
+  IF njj GT 0 THEN jmax_r = max(jj) - 1 ELSE jmax_r = np-1
+  rmax_r    = sma[jmax_r]
+  ;
+  jj        = where(eshat LE eloglim, njj)
+  IF njj GT 0 THEN jmax_h = max(jj) - 1 ELSE jmax_h = np-1
+  rmax_h    = sma[jmax_h]
+  ;
+  jj        = where(esnuv LE emaglim, njj)
+  IF njj GT 0 THEN jmax_n = max(jj) - 1 ELSE jmax_n = np-1
+  rmax_n    = sma[jmax_n]
+  ;
+  jj        = where(esfuv LE emaglim, njj)
+  IF njj GT 0 THEN jmax_f = max(jj) - 1 ELSE jmax_f = np-1
+  rmax_f    = sma[jmax_f]
+  ;
+  jmax_fn   = min([jmax_f,jmax_n])
+  rmax_fn   = sma[jmax_fn]
+  ;
+  jmax_nr   = min([jmax_n,jmax_r])
+  rmax_nr   = sma[jmax_nr]
+  ;
+  jmax_hr   = min([jmax_h,jmax_r])
+  rmax_hr   = sma[jmax_hr]
+  ;
+  jmax_hf   = min([jmax_h,jmax_f])
+  rmax_hf   = sma[jmax_hf]
+  ;
+  ;jj        = where(esr0 GE emaglim, njj)
+  ;IF njj GT 0 THEN jmax_r0 = min(jj) - 1 ELSE jmax_r0 = np0-1
+  ;rmax_r0   = sma0[jmax_r0]
+  ;
+  ;jj        = where(eshat0 GE eloglim, njj)
+  ;IF njj GT 0 THEN jmax_h0 = min(jj) - 1 ELSE jmax_h0 = np0-1
+  ;rmax_h0   = sma0[jmax_h0]
+  ;
+  ;jj        = where(esnuv0 GE emaglim, njj)
+  ;IF njj GT 0 THEN jmax_n0 = min(jj) - 1 ELSE jmax_n0 = np0-1
+  ;rmax_n0   = sma0[jmax_n0]
+  ;
+  ;jj        = where(esfuv0 GE emaglim, njj)
+  ;IF njj GT 0 THEN jmax_f0 = min(jj) - 1 ELSE jmax_f0 = np0-1
+  ;rmax_f0   = sma0[jmax_f0]
+  ;
+  jj        = where(esr0 LE emaglim, njj)
+  IF njj GT 0 THEN jmax_r0 = max(jj) - 1 ELSE jmax_r0 = np0-1
+  rmax_r0   = sma0[jmax_r0]
+  ;
+  jj        = where(eshat0 LE eloglim, njj)
+  IF njj GT 0 THEN jmax_h0 = max(jj) - 1 ELSE jmax_h0 = np0-1
+  rmax_h0   = sma0[jmax_h0]
+  ;
+  jj        = where(esnuv0 LE emaglim, njj)
+  IF njj GT 0 THEN jmax_n0 = max(jj) - 1 ELSE jmax_n0 = np0-1
+  rmax_n0   = sma0[jmax_n0]
+  ;
+  jj        = where(esfuv0 LE emaglim, njj)
+  IF njj GT 0 THEN jmax_f0 = max(jj) - 1 ELSE jmax_f0 = np0-1
+  rmax_f0   = sma0[jmax_f0]
+  ;
+  jmax_fn0  = min([jmax_f0,jmax_n0])
+  rmax_fn0  = sma[jmax_fn0]
+  ;
+  jmax_nr0  = min([jmax_n0,jmax_r0])
+  rmax_nr0  = sma[jmax_nr0]
+  ;
+  jmax_hr0  = min([jmax_h0,jmax_r0])
+  rmax_hr0  = sma[jmax_hr0]
+  ;
+  jmax_hf0  = min([jmax_h0,jmax_f0])
+  rmax_hf0  = sma[jmax_hf0]
+  ;
+  rmax      = 1.05*max([rmax_r,rmax_h,rmax_n,rmax_f,rmax_fn,rmax_nr,rmax_hr,rmax_hf,$
+                        rmax_r0,rmax_h0,rmax_n0,rmax_f0,rmax_fn0,rmax_nr0,rmax_hr0,rmax_hf0])
+  plog,ll,prog,'maximum R band radius (uncorrected, corrected for dust)      '+numstr(rmax_r)+'  ,  '+numstr(rmax_r0)
+  plog,ll,prog,'maximum Halpha band radius (uncorrected, corrected for dust) '+numstr(rmax_h)+'  ,  '+numstr(rmax_h0)
+  plog,ll,prog,'maximum NUV band radius (uncorrected, corrected for dust)    '+numstr(rmax_n)+'  ,  '+numstr(rmax_n0)
+  plog,ll,prog,'maximum FUV band radius (uncorrected, corrected for dust)    '+numstr(rmax_f)+'  ,  '+numstr(rmax_f0)
+  plog,ll,prog,'maximum radius in plots: '+numstr(rmax)
+  ;
+  ; determine file type
+  pp        = strpos(fplot,'.')+1
+  ftype     = strlowcase(strmid(fplot,pp))
+  ;
+  ; set plot limits
+  rrange    = [0.0,rmax]
+  hfrange   = [-0.2,3.2]
+  abrange   = [32.0,14.0]
+  shrange   = -18.5 + [0.0,-0.4*(abrange[1]-abrange[0])]
+  abcrange  = [-1.0,6.0]
+  ;
+  ; put Halpha on mag scale
+  mmm       = abrange[0] + 2.5*shrange[0]
+  msha      = mmm - 2.5*sha
+  meshat    = 2.5*eshat
+  msha0     = mmm - 2.5*sha0
+  meshat0   = 2.5*eshat0
+  ;
+  ; plot set up
+  !p.multi = [0, 1, 3]          ; Three panel plot
+  IF ftype NE 'jpg' THEN BEGIN 
+     plog,ll,prog,'will write a postscript file'
+     xs       = 6.5
+     ys       = 1.25*xs
+     yoff     = 3.
+     xoff     = 1.2
+     thick    = 3
+     set_plot,'ps',/copy, /interpolate
+     IF strpos(strlowcase(fplot), '.eps') GT 0 THEN $
+           device,/portrait,/inches,xs=xs,ys=ys,yo=yoff,xo=xoff,/color,/encapsulated ELSE $
+           device,/portrait,/inches,xs=xs,ys=ys,yo=yoff,xo=xoff,/color
+     ansize   = 0.6
+  ENDIF  ELSE BEGIN 
+     plog,ll,prog,'will plot to screen and write a jpg file'
+     ;set_plot,'X',/copy, /interpolate
+     ;device, decomposed=0, retain=2
+     ;device, true_color=24
+     ;device, get_visual_depth=depth
+     wxsize   = 600
+     wysize   = fix(1.25*float(wxsize))
+     window, 0, xsize=wxsize, ysize=wysize
+     ansize   = 1.0
+     thick    = 1
+  ENDELSE 
+  setplotcolors
+  setbgfg,!white,!black
+  ;
+  ; ------------------------------------------------------------------
+  ; panel 1
+  ; R, FUV, NUV Halpha radial surface brightness profile
+  plog,ll,prog,'plotting surface brightness profiles'
+  !p.noerase = 1
+  plot, sma[0:0], sr[0:1], xrange=rrange, yrange=abrange, xstyle=1, ystyle=1, $
+        charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
+        xtitle=rtitle, ytitle=abtitle, title=sname, charthick=thick, $
+        xmargin=[8,8], ymargin=[2,4], /nodata
+  oplot, sma[0:jmax_r], sr[0:jmax_r], thick=thick, color=!dorange
+  oplot, sma0[0:jmax_r0], sr0[0:jmax_r0], symsize=symsize, color=!dorange, psym=sym(1)
+  oplot, sma0[0:jmax_r0], sr0[0:jmax_r0], thick=thick+1, color=!dorange
+  oploterror, sma0[0:jmax_r0], sr0[0:jmax_r0], 0.0*sma0[0:jmax_r0], esr0[0:jmax_r0], $
+              /nohat, errthick=thick+1, psym=3, errcolor=!dorange
+  ;
+  oplot, sma[0:jmax_n], snuv[0:jmax_n], thick=thick, color=!cyan
+  oplot, sma0[0:jmax_n0], snuv0[0:jmax_n0], symsize=symsize, color=!cyan, psym=sym(2)
+  oplot, sma0[0:jmax_n0], snuv0[0:jmax_n0], thick=thick+1, color=!cyan
+  oploterror, sma0[0:jmax_n0], snuv0[0:jmax_n0], 0.0*sma0[0:jmax_n0], esnuv0[0:jmax_n0], $
+              /nohat, errthick=thick+1, psym=3, errcolor=!cyan
+  ;
+  oplot, sma[0:jmax_f], sfuv[0:jmax_f], thick=thick, color=!blue
+  oplot, sma0[0:jmax_f0], sfuv0[0:jmax_f0], symsize=symsize, color=!blue, psym=sym(3)
+  oplot, sma0[0:jmax_f0], sfuv0[0:jmax_f0], thick=thick, color=!blue
+  oploterror, sma0[0:jmax_f0], sfuv0[0:jmax_f0], 0.0*sma0[0:jmax_f0], esfuv0[0:jmax_f0], $
+              /nohat, errthick=thick, psym=3, errcolor=!blue
+  ;
+  oplot, sma[0:jmax_h], msha[0:jmax_h], thick=thick, color=!dpink
+  oplot, sma0[0:jmax_h0], msha0[0:jmax_h0], symsize=symsize, color=!dpink, psym=sym(14)
+  oplot, sma0[0:jmax_h0], msha0[0:jmax_h0], thick=thick+1, color=!dpink
+  oploterror, sma0[0:jmax_h0], msha0[0:jmax_h0], 0.0*sma0[0:jmax_h0], meshat0[0:jmax_h0], $
+              /nohat, errthick=thick+1, psym=3, errcolor=!dpink
+  ;
+  ; ------------------------------------------------------------------
+  ; panel 2
+  ; FUV-NUV, NUV-R colour profiles
+  plog,ll,prog,'plotting color profiles'
+  !p.noerase = 0
+  !p.multi = [2,1,3]
+  plot, sma[0:1], scnr[0:1], xrange=rrange, yrange=abcrange, xstyle=1, ystyle=1, $
+        charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
+        xtitle=rtitle, ytitle=abctitle, charthick=thick, xmargin=[8,8], ymargin=[3,3], /nodata
+  oplot, sma[0:jmax_nr], scnr[0:jmax_nr], color=!orange, thick=thick
+  oplot, sma0[0:jmax_nr0], scnr0[0:jmax_nr0], symsize=symsize, psym=sym(4), color=!orange
+  oplot, sma0[0:jmax_nr0], scnr0[0:jmax_nr0], thick=thick+1, color=!orange
+  oploterror, sma0[0:jmax_nr0], scnr0[0:jmax_nr0], 0.0*sma0[0:jmax_nr0], escnr0[0:jmax_nr0], $
+              /nohat, errthick=thick+1, psym=3, errcolor=!orange
+  oplot, sma[0:jmax_fn], scfn[0:jmax_fn], thick=thick, color=!green
+  oplot, sma0[0:jmax_fn0], scfn0[0:jmax_fn0], symsize=symsize, psym=sym(5), color=!green
+  oplot, sma0[0:jmax_fn0], scfn0[0:jmax_fn0], thick=thick+1, color=!green
+  oploterror, sma0[0:jmax_fn0], scfn0[0:jmax_fn0], 0.0*sma0[0:jmax_fn0], escfn0[0:jmax_fn0], $
+              /nohat, errthick=thick+1, psym=3, errcolor=!green
+  ;
+  ; ------------------------------------------------------------------
+  ; panel 3
+  ; Halpha/FUV Halpha/R profiles
+  ;keywait,'type anything for next plot'
+  plog,ll,prog,'plotting flux ratio profiles'
+  !p.noerase = 0
+  !p.multi = [1,1,3]
+  plot, sma[0:1], slewf[0:1], xrange=rrange, yrange=hfrange, xstyle=1, ystyle=1, $
+        charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
+        xtitle=rtitle, ytitle=hftitle, charthick=thick, xmargin=[8,8], ymargin=[3,3], /nodata
+  oplot, sma[0:jmax_hf], slewf[0:jmax_hf], color=!purple, thick=thick
+  oplot, sma0[0:jmax_hf0], slewf0[0:jmax_hf0], color=!purple, psym=sym(4), symsize=symsize
+  oplot, sma0[0:jmax_hf0], slewf0[0:jmax_hf0], color=!purple, thick=thick+1
+  oploterror, sma0[0:jmax_hf0], slewf0[0:jmax_hf0], 0.0*sma0[0:jmax_hf0], eslewf0[0:jmax_hf0], $
+              /nohat, errthick=thick+1, errcolor=!purple, psym=3
+  oplot, sma[0:jmax_hr], slewr[0:jmax_hr], color=!red, thick=thick
+  oplot, sma0[0:jmax_hr0], slewr0[0:jmax_hr0], color=!red, psym=sym(23), symsize=symsize
+  oplot, sma0[0:jmax_hr0], slewr0[0:jmax_hr0], color=!red, thick=thick+1
+  oploterror, sma0[0:jmax_hr0], slewr0[0:jmax_hr0], 0.0*sma0[0:jmax_hr0], eslewf0[0:jmax_hr0], $
+              /nohat, errthick=thick+1, errcolor=!red, psym=3
+  ;
+  ; ------------------------------------------------------------------
+  ; finish plot
+  !p.multi   = 0
+  !p.noerase = 0
+  IF ftype NE 'jpg' THEN BEGIN 
+     psend, fplot, /noprint, /clobber
+  ENDIF ELSE BEGIN 
+     snap_jpg, fplot
+  ENDELSE 
+END 
+
+
+;msha = a - 2.5*sha
+;mlim_0 = a - 2.5*shalim_0
+;a = mlim_0 + 2.5*shalim_0

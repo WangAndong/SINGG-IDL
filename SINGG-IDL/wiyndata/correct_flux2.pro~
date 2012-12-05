@@ -1,0 +1,21 @@
+PRO correct_flux2
+   fflux     = '../line_fluxes2.dat'
+   fout      = '../line_fluxes2a.dat'
+   ftime     = '../exptimes.dat'
+   fmtflux   = '(a,a,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f)'
+   ;
+   ; read fluxes
+   readcol, fflux, filename, hipassid, l1, w1, f1, l2, w2, f2, l3, w3, f3, $
+     l4, w4, f4, l5, w5, f5, l6, w6, f6, format=fmtflux
+   nfiles    = n_elements(filename)
+   lgrid     = make_array(6, nfiles)
+   wgrid     = make_array(6, nfiles)
+   fgrid     = make_array(6, nfiles)
+   FOR ii = 0, 5 DO BEGIN
+       scratch = execute('lgrid(*,ii) = l' + strcompress(string(ii+1), /remove_all))
+       scratch = execute('wgrid(*,ii) = w' + strcompress(string(ii+1), /remove_all))
+       scratch = execute('fgrid(*,ii) = f' + strcompress(string(ii+1), /remove_all))
+   ENDFOR
+
+
+END

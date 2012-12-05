@@ -1,0 +1,14 @@
+Profileplot  directory
+
+Routines to read and plot radial profiles made by Dan Hanish's code.
+
+* pfplt_kwdread     - read a keyword / value pair from header 
+		      section of profile plot.
+* pfplt_rdhdr       - get header values from file
+* pfplt_extractprof - extract surface brightness profile
+* pfplt_qsbprof     - quick surface brightness plot.
+* pfplt_3pan        - 3 panel plots of R (or cont) and Halpha data:
+                      top: surface brightness; middle: curve of 
+                      growth; bottom: equivalent width.  EW returned. 
+* pfplt_3pan_all    - driver for pfplt_3pan to run on a list of 
+                      file names.

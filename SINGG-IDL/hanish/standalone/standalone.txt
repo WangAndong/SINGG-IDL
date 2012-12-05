@@ -1,0 +1,55 @@
+STANDALONES
+
+This directory contains all the stand-alone or one-shot IDL programs used.  Some of these are testing algorithms, some are patches for known flaws, and some are just screwy.
+
+convert_db.pro          Utility patch.  Converts a Linux-specific database
+                          format to the IEEE standard.  Not needed if the DB
+                          was created with the /EXTERNAL format, which all
+                          SINGG routines now use.
+convert_ellipse.pro     Utility patch.  Converts the old style of ellipse file
+                          (P,A,B,C,G,Z) to the new style (D,P,pa,a,b)
+donut.pro		Stand-alone program, giving annular fluxes for various
+                          parts of an image.  It's a sanity check for sky
+                          subtraction scripts, and uses many of the same
+                          routines as sky_calibration.
+file_check.pro          Stand-alone diagnostic.  It simply checks to see which
+                          files are missing.  Created after the old hard drive
+                          went kablooie.
+header_test.pro         Stand-alone diagnostic.  It opens every header, which
+                          would give an EXTENSION error if the file was corrupt
+imf_norm.pro            Stand-alone program.  Given an IMF's numbers, find
+                          the distribution of stellar masses.
+makeplot.pro		A stand-alone program that creates four plots for the
+                          user: an RA-DEC plot in an Aitoff projection, a
+                          lat-lon plot in an Aitoff projection, a histogram of
+                          RA distribution, and a radial velocity vs. HI mass
+                          plot.  This is supposed to be run on an entire data
+                          set, not just one run.
+makeplot2.pro           A stand-alone program that creates six plots for the
+                          user: Seeing, photqual, skylev, skysig, skysigbx, and
+                          magzpt1.
+makeplot_db.pro         A stand-alone program that creates one of 10 plots.  If
+                          want to know which ones open the file; it's a lot.
+masshist.pro            Stand-alone program plotting mass histograms.
+medhdr.pro, medhdrval.pro, medhdrval_init.pro are outside routines to be used
+                          in the construction of a better DB system.
+object_fix.pro          A stand-alone utility script that replaces the OBJECT
+                          keyword in all .fits files in the directory with a
+                          user-specified value.
+patch_header.pro	A stand-alone utility script that copies certain items
+                          from the header of one image into the header of 
+                          another.  Don't use this unless you really know what
+                          you're doing.
+patch_phot.pro          Stand-alone utility script that copies the PHOTFLUX
+                          information from the database into an image.
+redo_radec.pro          Stand-alone that runs fix_radec on everything in a run
+run1_setup.pro          Stand-alone that dumps the IRAF commands needed to 
+                          process a run into a text file.
+sigplot.pro		A simple stand-alone script.  For a specified galaxy,
+                          create a plot of sky uncertainty as a function of 
+                          the box size used in box2boxbg2.
+temp_imfplot.pro        Stand-alone plot, making IMF plot.
+temp_madau.pro          Stand-alone plot, making Madau plot.
+temp_mass.pro           Stand-alone plot, making mass histogram.
+test_header.pro         Compares the header contents to the database.
+tremonti.pro            Stand-alone plot, makes the two Tremonti plots.

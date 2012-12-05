@@ -1,0 +1,247 @@
+CONTENTS
+If it's not listed here, it's never been used as part of my algorithms.
+
+Text
+IDL_instructions.txt	Step-by-step instructions, explaining how to use IDL to
+                          combine flat-corrected object images, correct for 
+                          sky, calculate flux, and all that other fun stuff.
+index.txt		This file.  Duh.
+
+IDL
+aitoff_galactic.pro	On an Aitoff projection (created by routines aitoff.pro
+                          and aitoff_grid.pro), create dotted grid lines 
+                          corresponding to galactic latitude/longitude.
+bindata.pro		Called by sky_calibration.  Given an array of box data,
+                          sort each point into a histogram distribution in Z
+                          (the ellipse-projection radius).  This is then used
+                          to calculate the radial distribution of sky level
+                          needed to determine the "edge" of a galaxy.
+box2boxbg2.pro		Called by sky_calibration, this is an alternate form of
+                          the box2boxbg routine.  The differences: num_boxes is
+                          now passed out as an optional output argument, and
+                          reject_frac is a new input argument.  If reject_frac
+                          is 0.01, for example, a box will only be rejected if 
+                          more than 1% of the pixels within are masked or bad.
+                          Also, it uses the mysky function instead of sky, so
+                          that the mask can be applied to the image.
+box_sky.pro             Called by sky_calibration.  Creates the array of box data
+                          (x,y,flux) needed by calc_box_sky.
+build_header_db.pro     Program with parses the headers and stores its values
+                          in a single IDL database
+build_ref_db.pro        Program which parses the HIPASS data file and stores its values
+                          in a single IDL database
+build_source_db.pro     Program used to parse the various flux .profile outputs and
+                          store the results in a single IDL database
+calc_box_sky.pro	Called by sky_calibration and ssflux.  Given an array
+                          of box data (x,y,flux) and a mask, determine the sky level.
+calc_growth.pro		Called by ssflux.  This takes the pixel-by-pixel image
+                          and sorts each point into a histogram distribution
+                          in Z (the ellipse-projection radius).  Once all of 
+                          the data points have been sorted into bins, correct
+                          for masked or rejected pixels and smooth the radial
+                          boundaries.
+calc_mdiff.pro		Given two .stars files, find the average magnitude 
+                          difference for all corresponding stars.  This is used
+                          in several different places inside singg_combine,
+                          most notably as part of the refflux algorithm.
+calc_seeing.pro		Given a .stars file, find the average FWHM of every
+                          star in the image.  This gives us the seeing of the
+                          image, approximately.
+calc_sfd0.pro           Primary routine.  Uses the values stored in the flux 
+                          database to calculate the local star formation density.
+calc_z.pro		Given the center, axial ratio, and angle of an ellipse,
+                          calculate the "Z" value for a given point.  Z equals 
+                          the equivalent semimajor axis of an ellipse with
+                          those numbers that intersects the given point,
+                          divided by the true semimajor axis of the ellipse.
+cr_weight.pro		Alternate version of cr_reject with added functionality
+                          for weighting arrays.  An optional argument named
+                          "weight_array" allows for a single weighting per raw
+                          image, to be used instead of the calculated pixel-by-
+                          pixel weighting cr_reject uses.
+create_struct2.pro      Variant of create_struct.  The only difference is that it adds
+                          the hyphen ("-") to the list of protected symbols, so that
+                          names like "DATE-OBS" can be used as variable names.
+dbbuildstruct.pro       Variant of dbbuild, replacing the hard-coded 30 arrays with
+                          a standard IDL structure of indefinite size.
+dbplothist.pro          Called by makeplot_db.  Given a keyword, it extracts all
+                          corresponding values from the SINGG database for a plot.
+define_ellipse.pro	Called by sky_calibration.  Given the points stored in
+                          the ellipse file (A,B,C,G), calculate the isophote
+                          center (D), and the endpoints of the minor axis (E,F)
+find_end_time.pro	Called by singg_combine.  Given arrays of the start
+                          times and exposure times for a set of images, return
+                          the end time of the final image.
+find_middle.pro         Called by make_catalog.  Given a list of input *sh.fits
+                          images, this uses the RA and DEC keywords in the 
+                          corresponding obj????.fits images to figure out which
+                          image is closest to the middle.
+findzero.pro		Simple utility routine, used to find where an array
+                          crosses zero.  Currently, this is only used to find
+                          half-light radius as part of the ssflux algorithm.
+fix_radec.pro		Called by singg_combine.  Given three headers (one for
+                          each combined image), replace the rough RA and DEC
+                          estimates in the header with more exact values from
+                          the WCStan.pl script.
+fluxcal_singg.pro	For all images within a given run, add the flux
+                          calibration keywords to a header.  The most important
+                          of these are PHOTFLAM/PHOTFLUX (unit response), which
+                          allow the algorithm to convert from the input DN/sec
+                          to more useful units (erg/cm^2/Angstrom/sec)
+fluxlist.pro		Creates the two list files, runXX.lis and runXX_net.lis
+                          used by the singg_fluxcal algorithm.  Note that these
+                          files will all be created in the filtcoef directory,
+                          not in a directory unique to a single run.
+                          Also, the user is required to edit the _net.lis file
+                          to use the longer names for the _filtcoef.dat files.
+growth_profile.pro	Called by ssflux.  This takes the data calculated in
+                          calc_growth and outputs all relevant information to a
+                          profile file.  The top section contains all of the 
+                          summary information: total flux, sky level, radius.
+                          The bottom section is a large data table giving the
+                          relevant information for each data bin.
+halflight.pro		Called inside ssflux by plot_fluxcurve, this calculates
+                          the half-light radius for an array of data.
+hdr_template.pro	Given an input header and the name of a template file,
+                          filter one through the other to get an output header.
+                          The output header will have only those lines present
+                          in the template, and in the order listed there.
+header_fix_all.pro	Wrapper for header_fix_all, called by iraf_combine.
+                          This performs the header_fix operation on all images
+                          within a run.
+header_fix.pro		Copy the entire contents of one header into another.
+                          This is needed because the IRAF combine doesn't add
+                          certain keywords to the header, which causes
+                          runalard.pl (the script which makes the subtracted
+                          image) to make a blank header in its output.
+iraf_combine.pro	An IDL script that uses many of the same intermediate
+                          algorithms as singg_combine, but replaces the actual
+                          processing step with an IRAF combine.  Unlike the IDL
+                          scripts, user participation is required.
+irafsetup.pro		Called by iraf_combine.  This routine creates the text
+                          file whose contents must be copied into an IRAF
+                          session running in the same directory. 
+make_catalog.pro	Creates the "runXX.catalog" file for a given run.  Once
+                          this has been run the user should manually adjust the
+                          "reference number" column to match the positionally
+                          center R image instead of the numerically center one.
+make_dummy_mask.pro	Stand-alone routine that takes the "basic_mask.fits"
+                          image and adds extra masked columns hard-coded
+                          internally.  To use this, change the masked areas
+                          and run it once.
+make_ellipse.pro	Creates the ellipse file for a given galaxy.  This
+                          should be run after the J*_R.fits file has been made,
+                          unless the user wants to specify a reference image
+                          explicitly.
+mask_ellipse_ann3.pro	Called by sky_calibration, this a variation of the old
+		          mask_ellipse_ann2.  The only actual change is that
+                          since adxy returns arrays for x0 and y0, calls to
+                          dist_ellipse explicitly specify element [0] of these.
+minibox.pro		Simple routine used inside ssflux, returning a 28" box
+                          flux around the brightness peak.
+mmm2.pro		A modified version of the standard MMM routine.
+                          First, we move maxiter from 30 to 100, and if maxiter
+                          is exceeded it doesn't set sigma to -1 or print the
+                          error message, using the value of the last iteration.
+                          Then, we also changed many internal variables to be
+                          double-precision, to keep it from crashing when the
+                          input image includes cosmic rays (any pixel with a
+                          value of order 10^6).
+mysky.pro		A somewhat modified version of the standard SKY routine
+                          that increases maxsky (the maximum number of pixels
+                          used in the calculation) from 4000 to 32768, and more
+                          importantly, allows a mask to be passed in as an
+                          argument.  Finally, it uses MMM2 instead of MMM.
+plot_fluxcurve.pro	Called by ssflux.  This does the 3-image plot of total
+                          galaxy flux as a function of ellipse-curved radius,
+                          which the user needs to determine the "edge" of the
+                          galaxy.
+plot_skydist.pro	Called by sky_calibration.  This does the 3-image plot
+                          of sky level as a function of ellipse-curved radius,
+                          which the user needs to determine the "edge" of the
+                          galaxy.
+read_header.pro		A simple pre-existing script used by the sigplot
+                          algorithm, to read the values for four keywords from
+                          the header of an image.
+refflux.pro		Called by singg_cr as part of the singg_combine tree.
+                          Given a set of input images, this routine compares
+                          the sextracted .stars files to calculate the ratio
+                          of fluxes for objects in each image.  These ratios
+                          are needed by cr_weight to correct each image to 
+                          comparable intensities.
+run_combine.pro		Wrapper for singg_combine, combines object images for 
+                          all galaxies within a given run.
+run_ellipse.pro		Wrapper for make_ellipse, creates ellipse files for all
+                          galaxies within a given run.
+run_flux.pro		Wrapper for ssflux, creates curves of growth for all 
+                          galaxies within a given run.
+run_sky.pro		Wrapper for sky_calibration, calculates sky levels and
+                          subtracts for all galaxies within a given run.
+show_cube.pro		A test routine, allowing the user to see the contents
+                          of a 3D array.
+show_mask.pro		A test routine, allowing the user to see the contents
+                          of a 2D array.
+singg_combine.pro	Primary routine.  For the current galaxy, this script
+                          combines the object images into three composite
+                          images (R, narrow-band, subtracted).  It uses
+                          cr_weight (above) as its primary combine routine, but
+                          with a dynamic scaling to correct for sky levels and 
+                          poor visibility.
+singg_copy_wcs.pro	Copy the WCS information from one header to another.
+                          Used by singg_combine to fix the _Rsub header.
+singg_cr.pro		Called by singg_combine.  This is the mid-level routine
+                          that sets up the image combining.  It creates the 
+                          memory-intensive data cubes needed by cr_weight, runs
+                          refflux and singg_mask_cube, and runs cr_weight.
+singg_filtnam.pro	Given a filter name, match it to the "official" names
+                          within a given 2D array (output from rdfiltfile)
+singg_header.pro	Called by singg_combine.  This routine adds all of the
+                          new information to the combined-image headers before
+                          writing the new .fits files.
+singg_mask_cube.pro	Called by singg_cr as part of the singg_combine tree.
+                          This routine creates a mask cube, masking for several
+                          different factors, including saturation and negative
+                          pixel values.
+singg_photcal.pro	A stand-alone one-time script, run in the STD directory
+                          once the images there have been calibrated by 
+                          algorithms run by other people.
+singg_rdfiltfile.pro	Reads the standard filter definition file, creating a
+                          2D array filled with alternate names for each filter.
+singg_setup.pro		A one-time script, which creates and configures the
+                          directory tree for a new run of data.
+sky_cal_single.pro      Variant of sky_calibration that only processes one specific
+                          image.  Useful when an _Rsub_ss got corrupted.  None of
+                          the advanced options (such as the interactive mode) are
+                          available.
+sky_calibration.pro	Primary routine.  For the current galaxy, this script
+                          calculates the sky level for each combined image 
+                          using a 35x35 box algorithm and heavy masking.  The
+                          images are then corrected for these sky levels. 
+srcor2.pro		A slightly-modified version of SRCOR.  A "/silent"
+                          keyword was added, allowing the user to turn off all
+                          of the message commands.  Because I wanted to.
+ssflux.pro		Primary routine.  For the current galaxy, this script
+                          creates curves of growth for all three skysub'd
+                          images, for two separate methods (brightness peak vs
+                          isophote center).  The user must select an "edge 
+                          radius", representing the flux of the entire object.
+                          It then creates various data outputs.
+thing1.pro		Called by iraf_combine, thing1 consists of all of the
+                          steps that are performed BEFORE the user copies the
+                          commands into the IRAF window.
+thing2.pro		Called by iraf_combine, thing2 consists of all of the
+                          steps that are performed AFTER the user copies the
+                          commands into the IRAF window.
+trim_stars.pro          Called by singg_combine, this removes any stars located 
+                          within (buffer) of the edge from the .stars files.
+write_ssfits.pro	Called by sky_calibration, this creates the subtracted
+                          .fits images after adding all new variables to the
+                          header.
+
+Other
+imregister_mine.pl	A variant of imregister_new.pl, with the addition of 
+                          two mask arguments: maskin and maskout.  Basically it
+                          will take maskin and run it through the same
+                          convolution it performs on the object images.  Also,
+                          the convolution uses sinc7 interpolation instead of
+                          linear.

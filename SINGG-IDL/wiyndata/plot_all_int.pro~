@@ -1,0 +1,145 @@
+PRO plot_all_int, ps=ps, folder=folder
+
+   IF keyword_set(ps) THEN BEGIN
+       outfolder = 'ps'
+       extension = '.ps'
+   ENDIF ELSE BEGIN
+       outfolder = 'jpg'
+       extension = '.jpg'
+   ENDELSE
+   IF keyword_set(folder) THEN outfolder=folder
+   IF NOT(keyword_set(filestart)) THEN filestart='vel'
+   filelist   = 'exptimes.dat'
+   exptimes   = 'exptimes.dat'
+   format1    = '(a,a,a,a,i,f)'
+   format2    = '(a,a,a,a,a,a,i,f)'
+   folders    = ['Run0410_n','Run0503_n','Run0603_n']
+   winratio   = 1.0
+   charsize   = 1.5
+   titlesize  = 2.0 * charsize
+   positions  = [[0.10, 0.68, 0.95, 0.90], $
+                 [0.10, 0.37, 0.95, 0.59], $
+                 [0.10, 0.06, 0.95, 0.28]]
+   titlepos   = [0.5, 0.95]
+   xstep      = 20.0
+   ;
+   ; set plot parameters
+   IF keyword_set(ps) THEN BEGIN 
+       xs = 6.0
+       ys = xs/winratio
+       yoff=1.0
+       xoff=1.0
+       thick=2
+       charsize  = 0.4*charsize
+       titlesize = 0.4*titlesize
+   ENDIF ELSE BEGIN 
+       wxsize   = 900
+       wysize   = fix(float(wxsize)/winratio)
+       thick    = 1
+   ENDELSE 
+   ;
+   ; load list of filenames
+   readcol, filelist, hipassid, galid1, galid2, filename, $
+     nexp, texp, format=format1, /silent
+   readcol, filelist, temphi, tempga1, tempga2, tempga3, tempga4, $
+     tempfile, tempnexp, temptexp, format=format2, /silent
+   hipassid   = [hipassid, temphi]
+   galid      = [galid1+' '+galid2, $
+                 tempga1+' '+tempga2+' '+tempga3+' '+tempga4]
+   filename   = [filename, tempfile]
+   texp       = [texp, temptexp]
+   nfiles     = n_elements(filename)
+   ;
+   ; match filenames to folders
+   fileno     = strmid(filename, 3)
+   runno      = fix(strmid(fileno, 1, 1))
+   nightno    = strmid(fileno, 3, 1)
+   ;
+   ; create filename and title strings
+   fintspec   = '../'+folders(runno-1)+nightno+'/intspec'+fileno+'.cr.ms.fits'
+   outfile    = outfolder+'/'+'intspec'+fileno+extension
+   title      = hipassid+' ('+galid+')'
+   ;
+   ; read exposure times
+   readcol, exptimes, expfilename, nexp, expt, $
+     format='(x,x,x,a,i,f)', /silent
+   ;
+   ; plot each set of spectra
+   FOR ii = 0, nfiles-1 DO BEGIN
+       ;
+       ; initialise plots
+       IF keyword_set(ps) THEN BEGIN 
+           set_plot,'ps',/copy, /interpolate
+           device,/portrait,/inches,xs=xs,ys=ys,yo=yoff,xo=xoff,/color
+       ENDIF ELSE BEGIN 
+           window, 0, xsize=wxsize, ysize=wysize
+       ENDELSE 
+       ;
+       ; open fits file
+       spectra  = readfits(fintspec(ii), fitsheader)
+       spectra  = spectra / texp(ii)
+       ;
+       ; read information from header
+       delt1loc = where(strmid(fitsheader, 0, 6) EQ 'CDELT1')
+       disper   = float(strmid(fitsheader(delt1loc), $
+                             strpos(fitsheader(delt1loc), '=')+1))
+       disper   = disper(0)
+       crvalloc = where(strmid(fitsheader, 0, 6) EQ 'CRVAL1')
+       crval    = float(strmid(fitsheader(crvalloc), $
+                             strpos(fitsheader(crvalloc), '=')+1))
+       crval    = crval(0)
+       crpixloc = where(strmid(fitsheader, 0, 6) EQ 'CRPIX1')
+       crpix    = float(strmid(fitsheader(crpixloc), $
+                             strpos(fitsheader(crpixloc), '=')+1))
+       crpix    = crpix(0)
+       restfactorloc = where(strmid(fitsheader, 0, 8) EQ 'ISRESTFA')
+       eqpos    = strpos(fitsheader(restfactorloc), '=')
+       restfactor    = float(strmid(fitsheader(restfactorloc), eqpos + 1, $
+                             strpos(fitsheader(restfactorloc), '/') - $
+                             eqpos - 1))
+       restfactor    = restfactor(0)
+       ;
+       ; set x axes
+       lamda1   = ((findgen(n_elements(spectra(*,0))) - (crpix - 1)) * $
+                     disper) + crval
+       lamda2   = lamda1 / restfactor
+       xmin1    = xstep*floor(min(lamda1) / xstep)
+       xmax1    = xstep*ceil(max(lamda1) / xstep)
+       deltax   = 0.5*(xmin1+xmax1)*(1.0 - 1.0/restfactor)
+       xmin2    = xmin1 - deltax
+       xmax2    = xmax1 - deltax
+       ;
+       ; plot spectra
+       plot, lamda1, spectra(*,0), position=positions(*,0), $
+         xtitle='Wavelength (!3'+angstsym()+'!6)', $
+         ytitle='Intensity (counts s!U-1!N !3'+angstsym()+'!6!U-1!N)', $
+         title='Non-sky fibers', xstyle=1, xrange=[xmin1, xmax1], $
+         charsize=charsize
+       plot, lamda1, spectra(*,1), position=positions(*,1), $
+         xtitle='Wavelength (!3'+angstsym()+'!6)', $
+         ytitle='Intensity (counts s!U-1!N !3'+angstsym()+'!6!U-1!N)', $
+         title='Fibers with H!7a!6', xstyle=1, xrange=[xmin1, xmax1], $
+         charsize=charsize, /noerase
+       plot, lamda2, spectra(*,2), position=positions(*,2), $
+         xtitle='Rest wavelength (!3'+angstsym()+'!6)', $
+         ytitle='Intensity (counts s!U-1!N !3'+angstsym()+'!6!U-1!N)', $
+         title='Fibers with any detection, shifted to rest wavelength', $
+         xstyle=1, xrange=[xmin2, xmax2], charsize=charsize, /noerase
+       ;
+       ; print title
+       xyouts, titlepos(0), titlepos(1), title(ii), color=0, $
+         alignment=0.5, /normal, charsize=titlesize
+       ;
+       ; make output file
+       IF keyword_set(ps) THEN BEGIN
+           psend, outfile(ii), /noprint, /clobber
+           set_plot,'x'
+       ENDIF ELSE BEGIN
+           im = tvrd(true=3)
+           WRITE_JPEG,outfile(ii),im,TRUE=3,QUALITY=100
+       ENDELSE
+       
+   ENDFOR 
+
+
+END

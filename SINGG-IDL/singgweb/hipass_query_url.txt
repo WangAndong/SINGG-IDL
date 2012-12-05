@@ -1,0 +1,8 @@
+http://www.atnf.csiro.au/cgi-bin/multi/release/download.cgi?cubename=/DATA/MULTI_3/HIDE/PUBLIC/H079_abcde_luther.FELO.imbin.vrd&hann=1&coord=04%3A00%3A33%2C-52%3A41%3A27&xrange=-1281%2C12726&xaxis=optical&datasource=hipass&type=ascii
+http://www.atnf.csiro.au/cgi-bin/multi/release/download.cgi?cubename=/DATA/MULTI_3/HIDE/PUBLIC/H286_abcde_luther.FELO.imbin.vrd&hann=1&coord=00%3A31%3A28%2C-10%3A28%3A47&xrange=-1281%2C12726&xaxis=optical&datasource=hipass&type=ascii
+
+looks like you need cube number & coord.
+
+the following works:
+
+curl "http://www.atnf.csiro.au/cgi-bin/multi/release/download.cgi?cubename=/DATA/MULTI_3/HIDE/PUBLIC/H286_abcde_luther.FELO.imbin.vrd&hann=1&coord=00%3A31%3A28%2C-10%3A28%3A47&xrange=-1281%2C12726&xaxis=optical&datasource=hipass&type=ascii" > junk.txt

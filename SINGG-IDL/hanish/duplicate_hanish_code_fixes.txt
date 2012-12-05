@@ -1,0 +1,90 @@
+Here is what I did with the hanish IDL programs that that had duplicate
+names to mine.
+
+G. Meurer 28.09.2007
+
+create_struct2.pro 
+  + essentially identical to my version 
+  + rm & cvs remove from hanish :
+  + cvs commit 
+
+dbbuildstruct.pro
+  + this looks pretty different from my version.  
+  + but call procedure looks the same
+  + probably will adopt Dan's version
+  + rename my version (in ~/IDL/Pro/Work/singgdb) to dbbuildstruct_old.pro
+  + make comment in header section
+  + copy Dan's version into ~/IDL/Pro/Work/singgdb
+  + cvs commit (singgdb)
+  + in ~/IDL/Pro/Work/hanish:
+    - rm , cvs remove, and cvs commit
+
+good_derived.pro
+  + identical to version in ~/IDL/Pro/Work/singgdb
+  + rm & cvs remove from hanish :
+  + cvs commit 
+
+hdr_template.pro
+  + modified by Dan from my version.
+  + since my version is not under cvs, just rename it
+  + in IDL/Pro/SINGG_old
+  + mv hdr_template.pro hdr_template_old.pro
+
+pfplt_extractprof.pro
+  + looks like Dan has made a significant change
+  + mine is under CVS, but I don't have a directory for it under
+    ~/IDL/Pro/Work.  So this will take a bit of effort...
+  + in ~/IDL/Pro/SINGG/Profileplot
+  + cvs commit  (changes were not checked in...)
+  + cd .. ; cvs release -d Profileplot 
+  + cvs export -d Profileplot -D 12/31/2007 idlpro/singgprof  
+    (now have uptodate version without CVS directory...)
+  + cd ~/IDL/Pro/Work
+  + cvs checkout -d singgprof idlpro/singgprof
+  + cd singgprof
+  + cp pfplt_extractprof.pro pfplt_extractprof_old2.pro
+  + cp ../hanish/pfplt_extractprof.pro .
+  + add comment to history section
+  + cvs add pfplt_extractprof_old2.pro
+  + cvs commit ...
+  + in ~/IDL/Pro/Work/hanish
+    - rm , cvs remove, and cvs commit 
+
+readcol_new.pro
+  + my version is different, but I don't use it, and it is not under CVS
+  + so rename my version (in ~/IDL/Pro) to readcol_grm.pro
+
+release_write_hdr.pro
+  + looks like Dan has made an improvement
+  + rename my version (in ~/IDL/Pro/Work/singgrel) to
+    release_write_hdr_grm.pro
+  + cp ~/IDL/Pro/Work/hanish/release_write_hdr.pro 
+  + added a comment about Dan's mod to history line
+  + cvs commit (singgrel)
+  + in ~/IDL/Pro/Work/hanish:
+    - rm , cvs remove, and cvs commit
+
+setplotcolors.pro
+  + significantly different from my version
+  + rename hanish version setplotcolors_hanish.pro
+  + cvs remove setplotcolors.pro  ; cvs add setplotcolors_hanish.pro
+
+singg_filtnam.pro
+  + looks like the main difference is that Dan added a /silent option
+  + rename my version (in ~/IDL/Pro/Work/singgfilt/) to
+    singg_filtnam_old.pro
+  + added a comment to history section
+  + copy Dan's version to ~/IDL/Pro/Work/singgfilt/
+  + add comment to history section re silent option
+  + cvs commit singgfilt
+  + in ~/IDL/Pro/Work/hanish:
+    - rm , cvs remove, and cvs commit
+
+singg_pagebot.pro
+  + Dan's modification are very Dan specific and only used in singg_qa.pro
+  + rename hanish version to hanish_pagebot.pro
+  + added some comments...
+  + changed calls in singg_qa
+  + cvs remove singg_pagebot.pro
+  + cvs add hanish_pagebot.pro 
+  + cvs commit ...

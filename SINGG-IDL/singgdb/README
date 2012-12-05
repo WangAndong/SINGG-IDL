@@ -1,0 +1,60 @@
+SINGG Database IDL code
+
+BUILD_SOURCE_DB    - Build SINGG_SOURCE database (Hanish).
+COLLATE_HEADER_PSC - Collate "header" database with IRAS point source
+		     catalog. (Meurer)
+COLLATE_HEADER_ROC - Collate "header" database with SST Reserved Object
+		     Catalog. (Meurer)
+CREATE_HICATDB     - runs mkhicatdb to make the different versions of
+		     HICATDB. (Meurer)
+DBBUILDSTRUCT      - Build a database from a passed
+		     structure. (Landsman/Hanish) 
+DBCIRCLED          - modified version of DBCIRCLE to work with RA in
+		     degrees. (Landsman/Meurer)
+DBSUNTOHOST        - Convert Sun database files to the host computer
+		     form (Landsman)
+GCIRCD             - modified version of GCIRC to work with RA in
+		     degrees. (Hill/Landsman/Meurer)
+GRM_IMDBASE        - Find the sources in an IDL database that are
+		     located on a given image.  Like IMDBASE with the
+		     addition of the RADEG keyword to indicate databases
+		     where RA is in degrees rather than
+		     hours. (Landsman/Meurer) 
+HICATS_COMP        - make some comparison plots of values from different
+		     versions of HICAT
+IMAGE_DBMATCH      - Find entries from a variety of databases that fall
+		     within an image.  (Meurer)
+MKAVCCDB           - Make HIPASS_AVCC database: Putman's Anomolous
+		     Velocity Cloud Catalog. (Meurer)
+MKBGCDB            - Make HIPASS_BGC database: Koribalski's Bright
+		     Galaxy Catalog. (Meurer).
+MKHICATDB          - Make HICAT database (Meurer)
+MKHOPCATDB         - Make HOPCAT database: Doyle's HIPASS Optical
+		     catalog (Meurer).
+MKJPHFLOWIN        - Make the input file (flow.in) for the fortran program
+		     JPHFLOW  (John Huchra's multipole attractor
+		     distance stimator). (Meurer)
+MKREMEASUREDB      - Make the HIPASS_REMEASURE database of new HIPASS
+		     measurements.  (Meurer).
+MKSCCCDB           - Make HIPASS_SCCC database: Kilborn's South
+		     Celestial Cap Catalog.  (Meurer)
+MKSINGGREJDB       - Make SINGG_REJECT database: "sources" that have
+		     been rejected from the final SINGG sample. (Meurer)
+MKSINGGSAMPDB      - Make SINGG_SAMPLE database: final SINGG sample.
+MKSUNGGSAMPDB      - Make SUNGG_SAMPLE database (adapted from
+                     mksinggsampdb.pro by I. Wong)
+MKSUNGGSRCDB       - Make SUNGG_SOURCE database (adapted from
+		     mksunggsampdb.pro by G. Meurer).
+MK_SSTDB           - Make database of Spitzer Space Telescope Reserved Object
+	             Catalog (Meurer)
+QUERY_DUBIOUS_REXAM - query singg_sample for dubious cases to rexamine.  (Meurer)
+REPORT_DIFF        - Report where two arrays differ by more than some
+		     tolerance (Meurer).
+RUN_FLOWMODS_DB    - run jphflow for all sources in relevent SINGG and
+		     HIPASS databases. (Meurer) 
+SETUP_COLORLISTS   - Prepare for making 3 color images used for QA work,
+		     the go on ahead and make the 3 color images.
+SINGG_HICATS_MATCH - Match SINGG sample selection to various HICAT
+		     catalogs. (Meurer)
+UPDATE_IDLDB       - Update an IDL database on $ZDBASE with a new version
+		     found in some other directory.

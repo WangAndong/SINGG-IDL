@@ -1,0 +1,37 @@
+Title: The Survey for Ionization in Neutral Gas Galaxies: I. Description 
+       and Initial Results  
+Authors: Meurer G.R., Hanish D.J., Ferguson H.C., Knezek P.M., Kilborn V.A., 
+         Putman M.E., Smith R.C., Koribalski B., Meyer M., Oey M.S., 
+         Ryan-Weber E.V., Zwaan M.A., Heckman T.M., Kennicutt R.C., Jr., 
+         Lee J.C., Webster R.L., Bland-Hawthorn J., Dopita M.A., Freeman K.C., 
+         Doyle M.T., Drinkwater M.J., Staveley-Smith L., Werk J. 
+Table: Corrections used in flux measurements
+================================================================================
+Byte-by-byte Description of file: datafile8.txt
+--------------------------------------------------------------------------------
+   Bytes Format Units Label  Explanations
+--------------------------------------------------------------------------------
+   1- 18 A18    ---   ID     Source identification
+  20- 23 F4.2   mag   A-Ha   Absorption of H{alpha} by Galactic foreground dust
+  25- 30 F6.2   mag   RMag   Absolute R band magnitude (AB scale) without 
+                              internal dust absorption correction  
+  32- 35 F4.2   mag   A-Hai  Absorption of H{alpha} by dust internal to 
+                              the source (1)
+  37- 40 F4.2   mag   A-Ri   Absorption in the R band by dust internal to 
+                              the source 
+  42- 46 F5.3   ---   w6583  The ([NII] 6583)/H{alpha} line flux ratio (2) 
+  48- 52 F5.3   ---   k[NII] Filter and velocity profile dependent correction
+                              coefficient for contamination of the H{alpha}
+                              by [NII] lines (3)
+--------------------------------------------------------------------------------
+Note (1): Estimated from RMag using eq. 4.
+Note (2): Estimated from RMag using eq. 5.
+Note (3): See eqs. A14 and A15.
+--------------------------------------------------------------------------------
+HIPASS J0039-14a   0.05 -19.01 0.64 0.32 0.148 0.797 
+HIPASS J0404-02    0.42 -18.82 0.61 0.30 0.140 0.396 
+HIPASS J2102-16    0.19 -19.81 0.80 0.40 0.189 0.762 
+HIPASS J1002-06    0.10 -15.93 0.27 0.14 0.059 0.354 
+HIPASS J0441-02    0.10 -19.76 0.79 0.39 0.186 0.359 
+HIPASS J1105-00    0.14 -21.20 1.17 0.59 0.286 0.401 
+HIPASS J1217+00    0.06 -15.10 0.21 0.10 0.044 0.427 
