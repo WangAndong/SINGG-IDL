@@ -57,10 +57,11 @@ pro ssoup_inputs, fili, ll, hname, fimages_in, fmasks_in, mbadval_in, $
    ;
    ; G. Meurer 6/2010 (ICRAR/UWA)
    ; G. Meurer 8/2012 (ICRAR/UWA) add inputs for box plots
-   nclr         = 4  ; number of 3 color combos
    prog         = 'SSOUP_INPUTS: '
-   initvars
    COMMON bands, band, nband
+      band      = ['R', 'HALPHA', 'NUV', 'FUV']
+      nband     = n_elements(band)
+   nclr      = 4 ; number of 3 color combos
    ;
    ; initialize all the variables
    hname        = ['']
