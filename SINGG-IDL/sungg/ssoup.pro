@@ -64,7 +64,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
   plog,ll,prog,'getting inputs from file: '+infile
   ;
   ; get inputs
-  ssoup_inputs, fili, ll, hname, fimages_in, fmasks_in, mbadval_in, $
+  ssoup_inputs, infile, ll, hname, fimages_in, fmasks_in, mbadval_in, $
                 fimages_out, fmask_out, fmask_sky, mbadval_out, skyord, $
                 fprofs_out, fbox, fbplotj, fbplote, filjl, filjh, $ 
                 filjlm1, filjhm1, filjlm2, filjhm2, filjlm3, filjhm3, filjlim1, filjhim1, $
