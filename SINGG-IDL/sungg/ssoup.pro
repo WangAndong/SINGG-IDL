@@ -45,7 +45,12 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
   srcdir    = '.'
   basedir   = '.'
   outdir    = 'HTML'
-  bxdef     = 15       
+  bxdef     = 15      
+  
+  ; load prerequisites
+  astrolib
+  setplotcolors
+   
   ; **** Note bxdef is the sky box size, it is currently hard wired 
   ; into ssoup_askyfit.  It should be an optional input parameter
   ;
