@@ -39,8 +39,6 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
   prog      = 'SSOUP: '
   ll        = -1
   sdb       = 'singg_sample'
-  band      = ['R', 'HALPHA', 'NUV', 'FUV']
-  nband     = n_elements(band)
   fecntrat  = 0.03
   srcdir    = '.'
   basedir   = '.'
@@ -50,7 +48,11 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
   ; load prerequisites
   astrolib
   setplotcolors
-   
+  
+  ; load global variables
+  initvars
+  COMMON bands, band, nband
+  
   ; **** Note bxdef is the sky box size, it is currently hard wired 
   ; into ssoup_askyfit.  It should be an optional input parameter
   ;

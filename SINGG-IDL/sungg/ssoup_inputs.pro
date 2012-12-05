@@ -57,25 +57,25 @@ pro ssoup_inputs, fili, ll, hname, fimages_in, fmasks_in, mbadval_in, $
    ;
    ; G. Meurer 6/2010 (ICRAR/UWA)
    ; G. Meurer 8/2012 (ICRAR/UWA) add inputs for box plots
-   nim          = 4  ; number of bands
    nclr         = 4  ; number of 3 color combos
    prog         = 'SSOUP_INPUTS: '
-   band         = ['R','HALPHA','NUV','FUV']
+   initvars
+   COMMON bands, band, nband
    ;
    ; initialize all the variables
    hname        = ['']
-   fimages_in   = make_array(nim, /string, value='')
-   fmasks_in    = make_array(nim, /string, value='')
+   fimages_in   = make_array(nband, /string, value='')
+   fmasks_in    = make_array(nband, /string, value='')
    mbadval_in   = [1b, 1b, 1b, 1b]
-   fimages_out  = make_array(nim, /string, value='')
-   fmask_out    = make_array(nim, /string, value='')
-   fmask_sky    = make_array(nim, /string, value='')
-   skyord       = make_array(nim, /int, value=0)
+   fimages_out  = make_array(nband, /string, value='')
+   fmask_out    = make_array(nband, /string, value='')
+   fmask_sky    = make_array(nband, /string, value='')
+   skyord       = make_array(nband, /int, value=0)
    mbadval_out  = 1b
-   fprofs_out   = make_array(nim, /string, value='')
-   fbox         = make_array(nim, /string, value='')
-   fbplotj      = make_array(nim, /string, value='')
-   fbplote      = make_array(nim, /string, value='')
+   fprofs_out   = make_array(nband, /string, value='')
+   fbox         = make_array(nband, /string, value='')
+   fbplotj      = make_array(nband, /string, value='')
+   fbplote      = make_array(nband, /string, value='')
    fjpg_low     = make_array(nclr, /string, value='')
    fjpg_high    = make_array(nclr, /string, value='')
    fjpg_mlow1   = make_array(nclr, /string, value='')
@@ -222,9 +222,9 @@ pro ssoup_inputs, fili, ll, hname, fimages_in, fmasks_in, mbadval_in, $
    ; **** should probably allow badvalues to be read in...
    ;
    ; check status of essential input images
-   existi         = make_array(nim, /byte, value=0b)
-   existm         = make_array(nim, /byte, value=0b)
-   for ii = 0,nim-1 do begin
+   existi         = make_array(nband, /byte, value=0b)
+   existm         = make_array(nband, /byte, value=0b)
+   for ii = 0,nband-1 do begin
       inf         = file_info(fimages_in[ii])
       existi[ii]  = inf.exists
       if strlen(fmasks_in[ii]) gt 0 then begin 
