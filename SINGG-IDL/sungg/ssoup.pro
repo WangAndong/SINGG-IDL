@@ -63,16 +63,10 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
   plog,ll,prog,'getting inputs from file: '+infile
   ;
   ; get inputs
-  ssoup_inputs, fili, ll, hname, fimages_in, fmasks_in, mbadval_in, $
-                fimages_out, fmask_out, fmask_sky, mbadval_out, skyord, $
-                fprofs_out, fbox, fbplotj, fbplote, filjl, filjh, $ 
-                filjlm1, filjhm1, filjlm2, filjhm2, filjlm3, filjhm3, filjlim1, filjhim1, $
-                filjlim2, filjhim2, filjlim3, filjhim3, fcomp, scalprof, $
-                fcalprof, scalprof0, fcalprof0, profjpg, profps, $
-                hafuvjpg, hafuvps, hafuvjpg0, hafuvps0, status
+  ssoup_inputs, fili, ll, inputstr
   IF slow THEN keywait, 'type any key to continue: '
   ;
-  IF status THEN BEGIN
+  IF inputstr.status THEN BEGIN
      ;
      ; image alignment
      plog,ll,prog,'starting image alignment'
