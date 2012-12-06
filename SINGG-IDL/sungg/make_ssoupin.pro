@@ -255,7 +255,6 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   openw,lu,file,/get_lun
   ; 
   ; write output file, copy to log file
-  printf,lu, 'FJPGL_MSK1_HNF  = '+fjpgl_msk1_hnf
   printf,lu, 'HNAME           = '+hname
   plog,ll,'','HNAME           = '+hname
   printf,lu, 'FILI_R          = '+fili_r
