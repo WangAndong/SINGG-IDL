@@ -64,8 +64,8 @@ pro ssoup_inputs, fili, ll, inputstr
      fmasks_in    : make_array(nband, /string, value=''), $
      mbadval_in   : [1b, 1b, 1b, 1b], $
      fimages_out  : make_array(nband, /string, value=''), $
-     fmask_out    : make_array(nband, /string, value=''), $
-     fmask_sky    : make_array(nband, /string, value=''), $
+     fmask_out    : '', $
+     fmask_sky    : '', $
      skyord       : make_array(nband, /int, value=0), $
      mbadval_out  : 1b, $
      fprofs_out   : make_array(nband, /string, value=''), $
@@ -86,6 +86,17 @@ pro ssoup_inputs, fili, ll, inputstr
      fjpg_imhigh2 : make_array(nclr, /string, value=''), $
      fjpg_imlow3  : make_array(nclr, /string, value=''), $
      fjpg_imhigh3 : make_array(nclr, /string, value=''), $
+     fcompare     : '', $
+     scalprof     : '', $
+     fcalprof     : '', $
+     scalprof0    : '', $
+     fcalprof0    : '', $
+     profjpg      : '', $
+     profps       : '', $
+     hafuvjpg     : '', $
+     hafuvps      : '', $
+     hafuvjpg0    : '', $
+     hafuvps0     : '', $
      status       : 0b $
    }
    plog,ll,prog,'----------------------- starting SSOUP_INPUTS ---------------------------'
@@ -222,7 +233,7 @@ pro ssoup_inputs, fili, ll, inputstr
    for ii = 0,nband-1 do begin
       inf         = file_info(inputstr.fimages_in[ii])
       existi[ii]  = inf.exists
-      if strlen(fmasks_in[ii]) gt 0 then begin 
+      if strlen(inputstr.fmasks_in[ii]) gt 0 then begin 
          ;
          ; only check existence if file name is given
          inf         = file_info(inputstr.fmasks_in[ii])
@@ -258,11 +269,12 @@ pro ssoup_inputs, fili, ll, inputstr
       plog,ll,prog,'checked that output image and profile names are reasonable'
    endelse 
    ;
-   if strtrim(inputstr.fmask_out,2) eq '' then begin 
+   
+   if strtrim(inputstr.fmask_out + ' ',2) eq '' then begin ; a stupid IDL hack
       inputstr.status = 0b
       plog,ll,prog,'the output mask file name is empty'
    endif
-   if strtrim(inputstr.fmask_sky,2) eq '' then begin 
+   if strtrim(inputstr.fmask_sky + ' ',2) eq '' then begin 
       inputstr.status = 0b
       plog,ll,prog,'the output sky mask file name is empty'
    endif
