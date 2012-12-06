@@ -63,7 +63,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
   plog,ll,prog,'getting inputs from file: '+infile
   ;
   ; get inputs
-  ssoup_inputs, fili, ll, inputstr
+  ssoup_inputs, infile, ll, inputstr
   IF slow THEN keywait, 'type any key to continue: '
   ;
   IF inputstr.status THEN BEGIN
@@ -75,19 +75,19 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ; make sky box plots
      plog,ll,prog,'making plots of sky boxes'
      FOR ii = 0, nband-1 DO BEGIN 
-        ssoup_plotboxes, ll, bxdef, hname, band[ii], fbox[ii], fbplotj[ii] 
-        ssoup_plotboxes, ll, bxdef, hname, band[ii], fbox[ii], fbplote[ii] 
+        ssoup_plotboxes, ll, bxdef, inputstr.hname, band[ii], inputstr.fbox[ii], inputstr.fbplotj[ii] 
+        ssoup_plotboxes, ll, bxdef, inputstr.hname, band[ii], inputstr.fbox[ii], inputstr.fbplote[ii] 
      ENDFOR 
      ;
      ; extract radial profiles
      IF slow THEN keywait, 'type any key to continue: '
      plog,ll,prog,'extracting profiles'
-     ssoup_profiles, ll, band, fimages_out, fmask_out, hname, $ 
-                     fprofs_out,  /verbose, shapepar='OPT'
+     ssoup_profiles, ll, inputstr.fimages_out, inputstr.fmask_out, inputstr.hname, $ 
+                     (inputstr.fprofs_out),  /verbose, shapepar='OPT'
      ;
      ; get foreground dust absorption
      dbopen,sdb
-     list = dbmatch('name',hname[0])
+     list = dbmatch('name', inputstr.hname[0])
      ebv  = 0.0
      IF list[0] NE -1 THEN dbext,list,'ebv',ebv
      dbclose
@@ -100,12 +100,12 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; read in the output fits images so as to create 3 color 
      ; preview images.  First just read a header to get image size
-     fits_read, fimages_out[0], img, hd, /header_only
+     fits_read, inputstr.fimages_out[0], img, hd, /header_only
      nx   = sxpar(hd,'NAXIS1')
      ny   = sxpar(hd,'NAXIS2')
      imgc = make_array(nx,ny,4,/float,value=0.0)
      FOR ii = 0, nband-1 DO BEGIN
-        fits_read, fimages_out[ii], img, hd
+        fits_read, inputstr.fimages_out[ii], img, hd
         imgc[*,*,ii] = img
         IF band[ii] EQ 'HALPHA' THEN phfl[ii] = sxpar(hd,'photflux') ELSE phfl[ii] = sxpar(hd,'photflam')
         phpl[ii] = sxpar(hd, 'photplam')

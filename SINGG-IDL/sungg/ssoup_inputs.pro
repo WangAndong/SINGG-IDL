@@ -270,11 +270,11 @@ pro ssoup_inputs, fili, ll, inputstr
    endelse 
    ;
    
-   if strtrim(inputstr.fmask_out + ' ',2) eq '' then begin ; a stupid IDL hack
+   if strtrim((inputstr.fmask_out),2) eq '' then begin
       inputstr.status = 0b
       plog,ll,prog,'the output mask file name is empty'
    endif
-   if strtrim(inputstr.fmask_sky + ' ',2) eq '' then begin 
+   if strtrim((inputstr.fmask_sky),2) eq '' then begin 
       inputstr.status = 0b
       plog,ll,prog,'the output sky mask file name is empty'
    endif
