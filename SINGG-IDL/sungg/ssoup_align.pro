@@ -37,7 +37,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; set constants and default parameters
   asdeg      = 3600.0           ; arcsec/degree
   fwhm       = [0.0, 0.0, 5.3, 4.2] ; default seeing (Morrissey et al. 2007)
-  COMMON bands band
+  COMMON bands, band
   nthresh    = 1024l            ; used to determine where to trim input optical images
   rot        = make_array(4, /float, value=0.0)  ; initialize rotations
   scale      = make_array(4, /float, value=0.0)  ; inititalize scale
@@ -55,14 +55,14 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   if nim ne 4 then $
      plog,-1,prog,'****WARNING: I think I can only cope with 4 images...'
   ;
-  IF mbadval_out NE 0b AND mbadval_out NE 1b THEN BEGIN 
+  IF inputstr.mbadval_out NE 0b AND inputstr.mbadval_out NE 1b THEN BEGIN 
      plog,-1,prog,'****WARNING: mbadval_out out of range, resetting to 1b'
-     mbadval_out = 1b
+     inputstr.mbadval_out = 1b
   ENDIF
   ;
   ; set the value for good pixels in the output mask
   mgoodval_out = 0b
-  IF mbadval_out EQ 0b THEN mgoodval_out = 1b
+  IF inputstr.mbadval_out EQ 0b THEN mgoodval_out = 1b
   ;
   ; store exposure times here
   texp       = make_array(nim, /float, value=1.0)
@@ -184,8 +184,8 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; and last row/column that are masked in less than some 
   ; threshold number of columns/rows
   plog,ll,prog,'determining pixel limits of optical images to transform'
-  fits_read, fmasks_in[1], imgm, hd             ; read Halpha mask
-  pp         = where(imgm EQ mbadval_in[1], npp)  ; index of bad pixels
+  fits_read, inputstr.fmasks_in[1], imgm, hd             ; read Halpha mask
+  pp         = where(imgm EQ inputstr.mbadval_in[1], npp)  ; index of bad pixels
   imgm       = 0l*long(imgm) + 1l                ; convert to long array
   IF npp GT 0 THEN imgm[pp] = 0l                 ; with bad pixels marked as 0l
   ncgood     = total(imgm, 1)                    ; number of good columns at each row
@@ -271,15 +271,15 @@ pro ssoup_align, ll, inputstr, goslow=goslow
      hdi     = hdcompile0[ihd00[ii]:ihd01[ii]]         ; get input header from hdcompile0
      ;
      ; Only do mask stuff if the mask file name is not an empty string
-     if strlen(strtrim(fmasks_in[ii],2)) gt 0 then begin 
-        plog,ll,prog,'working on mask file '+fmasks_in[ii]
+     if strlen(strtrim(inputstr.fmasks_in[ii],2)) gt 0 then begin 
+        plog,ll,prog,'working on mask file '+inputstr.fmasks_in[ii]
         ;
         ; read in input mask
-        fits_read, fmasks_in[ii], mski, hmm
+        fits_read, inputstr.fmasks_in[ii], mski, hmm
         ;
         ; transform masks
         plog,ll,prog,'calling ssoup_transform_mask'
-        ssoup_transform_mask, hdi, mski, mbadval_in[ii], uhd, msko, limits=limits
+        ssoup_transform_mask, hdi, mski, inputstr.mbadval_in[ii], uhd, msko, limits=limits
         msktmp[*,*,ii] = msko
         IF slow THEN keywait, 'type any key to continue: '
      endif 
@@ -311,7 +311,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
      imgtmp[*,*,ii] = imgo
      ;
      ; grow the mask if needed
-     IF (kfwhm[ii] GE 1.0) and (strlen(strtrim(fmasks_in[ii],2)) gt 0) THEN BEGIN 
+     IF (kfwhm[ii] GE 1.0) and (strlen(strtrim(inputstr.fmasks_in[ii],2)) gt 0) THEN BEGIN 
         plog,ll,prog,'growing '+band[ii]+' band mask'
         mski           = msktmp[*,*,ii]
         grow_mask, mski, msko, kfwhm[ii], goodval=1b, badval=0b
@@ -327,24 +327,24 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   msko     = total(long(msktmp),3)
   jj       = where(msko GE 1l, njj)
   msko     = 0b*byte(msko) + mgoodval_out
-  IF njj GT 0 THEN msko[jj] = mbadval_out
+  IF njj GT 0 THEN msko[jj] = inputstr.mbadval_out
   ;
   ; Make sky mask from final mask
   plog,ll,prog,'making sky mask'
   buffer   = round(200.0*scale[ofid]/scale[ufid])
-  msks     = ssoup_askymask(ll, hname, hdcompile1[ihd10[ufid]:ihd11[ufid]], buffer, msko)
+  msks     = ssoup_askymask(ll, inputstr.hname, hdcompile1[ihd10[ufid]:ihd11[ufid]], buffer, msko)
   ;
   ; Make object to measure only mask
-  msks2    = ssoup_askymask(ll, hname, hdcompile1[ihd10[ufid]:ihd11[ufid]], 0, msko)
-  mopix   = 0*msks2 + mbadval_out
+  msks2    = ssoup_askymask(ll, inputstr.hname, hdcompile1[ihd10[ufid]:ihd11[ufid]], 0, msko)
+  mopix   = 0*msks2 + inputstr.mbadval_out
   pp       = where(msks2 EQ 1b AND msko EQ mgoodval_out, npp)
   IF npp GT 0 THEN mopix[pp] = mgoodval_out
   ;
   ; **** should apply a template to mask headers
   ; write aligned output mask and sky mask
   plog,ll,prog,'writing sky masks'
-  fits_write, fmask_out, msko, newhdf
-  fits_write, fmask_sky, msks, newhdf
+  fits_write, inputstr.fmask_out, msko, newhdf
+  fits_write, inputstr.fmask_sky, msks, newhdf
   IF slow THEN keywait, 'type any key to continue: '
   ;
   ; Loop to measure sky levels and update headers
@@ -352,7 +352,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
      hd0    = hdcompile0[ihd00[ii]:ihd01[ii]]  ; initial header
      hdi    = hdcompile1[ihd10[ii]:ihd11[ii]] ; input header after alignment
      img    = imgtmp[*,*,ii]     
-     ord    = skyord[ii]
+     ord    = inputstr.skyord[ii]
      ;
      ; read in and adjust old sky values and errors for new pixel size
      plog,ll,prog,'retrieving original sky level for image #'+numstr(ii)+' (band = '+band[ii]+')'
@@ -440,16 +440,16 @@ pro ssoup_align, ll, inputstr, goslow=goslow
      ;
      ; Tidy the headers
      plog,ll,prog,'tidying header'
-     ssoup_atidyhdr, ll, band[ii], fimages_in[ii], fimages_out[ii], kfwhm[ii], img, hdi, hdo 
+     ssoup_atidyhdr, ll, band[ii], inputstr.fimages_in[ii], inputstr.fimages_out[ii], kfwhm[ii], img, hdi, hdo 
      ;
      ; write output images
-     plog,ll,prog,'writing output fits file: '+fimages_out[ii]
-     fits_write, fimages_out[ii], img, hdo
+     plog,ll,prog,'writing output fits file: '+inputstr.fimages_out[ii]
+     fits_write, inputstr.fimages_out[ii], img, hdo
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; write output boxdata file
-     plog,ll,prog,'writing output box data file: '+fbox[ii]
-     openw,lu,fbox[ii],/get_lun
+     plog,ll,prog,'writing output box data file: '+inputstr.fbox[ii]
+     openw,lu,inputstr.fbox[ii],/get_lun
      sz = size(boxdata)
      nb = sz[2]
      FOR jj = 0, nb-1 DO printf,lu,boxdata[0,jj],boxdata[1,jj],boxdata[2,jj],boxdata[3,jj],boxdata[4,jj],boxdata[5,jj]
