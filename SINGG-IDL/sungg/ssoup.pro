@@ -70,9 +70,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; image alignment
      plog,ll,prog,'starting image alignment'
-     ssoup_align, ll, hname, fimages_in, fmasks_in, mbadval_in, skyord, $
-                  fimages_out, fmask_out, fmask_sky, mbadval_out, fbox, $
-                  goslow=slow
+     ssoup_align, ll, inputstr, goslow=slow
      ;
      ; make sky box plots
      plog,ll,prog,'making plots of sky boxes'

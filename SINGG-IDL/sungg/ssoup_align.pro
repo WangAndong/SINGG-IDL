@@ -1,10 +1,9 @@
-pro ssoup_align, ll, hname, fimages_in, fmasks_in, mbadval_in, skyord, $
-                 fimages_out, fmask_out, fmask_sky, mbadval_out, $
-                 fbox, goslow=goslow
+pro ssoup_align, ll, inputstr, goslow=goslow
   ;
   ;  Align the SINGG optical images and SUNGG (Galex) UV images.
   ;    ll          -> logical unit for log file, which
   ;                   should be open before calling this program
+  ;    inputstr    -> a structure which contains:
   ;    hname       -> name of hipass objects in the image
   ;    fimages_in  -> input fits image files.  This is a 4 element
   ;                   string array with elements giving the file 
@@ -38,7 +37,7 @@ pro ssoup_align, ll, hname, fimages_in, fmasks_in, mbadval_in, skyord, $
   ; set constants and default parameters
   asdeg      = 3600.0           ; arcsec/degree
   fwhm       = [0.0, 0.0, 5.3, 4.2] ; default seeing (Morrissey et al. 2007)
-  band       = ['R', 'HALPHA', 'NUV', 'FUV']     ; name of band
+  COMMON bands band
   nthresh    = 1024l            ; used to determine where to trim input optical images
   rot        = make_array(4, /float, value=0.0)  ; initialize rotations
   scale      = make_array(4, /float, value=0.0)  ; inititalize scale
@@ -50,8 +49,8 @@ pro ssoup_align, ll, hname, fimages_in, fmasks_in, mbadval_in, skyord, $
   ; do some error checking
   plog,ll,prog,'-------------------------- starting '+prog+'----------------------------'
   slow       = keyword_set(goslow)
-  nim        = n_elements(fimages_in)
-  if nim ne n_elements(fimages_out) then $
+  nim        = n_elements(inputstr.fimages_in)
+  if nim ne n_elements(inputstr.fimages_out) then $
      plog,-1,prog,'****WARNING: Number of output images NE number of input images'
   if nim ne 4 then $
      plog,-1,prog,'****WARNING: I think I can only cope with 4 images...'
@@ -71,7 +70,7 @@ pro ssoup_align, ll, hname, fimages_in, fmasks_in, mbadval_in, skyord, $
   ; read input images
   ;
   plog,ll,prog,'reading input images'
-  fits_read, fimages_in[0], imgr, hdr
+  fits_read, inputstr.fimages_in[0], imgr, hdr
   fwhm[0]    = SXPAR(hdR,'SEEING')
   photflamR  = SXPAR(hdR,'PHOTFLAM')
   photplamR  = SXPAR(hdR,'PHOTPLAM')
@@ -81,7 +80,7 @@ pro ssoup_align, ll, hname, fimages_in, fmasks_in, mbadval_in, skyord, $
   rot[0]     = dum
   scale[0]   = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
   ;
-  fits_read, fimages_in[1], imgHa, hdHa
+  fits_read, inputstr.fimages_in[1], imgHa, hdHa
   fwhm[1]    = SXPAR(hdha,'SEEING')
   photfluxHa = SXPAR(hdHa,'PHOTFLUX')
   texp[1]    = sxpar(hdha,'EXPTIME')
@@ -91,14 +90,14 @@ pro ssoup_align, ll, hname, fimages_in, fmasks_in, mbadval_in, skyord, $
   rot[1]     = dum
   scale[1]   = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
   ;
-  fits_read, fimages_in[2], imgn, hdn
+  fits_read, inputstr.fimages_in[2], imgn, hdn
   texp[2]    = sxpar(hdn,'EXPTIME')
   imgn       = imgn*texp[2]
   getrot, hdn, dum, cdelt
   rot[2]     = dum
   scale[2]   = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
   ;
-  fits_read, fimages_in[3], imgf, hdf
+  fits_read, inputstr.fimages_in[3], imgf, hdf
   texp[3]    = sxpar(hdf,'EXPTIME')
   imgf       = imgf*texp[3]
   getrot, hdf, dum, cdelt

@@ -59,36 +59,34 @@ pro ssoup_inputs, fili, ll, inputstr
    ;
    ; initialize all the variables
    inputstr = { $
-     hname        : [''] $
-     fimages_in   : make_array(nband, /string, value='') $
-     fmasks_in    : make_array(nband, /string, value='') $
-     mbadval_in   : [1b, 1b, 1b, 1b] $
-     fimages_out  : make_array(nband, /string, value='') $
-     fmask_out    : make_array(nband, /string, value='') $
-     fmask_sky    : make_array(nband, /string, value='') $
-     skyord       : make_array(nband, /int, value=0) $
-     mbadval_out  : 1b $
-     fprofs_out   : make_array(nband, /string, value='') $
-     fbox         : make_array(nband, /string, value='') $
-     fbplotj      : make_array(nband, /string, value='') $
-     fbplote      : make_array(nband, /string, value='') $
-     fjpg_low     : make_array(nclr, /string, value='') $
-     fjpg_high    : make_array(nclr, /string, value='') $
-     fjpg_mlow1   : make_array(nclr, /string, value='') $
-     fjpg_mhigh1  : make_array(nclr, /string, value='') $
-     fjpg_mlow2   : make_array(nclr, /string, value='') $
-     fjpg_mhigh2  : make_array(nclr, /string, value='') $
-     fjpg_mlow3   : make_array(nclr, /string, value='') $
-     fjpg_mhigh3  : make_array(nclr, /string, value='') $
-     fjpg_imlow1  : make_array(nclr, /string, value='') $
-     fjpg_imhigh1 : make_array(nclr, /string, value='') $
-     fjpg_imlow2  : make_array(nclr, /string, value='') $
-     fjpg_imhigh2 : make_array(nclr, /string, value='') $
-     fjpg_imlow3  : make_array(nclr, /string, value='') $
-     fjpg_imhigh3 : make_array(nclr, /string, value='') $
+     hname        : [''], $
+     fimages_in   : make_array(nband, /string, value=''), $
+     fmasks_in    : make_array(nband, /string, value=''), $
+     mbadval_in   : [1b, 1b, 1b, 1b], $
+     fimages_out  : make_array(nband, /string, value=''), $
+     fmask_out    : make_array(nband, /string, value=''), $
+     fmask_sky    : make_array(nband, /string, value=''), $
+     skyord       : make_array(nband, /int, value=0), $
+     mbadval_out  : 1b, $
+     fprofs_out   : make_array(nband, /string, value=''), $
+     fbox         : make_array(nband, /string, value=''), $
+     fbplotj      : make_array(nband, /string, value=''), $
+     fbplote      : make_array(nband, /string, value=''), $
+     fjpg_low     : make_array(nclr, /string, value=''), $
+     fjpg_high    : make_array(nclr, /string, value=''), $
+     fjpg_mlow1   : strarr(4), $
+     fjpg_mhigh1  : make_array(nclr, /string, value=''), $
+     fjpg_mlow2   : make_array(nclr, /string, value=''), $
+     fjpg_mhigh2  : make_array(nclr, /string, value=''), $
+     fjpg_mlow3   : make_array(nclr, /string, value=''), $
+     fjpg_mhigh3  : make_array(nclr, /string, value=''), $
+     fjpg_imlow1  : make_array(nclr, /string, value=''), $
+     fjpg_imhigh1 : make_array(nclr, /string, value=''), $
+     fjpg_imlow2  : make_array(nclr, /string, value=''), $
+     fjpg_imhigh2 : make_array(nclr, /string, value=''), $
+     fjpg_imlow3  : make_array(nclr, /string, value=''), $
+     fjpg_imhigh3 : make_array(nclr, /string, value=''), $
      status       : 0b $
-     fmask_out    : '' $
-     fmask_sky    : '' $
    }
    plog,ll,prog,'----------------------- starting SSOUP_INPUTS ---------------------------'
    ;
@@ -222,12 +220,12 @@ pro ssoup_inputs, fili, ll, inputstr
    existi         = make_array(nband, /byte, value=0b)
    existm         = make_array(nband, /byte, value=0b)
    for ii = 0,nband-1 do begin
-      inf         = file_info(fimages_in[ii])
+      inf         = file_info(inputstr.fimages_in[ii])
       existi[ii]  = inf.exists
       if strlen(fmasks_in[ii]) gt 0 then begin 
          ;
          ; only check existence if file name is given
-         inf         = file_info(fmasks_in[ii])
+         inf         = file_info(inputstr.fmasks_in[ii])
          existm[ii]  = inf.exists
       endif else begin 
          ;
@@ -241,16 +239,16 @@ pro ssoup_inputs, fili, ll, inputstr
    if nqqi gt 0 or nqqm gt 0 then begin
       inputstr.status      = 0b
       plog,ll,prog,'The following input files do not exist: '
-      for ii = 0, nqqi-1 do plog,ll,' ',fimages_in[qqi[ii]]
-      for ii = 0, nqqm-1 do plog,ll,' ',fmasks_in[qqm[ii]]
+      for ii = 0, nqqi-1 do plog,ll,' ',inputstr.fimages_in[qqi[ii]]
+      for ii = 0, nqqm-1 do plog,ll,' ',inputstr.fmasks_in[qqm[ii]]
    endif else begin
       plog,ll,prog,'all input files have been verified to exist'
       inputstr.status      = 1b
    endelse 
    ;
    ; check that output file names are not empty
-   qqo             = where(strtrim(fimages_out,2) eq '',nqqo)
-   qqp             = where(strtrim(fprofs_out,2) eq '',nqqp)
+   qqo             = where(strtrim(inputstr.fimages_out,2) eq '',nqqo)
+   qqp             = where(strtrim(inputstr.fprofs_out,2) eq '',nqqp)
    if nqqo gt 0 or nqqp gt 0 then begin
       inputstr.status      = 0b
       plog,ll,prog,'The following output images or profile names are empty: '
@@ -260,11 +258,11 @@ pro ssoup_inputs, fili, ll, inputstr
       plog,ll,prog,'checked that output image and profile names are reasonable'
    endelse 
    ;
-   if strtrim(fmask_out,2) eq '' then begin 
+   if strtrim(inputstr.fmask_out,2) eq '' then begin 
       inputstr.status = 0b
       plog,ll,prog,'the output mask file name is empty'
    endif
-   if strtrim(fmask_sky,2) eq '' then begin 
+   if strtrim(inputstr.fmask_sky,2) eq '' then begin 
       inputstr.status = 0b
       plog,ll,prog,'the output sky mask file name is empty'
    endif
