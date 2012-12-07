@@ -114,70 +114,70 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ; make preview images
      IF slow THEN keywait, 'type any key to continue: '
      plog,ll,prog,'making low cut jpg images'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjl,ebv=ebv,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_low,ebv=ebv,goslow=slow
      plog,ll,prog,'making high cut jpg images'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjh,ebv=ebv,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_high,ebv=ebv,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images with bad objects masked out'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjlm1,ebv=ebv,maskcmd=1,omask=fmask_out,smask=fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mlow1,ebv=ebv,maskcmd=1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images with bad objects masked out'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjhm1,ebv=ebv,maskcmd=1,omask=fmask_out,smask=fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mhigh1,ebv=ebv,maskcmd=1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images with only bad objects shown '
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjlim1,ebv=ebv,maskcmd=-1,omask=fmask_out,smask=fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imlow1,ebv=ebv,maskcmd=-1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images with only bad objects shown '
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjhim1,ebv=ebv,maskcmd=-1,omask=fmask_out,smask=fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imhigh1,ebv=ebv,maskcmd=-1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images showing only sky pixels'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjlm2,ebv=ebv,maskcmd=2,omask=fmask_out,smask=fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mlow2,ebv=ebv,maskcmd=2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images showing only sky pixelst'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjhm2,ebv=ebv,maskcmd=2,omask=fmask_out,smask=fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mhigh2,ebv=ebv,maskcmd=2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images showing only pixels excluded from sky'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjlim2,ebv=ebv,maskcmd=-2,omask=fmask_out,smask=fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imlow2,ebv=ebv,maskcmd=-2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images showing only pixels excluded from sky'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjhim2,ebv=ebv,maskcmd=-2,omask=fmask_out,smask=fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imhigh2,ebv=ebv,maskcmd=-2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images showing pixels used in source  measurements '
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjlm3,ebv=ebv,maskcmd=3,omask=fmask_out,smask=fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mlow3,ebv=ebv,maskcmd=3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images showing pixels used in source  measurements '
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjhm3,ebv=ebv,maskcmd=3,omask=fmask_out,smask=fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mhigh3,ebv=ebv,maskcmd=3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images showing pixels not used in source  measurements'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjlim3,ebv=ebv,maskcmd=-3,omask=fmask_out,smask=fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imlow3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images showing pixels not used in source  measurements'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,filjhim3,ebv=ebv,maskcmd=-3,omask=fmask_out,smask=fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imhigh3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      ; Compare results to database values
      plog,ll,prog,'comparing db vs ssoup results'
-     ssoup_compresults, ll, hname, phpl, ebv, band, fprofs_out, fcomp
+     ssoup_compresults, ll, inputstr.hname, phpl, ebv, band, inputstr.fprofs_out, inputstr.fcompare
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; calibrate surface brightness profiles
      plog,ll,prog,'making calibrated profiles'
-     ssoup_calprof, ll, band, phpl, ebv, fprofs_out, scalprof, fcalprof, $
-                    scalprof0, fcalprof0, fecntrat=fecntrat
+     ssoup_calprof, ll, band, phpl, ebv, inputstr.fprofs_out, inputstr.scalprof, inputstr.fcalprof, $
+                    (inputstr.scalprof0), inputstr.fcalprof0, fecntrat=fecntrat
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; plot surface brightness profiles
      ; **** the following should be adjusted to allow for multiple ELGs
      plog,ll,prog,'Creating surface brightness and color profiles (jpg)'
-     ssoup_plotsprofs, ll, hname, scalprof, scalprof0, profjpg
+     ssoup_plotsprofs, ll, inputstr.hname, inputstr.scalprof, inputstr.scalprof0, inputstr.profjpg
      plog,ll,prog,'Creating surface brightness and color profiles (postscript)'
-     ssoup_plotsprofs, ll, hname, scalprof, scalprof0, profps
+     ssoup_plotsprofs, ll, inputstr.hname, inputstr.scalprof, inputstr.scalprof0, inputstr.profps
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; create Ha/FUV plots 
      ; **** the following should be adjusted to allow for multiple ELGs
      plog,ll,prog,'Creating raw Halpha/FUV versus surface brightness plots (jpg)'
-     ssoup_plothafuv, ll, hname, scalprof, hafuvjpg
+     ssoup_plothafuv, ll, inputstr.hname, inputstr.scalprof, inputstr.hafuvjpg
      plog,ll,prog,'Creating raw Halpha/FUV versus surface brightness plots (postscript)'
-     ssoup_plothafuv, ll, hname, scalprof, hafuvps
+     ssoup_plothafuv, ll, inputstr.hname, inputstr.scalprof, inputstr.hafuvps
      IF slow THEN keywait, 'type any key to continue: '
      plog,ll,prog,'Creating dust corrected Halpha/FUV versus surface brightness plots (jpg)'
-     ssoup_plothafuv, ll, hname, scalprof0, hafuvjpg0, /dcorr
+     ssoup_plothafuv, ll, inputstr.hname, inputstr.scalprof0, inputstr.hafuvjpg0, /dcorr
      plog,ll,prog,'Creating dust corrected Halpha/FUV versus surface brightness plots (postscript)'
-     ssoup_plothafuv, ll, hname, scalprof0, hafuvps0, /dcorr
+     ssoup_plothafuv, ll, inputstr.hname, inputstr.scalprof0, inputstr.hafuvps0, /dcorr
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; Mark up results 

@@ -74,7 +74,7 @@ pro ssoup_inputs, fili, ll, inputstr
      fbplote      : make_array(nband, /string, value=''), $
      fjpg_low     : make_array(nclr, /string, value=''), $
      fjpg_high    : make_array(nclr, /string, value=''), $
-     fjpg_mlow1   : strarr(4), $
+     fjpg_mlow1   : strarr(nclr), $
      fjpg_mhigh1  : make_array(nclr, /string, value=''), $
      fjpg_mlow2   : make_array(nclr, /string, value=''), $
      fjpg_mhigh2  : make_array(nclr, /string, value=''), $
