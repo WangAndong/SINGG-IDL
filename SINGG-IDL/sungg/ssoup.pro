@@ -47,7 +47,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
   
   ; load prerequisites
   astrolib
-  setplotcolors
+  resetplot
   COMMON bands, band, nband, bandnam
   
   ; **** Note bxdef is the sky box size, it is currently hard wired 
