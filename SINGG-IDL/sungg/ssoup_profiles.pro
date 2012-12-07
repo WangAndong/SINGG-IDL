@@ -88,7 +88,6 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   ; check for matches in UV database
   list     = dbfind('filter = fuv')
   entu     = dbmatch('entry_singg_derivd', ento, list)
-  print,list
   qq       = where(entu GT 0, nqq)
   plog,ll,prog,'number of matches in UV database = '+strtrim(nqq,2)
   ;

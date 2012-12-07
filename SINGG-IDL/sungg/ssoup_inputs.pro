@@ -59,7 +59,7 @@ pro ssoup_inputs, fili, ll, inputstr
    ;
    ; initialize all the variables
    inputstr = { $
-     hname        : [''], $
+     hname        : '', $
      fimages_in   : make_array(nband, /string, value=''), $
      fmasks_in    : make_array(nband, /string, value=''), $
      mbadval_in   : [1b, 1b, 1b, 1b], $
