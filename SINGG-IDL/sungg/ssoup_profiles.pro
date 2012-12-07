@@ -1,7 +1,6 @@
-PRO ssoup_profiles, ll, band, fimages, fmask, hname, fprof, verbose=verbose, shapepar=shapepar
+PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=shapepar
   ;
   ;  ll       -> logical unit of log file
-  ;  band     -> band names
   ;  fimages  -> array list of input fits images.
   ;              These should be aligned, and presumabley are at
   ;              different wavelengths.
@@ -32,6 +31,7 @@ PRO ssoup_profiles, ll, band, fimages, fmask, hname, fprof, verbose=verbose, sha
   proftype = 'aligned'
   headline = '# profiles from aligned images convolved to common seeing and pixel grid'
   prog     = 'SSOUP_PROFILES: '
+  COMMON bands, band
   ;
   plog,ll,prog,'------------------------- starting '+prog+'---------------------------------'
   ;
