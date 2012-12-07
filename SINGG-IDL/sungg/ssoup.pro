@@ -181,11 +181,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; Mark up results 
-     ssoup_mkhtml, ll,  srcdir, basedir, outdir, hname, filjl, filjh, filjlm1, filjhm1, $
-                   filjlm2, filjhm2, filjlm3, filjhm3, filjlim1, filjhim1, $
-                   filjlim2, filjhim2, filjlim3, filjhim3, fcomp, scalprof, $
-                   fcalprof, scalprof0, fcalprof0, profjpg, profps, $
-                   hafuvjpg, hafuvps, hafuvjpg0, hafuvps0, fbplotj, fbplote, /uselink
+     ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, /uselink
   ENDIF ELSE BEGIN 
      plog,ll,prog,'could not run pipeline because inputs were incorrect'
   ENDELSE
