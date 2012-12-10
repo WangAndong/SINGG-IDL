@@ -69,17 +69,13 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
    ;
    ; set up combo names
    bname     = make_array(4, /string, value='')
-   kr        = 0
-   kh        = 1
-   kn        = 2
-   kf        = 3
    bname[kr] = 'R'
    bname[kh] = 'HALPHA'
    bname[kn] = 'NUV'
    bname[kf] = 'FUV'
    cname     = ['HALPHA,NUV,FUV','HALPHA,R,FUV','HALPHA,R,NUV','R,NUV,FUV']
-   combo     = [[kh,kn,kf], [kh,kr,kf], [kh,kr,kn], [kr,kn,kf]]
-   ncombo    = n_elements(cname)
+   combo     = transpose(combigen(nband, 3))
+   ncombo    = n_elements(combo)
    nfo       = N_elements(filo)
    IF nfo NE ncombo THEN BEGIN 
       plog,ll,prog,'Number of output files ('+numstr(nfo)+') does not equal number of combos ('+numstr(ncombo)+')'
