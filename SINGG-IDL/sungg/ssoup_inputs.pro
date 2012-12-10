@@ -56,7 +56,7 @@ pro ssoup_inputs, fili, ll, inputstr
       band      = ['R', 'HALPHA', 'NUV', 'FUV']
       nband     = n_elements(band)
       bandnam   = ['R', 'H&alpha;', 'NUV', 'FUV']
-   nclr      = 4 ; number of 3 color combos
+   nclr      = factorial(nband)/(6*factorial(nband-3)) ; number of 3 color combos
    ;
    ; initialize all the variables
    inputstr = { $
