@@ -1,4 +1,4 @@
-PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
+PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
                  highcut=highcut, maskcmd=maskcmd, omask=omask, smask=smask, $
                  goslow=goslow
    ;
@@ -7,7 +7,7 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
    ;  ll       -> logical unit of log file (should be open)
    ;  imcube   -> image cube storing the multi-wavelength data
    ;              in individual planes
-   ;  band     -> name of the photometric band for each plane
+   ;  bandparam -> name of the photometric band for each plane
    ;              of the cube.  This should have entries 
    ;              'R', 'HALPHA', 'NUV', 'FUV' (at least).
    ;  photfl   -> the PHOTFLAM or PHOTFLUX (Halpha) for each plane
@@ -54,10 +54,10 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
    slow    = keyword_set(goslow)
    ;
    ; pointers to bands
-   jr      = where(band EQ 'R', njr)
-   jh      = where(band EQ 'HALPHA', njh)
-   jn      = where(band EQ 'NUV', njn)
-   jf      = where(band EQ 'FUV', njf)
+   jr      = where(bandparam EQ 'R', njr)
+   jh      = where(bandparam EQ 'HALPHA', njh)
+   jn      = where(bandparam EQ 'NUV', njn)
+   jf      = where(bandparam EQ 'FUV', njf)
    IF njr NE 1 THEN plog,ll,'image cube must have only one R plane; found = '+numstr(njr)
    IF njh NE 1 THEN plog,ll,'image cube must have only one HALPHA plane; found = '+numstr(njh)
    IF njn NE 1 THEN plog,ll,'image cube must have only one NUV plane; found = '+numstr(njn)
@@ -68,15 +68,16 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
    ENDIF 
    ;
    ; set up combo names
-   bname     = make_array(4, /string, value='')
-   bname[kr] = 'R'
-   bname[kh] = 'HALPHA'
-   bname[kn] = 'NUV'
-   bname[kf] = 'FUV'
+   COMMON bands, band, nband, ncombo
    cname     = ['HALPHA,NUV,FUV','HALPHA,R,FUV','HALPHA,R,NUV','R,NUV,FUV']
    combo     = transpose(combigen(nband, 3))
-   ncombo    = n_elements(combo)
    nfo       = N_elements(filo)
+   ; TODO: replace with something less bad
+   kr      = where(bandparam EQ 'R', /NULL)
+   kh      = where(bandparam EQ 'HALPHA', /NULL)
+   kn      = where(bandparam EQ 'NUV', /NULL)
+   kf      = where(bandparam EQ 'FUV', /NULL)
+   
    IF nfo NE ncombo THEN BEGIN 
       plog,ll,prog,'Number of output files ('+numstr(nfo)+') does not equal number of combos ('+numstr(ncombo)+')'
       plog,ll,prog,'stopping, could not proceed'
@@ -167,7 +168,7 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
       wl   = [photplam[kr],photplam[kh],photplam[kn],photplam[kf]]
       ccm_unred, wl, dredf, ebv[0]
       plog,ll,prog,'will de-redden fluxes using the following band | wl | factor sets'
-      FOR ii = 0, 3 DO plog,ll,prog,'   '+ljust(bname[ii],6)+' | '+numstr(wl[ii])+' | '+numstr(dredf[ii])
+      FOR ii = 0, 3 DO plog,ll,prog,'   '+ljust(band[ii],6)+' | '+numstr(wl[ii])+' | '+numstr(dredf[ii])
    ENDIF 
    ;
    ; set levels
@@ -188,7 +189,7 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
       minh = minh_h
       maxh = maxh_h
    ENDELSE 
-   mind     = make_array(4,/float,value=0.0)
+   mind     = make_array(nband,/float,value=0.0)
    maxd     = mind
    mind[kr] = minr
    maxd[kr] = maxr
@@ -199,7 +200,7 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
    mind[kf] = mind[kr]*(photplam[jf]/photplam[jr])^beta
    maxd[kf] = maxd[kr]*(photplam[jf]/photplam[jr])^beta
    plog,ll,prog,'will use the following flux calibrated display levels (band   min   max)'
-   FOR ii = 0, 3 DO plog,ll,'  ',ljust(bname[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
+   FOR ii = 0, 3 DO plog,ll,'  ',ljust(band[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
    ;
    ; empty cube for putting only the planes we want,
    ; and in the order we want
