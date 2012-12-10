@@ -48,7 +48,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
   ; load prerequisites
   astrolib
   resetplot
-  COMMON bands, band, nband, bandnam
+  COMMON bands, band, nband, nclr, bandnam ; These are set in ssoup_inputs but stupid IDL says I must define the block here.
   
   ; **** Note bxdef is the sky box size, it is currently hard wired 
   ; into ssoup_askyfit.  It should be an optional input parameter
@@ -95,7 +95,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      IF slow THEN keywait, 'type any key to continue: '
      plog,ll,prog,'preparing to make colour images'
-     phpl = make_array(4,/float,value=0.0)
+     phpl = make_array(nband,/float,value=0.0)
      phfl = phpl
      ;
      ; read in the output fits images so as to create 3 color 
@@ -103,7 +103,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      fits_read, inputstr.fimages_out[0], img, hd, /header_only
      nx   = sxpar(hd,'NAXIS1')
      ny   = sxpar(hd,'NAXIS2')
-     imgc = make_array(nx,ny,4,/float,value=0.0)
+     imgc = make_array(nx,ny,nband,/float,value=0.0)
      FOR ii = 0, nband-1 DO BEGIN
         fits_read, inputstr.fimages_out[ii], img, hd
         imgc[*,*,ii] = img

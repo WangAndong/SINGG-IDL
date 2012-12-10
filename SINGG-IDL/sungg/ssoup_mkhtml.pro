@@ -58,7 +58,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   widthh    = 400
   widths    = 600
   ;
-  COMMON bands, band, nband, bandnam
+  COMMON bands, band, nband, nclr, bandnam
   ;
   ; expand base and source directories
   IF basedir EQ '.' THEN bdir = file_expand_path(basedir) ELSE bdir = expand_path(basedir)
