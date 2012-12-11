@@ -69,8 +69,8 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    ;
    ; set up combo names
    COMMON bands, band, nband, ncombo
-   cname     = ['HALPHA,NUV,FUV','HALPHA,R,FUV','HALPHA,R,NUV','R,NUV,FUV']
    combo     = transpose(combigen(nband, 3))
+   cname     = string(band[combo], format='(A,",",A,",",A)')
    nfo       = N_elements(filo)
    ; TODO: replace with something less bad
    band = ['HALPHA', 'R', 'NUV', 'FUV']
