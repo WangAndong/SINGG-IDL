@@ -149,6 +149,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imhigh3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      ; Compare results to database values
+     band = ['R', 'HALPHA', 'NUV', 'FUV']
      plog,ll,prog,'comparing db vs ssoup results'
      ssoup_compresults, ll, inputstr.hname, phpl, ebv, band, inputstr.fprofs_out, inputstr.fcompare
      IF slow THEN keywait, 'type any key to continue: '

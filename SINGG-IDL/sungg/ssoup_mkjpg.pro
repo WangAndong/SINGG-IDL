@@ -73,10 +73,13 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    combo     = transpose(combigen(nband, 3))
    nfo       = N_elements(filo)
    ; TODO: replace with something less bad
-   kr      = where(bandparam EQ 'R', /NULL)
-   kh      = where(bandparam EQ 'HALPHA', /NULL)
-   kn      = where(bandparam EQ 'NUV', /NULL)
-   kf      = where(bandparam EQ 'FUV', /NULL)
+   band = ['HALPHA', 'R', 'NUV', 'FUV']
+   jh = 0
+   jr = 1
+   kr      = where(band EQ 'R', /NULL)
+   kh      = where(band EQ 'HALPHA', /NULL)
+   kn      = where(band EQ 'NUV', /NULL)
+   kf      = where(band EQ 'FUV', /NULL)
    
    IF nfo NE ncombo THEN BEGIN 
       plog,ll,prog,'Number of output files ('+numstr(nfo)+') does not equal number of combos ('+numstr(ncombo)+')'
