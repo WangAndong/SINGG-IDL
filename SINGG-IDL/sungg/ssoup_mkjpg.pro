@@ -166,12 +166,12 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    ENDIF 
    ;
    ; get deredden parameters
-   dredf   = make_array(4, /float, value=1.0)
+   dredf   = make_array(nband, /float, value=1.0)
    IF keyword_set(ebv) THEN BEGIN
       wl   = [photplam[kr],photplam[kh],photplam[kn],photplam[kf]]
       ccm_unred, wl, dredf, ebv[0]
       plog,ll,prog,'will de-redden fluxes using the following band | wl | factor sets'
-      FOR ii = 0, 3 DO plog,ll,prog,'   '+ljust(band[ii],6)+' | '+numstr(wl[ii])+' | '+numstr(dredf[ii])
+      FOR ii = 0, nband-1 DO plog,ll,prog,'   '+ljust(band[ii],6)+' | '+numstr(wl[ii])+' | '+numstr(dredf[ii])
    ENDIF 
    ;
    ; set levels
