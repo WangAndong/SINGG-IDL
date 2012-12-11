@@ -52,11 +52,13 @@ pro ssoup_inputs, fili, ll, inputstr
    ; G. Meurer 6/2010 (ICRAR/UWA)
    ; G. Meurer 8/2012 (ICRAR/UWA) add inputs for box plots
    prog         = 'SSOUP_INPUTS: '
-   COMMON bands, band, nband, nclr, bandnam
+   COMMON bands, band, nband, ncombo, bandnam
       band      = ['R', 'HALPHA', 'NUV', 'FUV']
       nband     = n_elements(band)
-      nclr      = factorial(nband)/(6*factorial(nband-3)) ; number of 3 color combos
+      ncombo    = factorial(nband)/(6*factorial(nband-3)) ; number of 3 color combos
       bandnam   = ['R', 'H&alpha;', 'NUV', 'FUV']
+   combo = transpose(combigen(nband, 3))
+   combostr = string(strmid(band[combo], 0, 1), format='(3A)') ; generates RHN, RHF, etc.
    ;
    ; initialize all the variables
    inputstr = { $
@@ -73,20 +75,20 @@ pro ssoup_inputs, fili, ll, inputstr
      fbox         : strarr(nband), $
      fbplotj      : strarr(nband), $
      fbplote      : strarr(nband), $
-     fjpg_low     : strarr(nclr), $
-     fjpg_high    : strarr(nclr), $
-     fjpg_mlow1   : strarr(nclr), $
-     fjpg_mhigh1  : strarr(nclr), $
-     fjpg_mlow2   : strarr(nclr), $
-     fjpg_mhigh2  : strarr(nclr), $
-     fjpg_mlow3   : strarr(nclr), $
-     fjpg_mhigh3  : strarr(nclr), $
-     fjpg_imlow1  : strarr(nclr), $
-     fjpg_imhigh1 : strarr(nclr), $
-     fjpg_imlow2  : strarr(nclr), $
-     fjpg_imhigh2 : strarr(nclr), $
-     fjpg_imlow3  : strarr(nclr), $
-     fjpg_imhigh3 : strarr(nclr), $
+     fjpg_low     : strarr(ncombo), $
+     fjpg_high    : strarr(ncombo), $
+     fjpg_mlow1   : strarr(ncombo), $
+     fjpg_mhigh1  : strarr(ncombo), $
+     fjpg_mlow2   : strarr(ncombo), $
+     fjpg_mhigh2  : strarr(ncombo), $
+     fjpg_mlow3   : strarr(ncombo), $
+     fjpg_mhigh3  : strarr(ncombo), $
+     fjpg_imlow1  : strarr(ncombo), $
+     fjpg_imhigh1 : strarr(ncombo), $
+     fjpg_imlow2  : strarr(ncombo), $
+     fjpg_imhigh2 : strarr(ncombo), $
+     fjpg_imlow3  : strarr(ncombo), $
+     fjpg_imhigh3 : strarr(ncombo), $
      fcompare     : '', $
      scalprof     : '', $
      fcalprof     : '', $
@@ -123,7 +125,7 @@ pro ssoup_inputs, fili, ll, inputstr
    ENDFOR 
    ;
    ; now extract parameters from keyword value pairs
-   inputstr.hname            = pfplt_kwdread('HNAME',keywd,value,'',usetype='STRING')
+   inputstr.hname               = pfplt_kwdread('HNAME',keywd,value,'',usetype='STRING')
    for i=0, nband-1 do begin
       inputstr.fimages_in[i]    = pfplt_kwdread('FILI_'       + band[i], keywd,value,'',usetype='STRING')
       inputstr.fmasks_in[i]     = pfplt_kwdread('FILM_'       + band[i], keywd,value,'',usetype='STRING')
@@ -133,65 +135,25 @@ pro ssoup_inputs, fili, ll, inputstr
       inputstr.fbox[i]          = pfplt_kwdread('FBOX_'       + band[i], keywd,value,'',usetype='STRING')
       inputstr.fbplotj[i]       = pfplt_kwdread('FBPLOT_JPG_' + band[i], keywd,value,'',usetype='STRING')
       inputstr.fbplote[i]       = pfplt_kwdread('FBPLOT_EPS_' + band[i], keywd,value,'',usetype='STRING')
-   ENDFOR
-   inputstr.fmask_out        = pfplt_kwdread('FILM_OUT',keywd,value,'',usetype='STRING')
-   inputstr.fmask_sky        = pfplt_kwdread('FILM_SOUT',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_low[0]      = pfplt_kwdread('FJPGL_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_low[1]      = pfplt_kwdread('FJPGL_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_low[2]      = pfplt_kwdread('FJPGL_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_low[3]      = pfplt_kwdread('FJPGL_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_high[0]     = pfplt_kwdread('FJPGH_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_high[1]     = pfplt_kwdread('FJPGH_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_high[2]     = pfplt_kwdread('FJPGH_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_high[3]     = pfplt_kwdread('FJPGH_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow1[0]    = pfplt_kwdread('FJPGL_MSK1_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow1[1]    = pfplt_kwdread('FJPGL_MSK1_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow1[2]    = pfplt_kwdread('FJPGL_MSK1_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow1[3]    = pfplt_kwdread('FJPGL_MSK1_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh1[0]   = pfplt_kwdread('FJPGH_MSK1_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh1[1]   = pfplt_kwdread('FJPGH_MSK1_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh1[2]   = pfplt_kwdread('FJPGH_MSK1_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh1[3]   = pfplt_kwdread('FJPGH_MSK1_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow2[0]    = pfplt_kwdread('FJPGL_MSK2_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow2[1]    = pfplt_kwdread('FJPGL_MSK2_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow2[2]    = pfplt_kwdread('FJPGL_MSK2_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow2[3]    = pfplt_kwdread('FJPGL_MSK2_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh2[0]   = pfplt_kwdread('FJPGH_MSK2_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh2[1]   = pfplt_kwdread('FJPGH_MSK2_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh2[2]   = pfplt_kwdread('FJPGH_MSK2_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh2[3]   = pfplt_kwdread('FJPGH_MSK2_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow3[0]    = pfplt_kwdread('FJPGL_MSK3_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow3[1]    = pfplt_kwdread('FJPGL_MSK3_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow3[2]    = pfplt_kwdread('FJPGL_MSK3_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mlow3[3]    = pfplt_kwdread('FJPGL_MSK3_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh3[0]   = pfplt_kwdread('FJPGH_MSK3_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh3[1]   = pfplt_kwdread('FJPGH_MSK3_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh3[2]   = pfplt_kwdread('FJPGH_MSK3_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_mhigh3[3]   = pfplt_kwdread('FJPGH_MSK3_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow1[0]   = pfplt_kwdread('FJPGL_IMSK1_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow1[1]   = pfplt_kwdread('FJPGL_IMSK1_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow1[2]   = pfplt_kwdread('FJPGL_IMSK1_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow1[3]   = pfplt_kwdread('FJPGL_IMSK1_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh1[0]  = pfplt_kwdread('FJPGH_IMSK1_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh1[1]  = pfplt_kwdread('FJPGH_IMSK1_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh1[2]  = pfplt_kwdread('FJPGH_IMSK1_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh1[3]  = pfplt_kwdread('FJPGH_IMSK1_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow2[0]   = pfplt_kwdread('FJPGL_IMSK2_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow2[1]   = pfplt_kwdread('FJPGL_IMSK2_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow2[2]   = pfplt_kwdread('FJPGL_IMSK2_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow2[3]   = pfplt_kwdread('FJPGL_IMSK2_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh2[0]  = pfplt_kwdread('FJPGH_IMSK2_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh2[1]  = pfplt_kwdread('FJPGH_IMSK2_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh2[2]  = pfplt_kwdread('FJPGH_IMSK2_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh2[3]  = pfplt_kwdread('FJPGH_IMSK2_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow3[0]   = pfplt_kwdread('FJPGL_IMSK3_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow3[1]   = pfplt_kwdread('FJPGL_IMSK3_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow3[2]   = pfplt_kwdread('FJPGL_IMSK3_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imlow3[3]   = pfplt_kwdread('FJPGL_IMSK3_RNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh3[0]  = pfplt_kwdread('FJPGH_IMSK3_HNF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh3[1]  = pfplt_kwdread('FJPGH_IMSK3_HRF',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh3[2]  = pfplt_kwdread('FJPGH_IMSK3_HRN',keywd,value,'',usetype='STRING')
-   inputstr.fjpg_imhigh3[3]  = pfplt_kwdread('FJPGH_IMSK3_RNF',keywd,value,'',usetype='STRING')
+   endfor
+   inputstr.fmask_out           = pfplt_kwdread('FILM_OUT',keywd,value,'',usetype='STRING')
+   inputstr.fmask_sky           = pfplt_kwdread('FILM_SOUT',keywd,value,'',usetype='STRING')
+   for i=0, ncombo-1 do begin
+      inputstr.fjpg_low[i]      = pfplt_kwdread('FJPGL_'       + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_high[i]     = pfplt_kwdread('FJPGH_'       + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_mlow1[i]    = pfplt_kwdread('FJPGL_MSK1_'  + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_mhigh1[i]   = pfplt_kwdread('FJPGH_MSK1_'  + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_mlow2[i]    = pfplt_kwdread('FJPGL_MSK2_'  + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_mhigh2[i]   = pfplt_kwdread('FJPGH_MSK2_'  + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_mlow3[i]    = pfplt_kwdread('FJPGL_MSK3_'  + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_mhigh3[i]   = pfplt_kwdread('FJPGH_MSK3_'  + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_imlow1[i]   = pfplt_kwdread('FJPGL_IMSK1_' + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_imhigh1[i]  = pfplt_kwdread('FJPGH_IMSK1_' + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_imlow2[i]   = pfplt_kwdread('FJPGL_IMSK2_' + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_imhigh2[i]  = pfplt_kwdread('FJPGH_IMSK2_' + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_imlow3[i]   = pfplt_kwdread('FJPGL_IMSK3_' + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_imhigh3[i]  = pfplt_kwdread('FJPGH_IMSK3_' + combostr[i], keywd,value,'',usetype='STRING')
+   endfor
    inputstr.fcompare         = pfplt_kwdread('FCOMPARE',keywd,value,'',usetype='STRING')
    inputstr.scalprof         = pfplt_kwdread('SCALPROF',keywd,value,'',usetype='STRING')
    inputstr.fcalprof         = pfplt_kwdread('FCALPROF',keywd,value,'',usetype='STRING')
