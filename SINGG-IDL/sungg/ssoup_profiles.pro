@@ -47,8 +47,9 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   endif 
   ;
   ; get a fiducial header
-  plog,ll,prog,'reading fiducial header from '+fimages[0]
-  fits_read, fimages[0], img, hdr, /header_only
+  fid = where(band eq 'R', /null)
+  plog,ll,prog,'reading fiducial header from '+fimages[fid]
+  fits_read, fimages[fid], img, hdr, /header_only
   ;
   ; get some quantities from header: seeing, pixel scale
   seeing  = sxpar(hdr, 'seeing')

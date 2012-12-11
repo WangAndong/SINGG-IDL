@@ -87,7 +87,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; get foreground dust absorption
      dbopen,sdb
-     list = dbmatch('name', inputstr.hname[0])
+     list = dbmatch('name', inputstr.hname)
      ebv  = 0.0
      IF list[0] NE -1 THEN dbext,list,'ebv',ebv
      dbclose
@@ -149,7 +149,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imhigh3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      ; Compare results to database values
-     band = ['R', 'HALPHA', 'NUV', 'FUV']
+     ; band = ['R', 'HALPHA', 'NUV', 'FUV']
      plog,ll,prog,'comparing db vs ssoup results'
      ssoup_compresults, ll, inputstr.hname, phpl, ebv, band, inputstr.fprofs_out, inputstr.fcompare
      IF slow THEN keywait, 'type any key to continue: '

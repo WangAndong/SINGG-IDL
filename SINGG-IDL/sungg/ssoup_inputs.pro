@@ -53,10 +53,10 @@ pro ssoup_inputs, fili, ll, inputstr
    ; G. Meurer 8/2012 (ICRAR/UWA) add inputs for box plots
    prog         = 'SSOUP_INPUTS: '
    COMMON bands, band, nband, ncombo, bandnam
-      band      = ['R', 'HALPHA', 'NUV', 'FUV']
+      band      = ['HALPHA', 'R', 'NUV', 'FUV']
       nband     = n_elements(band)
       ncombo    = factorial(nband)/(6*factorial(nband-3)) ; number of 3 color combos
-      bandnam   = ['R', 'H&alpha;', 'NUV', 'FUV']
+      bandnam   = ['H&alpha;', 'R', 'NUV', 'FUV']
    combo = transpose(combigen(nband, 3))
    combostr = string(strmid(band[combo], 0, 1), format='(3A)') ; generates RHN, RHF, etc.
    ;
@@ -139,8 +139,8 @@ pro ssoup_inputs, fili, ll, inputstr
    inputstr.fmask_out           = pfplt_kwdread('FILM_OUT',keywd,value,'',usetype='STRING')
    inputstr.fmask_sky           = pfplt_kwdread('FILM_SOUT',keywd,value,'',usetype='STRING')
    for i=0, ncombo-1 do begin
-      inputstr.fjpg_low[i]      = pfplt_kwdread('FJPGL_'       + combostr[i], keywd,value,'',usetype='STRING')
-      inputstr.fjpg_high[i]     = pfplt_kwdread('FJPGH_'       + combostr[i], keywd,value,'',usetype='STRING')
+      inputstr.fjpg_low[i]      = pfplt_kwdread('FJPGL_'       + combostr[i], keywd,value,'a',usetype='STRING')
+      inputstr.fjpg_high[i]     = pfplt_kwdread('FJPGH_'       + combostr[i], keywd,value,'a',usetype='STRING')
       inputstr.fjpg_mlow1[i]    = pfplt_kwdread('FJPGL_MSK1_'  + combostr[i], keywd,value,'',usetype='STRING')
       inputstr.fjpg_mhigh1[i]   = pfplt_kwdread('FJPGH_MSK1_'  + combostr[i], keywd,value,'',usetype='STRING')
       inputstr.fjpg_mlow2[i]    = pfplt_kwdread('FJPGL_MSK2_'  + combostr[i], keywd,value,'',usetype='STRING')

@@ -72,10 +72,6 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    combo     = transpose(combigen(nband, 3))
    cname     = string(band[combo], format='(A,",",A,",",A)')
    nfo       = N_elements(filo)
-   ; TODO: replace with something less bad
-   band = ['HALPHA', 'R', 'NUV', 'FUV']
-   jh = 0
-   jr = 1
    kr      = where(band EQ 'R', /NULL)
    kh      = where(band EQ 'HALPHA', /NULL)
    kn      = where(band EQ 'NUV', /NULL)
@@ -168,10 +164,9 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    ; get deredden parameters
    dredf   = make_array(nband, /float, value=1.0)
    IF keyword_set(ebv) THEN BEGIN
-      wl   = [photplam[kr],photplam[kh],photplam[kn],photplam[kf]]
-      ccm_unred, wl, dredf, ebv[0]
+         ccm_unred, photplam, dredf, ebv[0]
       plog,ll,prog,'will de-redden fluxes using the following band | wl | factor sets'
-      FOR ii = 0, nband-1 DO plog,ll,prog,'   '+ljust(band[ii],6)+' | '+numstr(wl[ii])+' | '+numstr(dredf[ii])
+      FOR ii = 0, nband-1 DO plog,ll,prog,'   '+ljust(band[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
    ENDIF 
    ;
    ; set levels
@@ -207,8 +202,8 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    ;
    ; empty cube for putting only the planes we want,
    ; and in the order we want
-   imcal    = make_array(nx, ny, 4, /float, value=0.0)
-   kk       = [jr, jh, jn, jf]
+   imcal    = make_array(nx, ny, nband, /float, value=0.0)
+   kk       = [jh, jr, jn, jf] ;FIXME - hardcoded limitation
    ;
    ; assemble cube of signed-sqrt calibrated fluxes
    FOR ii = 0, nz-1 DO imcal[*,*,ii] = ssqrt(photfl[kk[ii]]*dredf[ii]*imcube[*,*,kk[ii]])  ; calibrate 

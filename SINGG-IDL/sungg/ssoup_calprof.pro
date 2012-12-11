@@ -159,29 +159,29 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
      plog,ll,prog,'reading in header quantities from fits file: '+filename
      fits_read, filename, im, hd, /header_only
      exptime    = sxpar(hd, 'EXPTIME', count=count)
-     IF count NE 1 THEN stop, '**** should be one & only one EXPTIME in header, found='+numstr(count)
+     IF count NE 1 THEN stop, '**** should be one & only one EXPTIME in header, found '+numstr(count)
      eslev      = sxpar(hd, 'SKYSIGBX', count=count)
-     IF count NE 1 THEN stop, '**** should be one & only one SKYSIGBX in header, found='+numstr(count)
+     IF count NE 1 THEN stop, '**** should be one & only one SKYSIGBX in header, found '+numstr(count)
      plog,ll,prog,'    SKYSIGBX = '+numstr(eslev)
      skylev     = sxpar(hd, 'SKYLEV', count=count)
-     IF count NE 1 THEN stop, '**** should be one & only one SKYLEV in header, found='+numstr(count)
+     IF count NE 1 THEN stop, '**** should be one & only one SKYLEV in header, found '+numstr(count)
      IF band[ii] EQ 'HALPHA' THEN BEGIN 
         ;
         ; get PHOTFLUX, CNTRAT1, ECNTRAT2
         netflag = 1b
         phfl[ii] = sxpar(hd, 'PHOTFLUX', count=count)
-        IF count NE 1 THEN stop, '**** should be one and only one PHOTFLUX in header, found'+numstr(count)
+        IF count NE 1 THEN stop, '**** should be one and only one PHOTFLUX in header, found '+numstr(count)
         mag0[ii] = alog10(phfl[ii])
         plog,ll,prog,'    PHOTFLUX = '+numstr(mag0[ii])
         crat     = sxpar(hd, 'CNTRAT1', count=count)
-        IF count NE 1 THEN stop, '**** should be one and only one CNTRAT1 in header, found'+numstr(count)
+        IF count NE 1 THEN stop, '**** should be one and only one CNTRAT1 in header, found '+numstr(count)
         plog,ll,prog,'    CNTRAT1 = '+numstr(crat)
         IF keyword_set(fecntrat) THEN BEGIN 
            ecrat = fecntrat*crat
            plog,ll,prog,'    ECNTRAT2 = '+numstr(ecrat)+'  ( = default_ratio * CNTRAT1)'
         ENDIF ELSE BEGIN 
            ecrat = sxpar(hd, 'ECNTRAT2', count=count)
-           IF count NE 1 THEN stop, '**** should be one and only one ECNTRAT2 in header, found'+numstr(count)
+           IF count NE 1 THEN stop, '**** should be one and only one ECNTRAT2 in header, found '+numstr(count)
            plog,ll,prog,'    ECNTRAT2 = '+numstr(ecrat)
         ENDELSE 
      ENDIF ELSE BEGIN 
@@ -189,10 +189,10 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
         ; get MAGZPT1, PHOTFLAM
         netflag  = 0b
         mag0[ii] = sxpar(hd, 'MAGZPT1', count=count)
-        IF count NE 1 THEN stop, '**** should be one and only one MAGZPT1 in header, found'+numstr(count)
+        IF count NE 1 THEN stop, '**** should be one and only one MAGZPT1 in header, found '+numstr(count)
         plog,ll,prog,'    MAGZPT1 = '+numstr(mag0[ii])
         phfl[ii] = sxpar(hd, 'PHOTFLAM', count=count)
-        IF count NE 1 THEN stop, '**** should be one and only one PHOTFLAM in header, found'+numstr(count)
+        IF count NE 1 THEN stop, '**** should be one and only one PHOTFLAM in header, found '+numstr(count)
         plog,ll,prog,'    PHOTFLAM = '+numstr(phfl[ii])
      ENDELSE 
      ;
