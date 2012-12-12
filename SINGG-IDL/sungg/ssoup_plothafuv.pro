@@ -25,7 +25,8 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fplot, dcorr=dcorr, kline=kline
   elflag  =   9.999  ; error log flag
   cuflag  =   8.888  ; colour upper limit flag
   clflag  =   7.777  ; colour lower limit flag
-  ddir      = '~/IDL/Pro/Work/sungg/'         ; directory containing some prior data files
+  findpro,'ssoup_plothafuv.pro',DIRLIST=Dirlist,/noprint
+  ddir      = Dirlist[0]         ; expect to find data in same directory as this file
   fmti      = '(f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f)'
   fmtold    = '(a,f,f,f,f,f,f)'
   odb       = 'singg_derived'
@@ -266,7 +267,7 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fplot, dcorr=dcorr, kline=kline
   IF nfound2 GT 0 THEN oploterror_old, lsr2, lhafuv2, elsr2, elhafuv2, psym=gsym(1), symsize=symsize, color=!red, errcolor=!red, /nohat
   IF nfound3 GT 0 THEN oploterror_old, lsr3, lhafuv3, elsr3, elhafuv3, psym=gsym(1), symsize=symsize, color=!green, errcolor=!green, /nohat
   ;
-  ; plot profile and error
+  ; plot profile and error - FIXME: COMPLETELY BROKEN!
   if njhfr gt 0 then begin 
      oplot, lsr[jhfr], lewf[jhfr], linestyle=1, thick=thick                 ; plottable points: dotted line
      oplot, lsr[jhfr], lewf[jhfr], symsize=symsize, psym=gsym(9), color=!black ; linking hollow points
@@ -275,7 +276,8 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fplot, dcorr=dcorr, kline=kline
      ;
      ; points good in x & y: 
      ; solid line linking filled symbols with errors
-     oplot, lsr[khfr], lewf[khfr], thick=thick         
+     oplot, lsr[khfr], lewf[khfr], thick=thick        
+     print,lsr[khfr],lewf[khfr] 
      oplot, lsr[khfr], lewf[khfr], symsize=symsize, psym=gsym(4), color=!black
      oploterror_old, lsr[khfr], lewf[khfr], elsr[khfr], elewf[khfr], $
                  /nohat, errthick=thick+1, psym=3, errcolor=!black
