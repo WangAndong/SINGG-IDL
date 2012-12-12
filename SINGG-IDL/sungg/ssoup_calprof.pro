@@ -239,7 +239,7 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
         ;
         ; convert to final quantities and store  
         plog,ll,prog,'inclination correct and derive fractional sky errors for galaxy #'+numstr(jj+1)
-        IF ii EQ 0 THEN rad[ptt0:ptt1] = sma*pixsize
+        IF bandparam[ii] eq 'R' THEN rad[ptt0:ptt1] = sma*pixsize
         factsb                 = 1.0/(axerat[jj]*pixarea)
         factfb                 = 1.0/axerat[jj]
         sbprof[ptt0:ptt1,ii]   = factsb*sb                ; correct to SB per area, and correct to face-on
