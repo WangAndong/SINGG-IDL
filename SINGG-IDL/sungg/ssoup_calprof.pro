@@ -79,6 +79,7 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
   plog,ll,prog,'number of galaxies in profile files = '+numstr(ngal)
   ;
   ; work out bandparam <-> band correspondence 
+  ; FIXME: hardcoded no. wavelengths
   plog,ll,prog,'working out band name correspondence'
   p0       = where(bandparam EQ band[0],np0)
   p1       = where(bandparam EQ band[1],np1)
