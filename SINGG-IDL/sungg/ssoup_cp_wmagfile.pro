@@ -47,22 +47,22 @@ pro ssoup_cp_wmagfile, ll, outtype, filo, ngal, pt0, pt1, rad, mprof, emproft, e
   prog    = 'SSOUP_CP_WMAGFILE: '
   fmto    = '(f7.2,f8.3,f6.3,f9.3,f6.3,f6.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3)'
   case outtype of 
-     iha: begin ;
+     0: begin ;
            hlines1 = '# Surface quantities (in annuli)'
            hlines2 = '#  sma   mu_R   err     lSHa   etot  esky  ecnt   mu_nuv err    mu_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
            typ     = 'annular surface quantities '
         end
-     ir: begin 
+     1: begin 
            hlines1 = '# Integral quantities (in apertures)'
            hlines2 = '#  sma   mg_R   err     lSHa   etot  esky  ecnt   mg_nuv err    mg_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
            typ     = 'aperture integrated quantities'
         end
-     inuv: begin 
+     2: begin 
            hlines1 = '# Surface quantities, dust corrected (in annuli)'
            hlines2 = '#  sma   mu_R   err     lSHa   etot  esky  ecnt   mu_nuv err    mu_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
            typ     = 'dust corrected annular surface quantities '
         end
-     ifuv: begin 
+     3: begin 
            hlines1 = '# Integral quantities, dust corrected (in apertures)'
            hlines2 = '#  sma   mg_R   err     lSHa   etot  esky  ecnt   mg_nuv err    mg_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
            typ     = 'dust corrected aperture integrated quantities'
