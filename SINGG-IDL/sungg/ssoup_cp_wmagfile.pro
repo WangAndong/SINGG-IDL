@@ -36,25 +36,33 @@ pro ssoup_cp_wmagfile, ll, outtype, filo, ngal, pt0, pt1, rad, mprof, emproft, e
   ;      * pass nsigma (detection limit threshold) and write to file
   ;
   ; set header stuff
+  
+  ; TODO: make this less bad
+  COMMON bands, band
+  iha  = where(band eq 'HALPHA', /null)
+  ir   = where(band eq 'R', /null)
+  inuv = where(band eq 'NUV', /null)
+  ifuv = where(band eq 'FUV', /null)
+  
   prog    = 'SSOUP_CP_WMAGFILE: '
   fmto    = '(f7.2,f8.3,f6.3,f9.3,f6.3,f6.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3)'
   case outtype of 
-     0: begin ; FIXME: this is a stupid cludge
+     iha: begin ;
            hlines1 = '# Surface quantities (in annuli)'
            hlines2 = '#  sma   mu_R   err     lSHa   etot  esky  ecnt   mu_nuv err    mu_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
            typ     = 'annular surface quantities '
         end
-     1: begin 
+     ir: begin 
            hlines1 = '# Integral quantities (in apertures)'
            hlines2 = '#  sma   mg_R   err     lSHa   etot  esky  ecnt   mg_nuv err    mg_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
            typ     = 'aperture integrated quantities'
         end
-     2: begin 
+     inuv: begin 
            hlines1 = '# Surface quantities, dust corrected (in annuli)'
            hlines2 = '#  sma   mu_R   err     lSHa   etot  esky  ecnt   mu_nuv err    mu_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
            typ     = 'dust corrected annular surface quantities '
         end
-     3: begin 
+     ifuv: begin 
            hlines1 = '# Integral quantities, dust corrected (in apertures)'
            hlines2 = '#  sma   mg_R   err     lSHa   etot  esky  ecnt   mg_nuv err    mg_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
            typ     = 'dust corrected aperture integrated quantities'
@@ -84,14 +92,13 @@ pro ssoup_cp_wmagfile, ll, outtype, filo, ngal, pt0, pt1, rad, mprof, emproft, e
         printf,lu,'# galaxy index #'+numstr(jj+1)
      ENDIF 
      FOR ii = ptt0, ptt1 DO BEGIN 
-     ; FIXME: hardcoded indices!
-        printf,-1,rad[ii],mprof[ii,1],emproft[ii,1],mprof[ii,0],emproft[ii,0],$
-               emprofs[ii],emprofc[ii],mprof[ii,2],emproft[ii,2],mprof[ii,3],$
-               emproft[ii,3],mcfn[ii],emcfn[ii],mcnr[ii],emcnr[ii],$
+        printf,-1,rad[ii],mprof[ii,ir],emproft[ii,ir],mprof[ii,iha],emproft[ii,iha],$
+               emprofs[ii],emprofc[ii],mprof[ii,inuv],emproft[ii,inuv],mprof[ii,ifuv],$
+               emproft[ii,ifuv],mcfn[ii],emcfn[ii],mcnr[ii],emcnr[ii],$
                lewr[ii],elewr[ii],lewf[ii],elewf[ii],format=fmto
-        printf,lu,rad[ii],mprof[ii,1],emproft[ii,1],mprof[ii,0],emproft[ii,0],$
-               emprofs[ii],emprofc[ii],mprof[ii,2],emproft[ii,2],mprof[ii,3],$
-               emproft[ii,3],mcfn[ii],emcfn[ii],mcnr[ii],emcnr[ii],$
+        printf,lu,rad[ii],mprof[ii,ir],emproft[ii,ir],mprof[ii,iha],emproft[ii,iha],$
+               emprofs[ii],emprofc[ii],mprof[ii,inuv],emproft[ii,inuv],mprof[ii,ifuv],$
+               emproft[ii,ifuv],mcfn[ii],emcfn[ii],mcnr[ii],emcnr[ii],$
                lewr[ii],elewr[ii],lewf[ii],elewf[ii],format=fmto
      ENDFOR 
   ENDFOR 
