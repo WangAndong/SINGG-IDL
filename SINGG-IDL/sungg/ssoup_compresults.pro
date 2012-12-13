@@ -106,7 +106,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
   dredf   = make_array(nb, /float, value=1.0)
   IF ebv GT 0 THEN ccm_unred, photplam, dredf, ebv[0]
   plog,ll,prog,'will de-redden fluxes using the following band | wl | factor sets'
-  FOR ii = 0, nb DO plog,ll,prog,'   '+ljust(bandparam[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
+  FOR ii = 0, nb-1 DO plog,ll,prog,'   '+ljust(bandparam[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
   ;
   ; loop through bands
   plog,ll,prog,'opening output comparison file: '+fcomp
