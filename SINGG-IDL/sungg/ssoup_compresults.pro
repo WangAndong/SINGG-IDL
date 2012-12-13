@@ -95,7 +95,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
   plog,ll,prog,'number of matching entries in optical database: '+numstr(noo)
   ; FIXME: these are hardcoded number of wavelengths
   flx       = [lfha, mr, mnuv, mfuv]
-  ;flx       = [mr, lfha, mnuv0, mfuv0]
+  ;flx       = [lfha, mr, mnuv0, mfuv0]
   eflx      = [elfha, emr, emnuv, emfuv]
   r50       = [reha, rer, r50n, r50f]
   er50      = [ereha, erer, 0.0, 0.0]

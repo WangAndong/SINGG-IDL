@@ -36,11 +36,13 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ;
   ; set constants and default parameters
   asdeg      = 3600.0           ; arcsec/degree
+  ; FIXME: hardoding!
   fwhm       = [0.0, 0.0, 5.3, 4.2] ; default seeing (Morrissey et al. 2007)
   COMMON bands, band
+  nim        = n_elements(inputstr.fimages_in)
   nthresh    = 1024l            ; used to determine where to trim input optical images
-  rot        = make_array(4, /float, value=0.0)  ; initialize rotations
-  scale      = make_array(4, /float, value=0.0)  ; inititalize scale
+  rot        = fltarr(nim)  ; initialize rotations
+  scale      = fltarr(nim)  ; inititalize scale
   ufid       = 2                ; points to fiducial uv image
   ofid       = 0                ; points to fiducial optical image
   kbox       = 25               ; convolution kernel size in pixels
@@ -49,7 +51,6 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; do some error checking
   plog,ll,prog,'-------------------------- starting '+prog+'----------------------------'
   slow       = keyword_set(goslow)
-  nim        = n_elements(inputstr.fimages_in)
   if nim ne n_elements(inputstr.fimages_out) then $
      plog,-1,prog,'****WARNING: Number of output images NE number of input images'
   if nim ne 4 then $
@@ -69,61 +70,70 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ;
   ; read input images
   ;
+  ;FIXME: needs a for loop
   plog,ll,prog,'reading input images'
-  fits_read, inputstr.fimages_in[0], imgr, hdr
-  fwhm[0]    = SXPAR(hdR,'SEEING')
+  ir = where(band eq 'R', /null)
+  ir = ir[0]
+  ih = where(band eq 'HALPHA', /null)
+  ih = ih[0]
+  ifuv = where(band eq 'FUV', /null)
+  ifuv = ifuv[0]
+  inuv = where(band eq 'NUV', /null)
+  inuv = inuv[0]
+  fits_read, inputstr.fimages_in[ir], imgr, hdr
+  fwhm[ir]    = SXPAR(hdR,'SEEING')
   photflamR  = SXPAR(hdR,'PHOTFLAM')
   photplamR  = SXPAR(hdR,'PHOTPLAM')
-  texp[0]    = sxpar(hdr,'EXPTIME')
-  imgr       = imgr*texp[0]
+  texp[ir]    = sxpar(hdr,'EXPTIME')
+  imgr       = imgr*texp[ir]
   getrot, hdr, dum, cdelt
-  rot[0]     = dum
-  scale[0]   = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
+  rot[1]     = dum
+  scale[ir]   = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
   ;
-  fits_read, inputstr.fimages_in[1], imgHa, hdHa
-  fwhm[1]    = SXPAR(hdha,'SEEING')
+  fits_read, inputstr.fimages_in[ih], imgHa, hdHa
+  fwhm[ih]    = SXPAR(hdha,'SEEING')
   photfluxHa = SXPAR(hdHa,'PHOTFLUX')
-  texp[1]    = sxpar(hdha,'EXPTIME')
-  imgha      = imgha*texp[1]
+  texp[ih]    = sxpar(hdha,'EXPTIME')
+  imgha      = imgha*texp[ih]
   ;photplamHa = SXPAR(hdHa,'FILTER1')
   getrot, hdha, dum, cdelt
-  rot[1]     = dum
-  scale[1]   = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
+  rot[0]     = dum
+  scale[ih]   = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
   ;
-  fits_read, inputstr.fimages_in[2], imgn, hdn
-  texp[2]    = sxpar(hdn,'EXPTIME')
-  imgn       = imgn*texp[2]
+  fits_read, inputstr.fimages_in[inuv], imgn, hdn
+  texp[inuv]    = sxpar(hdn,'EXPTIME')
+  imgn       = imgn*texp[inuv]
   getrot, hdn, dum, cdelt
   rot[2]     = dum
-  scale[2]   = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
+  scale[inuv]   = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
   ;
-  fits_read, inputstr.fimages_in[3], imgf, hdf
-  texp[3]    = sxpar(hdf,'EXPTIME')
+  fits_read, inputstr.fimages_in[ifuv], imgf, hdf
+  texp[ifuv]    = sxpar(hdf,'EXPTIME')
   imgf       = imgf*texp[3]
   getrot, hdf, dum, cdelt
   rot[3]     = dum
-  scale[3]   = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
+  scale[ifuv]   = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
   ;
   ; convert fwhm values to pixels in the fiducial image
   fwhm       = fwhm / scale[ufid]
   ;
   ; compile headers
   plog,ll,prog,'compiling headers'
-  hdcompile0 = [hdr, hdha, hdn, hdf]
-  nhd0       = [n_elements(hdr), n_elements(hdha), n_elements(hdn), n_elements(hdf)]
-  ihd00       = make_array(4, /long, value=0l)
-  ihd01       = make_array(4, /long, value=1l)
+  hdcompile0 = [hdha, hdr, hdn, hdf]
+  nhd0       = [n_elements(hdha), n_elements(hdr), n_elements(hdn), n_elements(hdf)]
+  ihd00       = make_array(nim, /long, value=0l)
+  ihd01       = make_array(nim, /long, value=1l)
   FOR ii = 1, 3 DO ihd00[ii] = ihd00[ii-1]+nhd0[ii-1]  ; start position of header
   ihd01       = ihd00 + nhd0 - 1l                      ; end position of header
   ;
   ; extract info for fiducial optical image
   plog,-1,prog,'determining fiducial images'
   case ofid of 
-     0: begin
+     1: begin
           oimg = imgr
           ohd  = hdr
         end
-     1: begin
+     0: begin
           oimg = imgha
           ohd  = hdha
         end
@@ -148,11 +158,11 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ;
   ; extract info for fiducial UV image
   case ufid of 
-     0: begin
+     1: begin
           uimg = imgr
           uhd  = hdr
         end
-     1: begin
+     0: begin
           uimg = imgha
           uhd  = hdha
         end
@@ -184,8 +194,8 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; and last row/column that are masked in less than some 
   ; threshold number of columns/rows
   plog,ll,prog,'determining pixel limits of optical images to transform'
-  fits_read, inputstr.fmasks_in[1], imgm, hd             ; read Halpha mask
-  pp         = where(imgm EQ inputstr.mbadval_in[1], npp)  ; index of bad pixels
+  fits_read, inputstr.fmasks_in[ih], imgm, hd             ; read Halpha mask
+  pp         = where(imgm EQ inputstr.mbadval_in[ih], npp)  ; index of bad pixels
   imgm       = 0l*long(imgm) + 1l                ; convert to long array
   IF npp GT 0 THEN imgm[pp] = 0l                 ; with bad pixels marked as 0l
   ncgood     = total(imgm, 1)                    ; number of good columns at each row
@@ -241,22 +251,23 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; trim UV images based on the above coords
   plog,ll,prog,'trimming uv images'
   HEXTRACT,imgf,hdf,img,newhd3,trminxu,trmaxxu,trminyu,trmaxyu
-  imgtmp[*,*,3]  = img
+  imgtmp[*,*,ifuv]  = img
   HEXTRACT,imgn,hdn,img,newhd2,trminxu,trmaxxu,trminyu,trmaxyu
-  imgtmp[*,*,2]  = img
+  imgtmp[*,*,inuv]  = img
   ;
   ; rebin and align optical images based on new fuv image header
   plog,ll,prog,'transforming optical images'
   HASTROM,imgr,hdr,img,newhd0,newhd3,MISSING=0
-  imgtmp[*,*,0]  = img*(scale[ufid]/scale[0])^2
+  imgtmp[*,*,ir]  = img*(scale[ufid]/scale[0])^2
   HASTROM,imgha,hdha,img,newhd1,newhd3,MISSING=0
-  imgtmp[*,*,1]  = img*(scale[ufid]/scale[1])^2
+  imgtmp[*,*,ih]  = img*(scale[ufid]/scale[1])^2
   ;
   ; recompile headers
-  hdcompile1 = [newhd0, newhd1, newhd2, newhd3]
-  nhd1       = [n_elements(newhd0), n_elements(newhd1), n_elements(newhd2), n_elements(newhd3)]
-  ihd10      = make_array(4, /long, value=0l)
-  ihd11      = make_array(4, /long, value=1l)
+  ; another fixme
+  hdcompile1 = [newhd1, newhd0, newhd2, newhd3]
+  nhd1       = [n_elements(newhd1), n_elements(newhd0), n_elements(newhd2), n_elements(newhd3)]
+  ihd10      = make_array(nim, /long, value=0l)
+  ihd11      = make_array(nim, /long, value=1l)
   FOR ii = 1, 3 DO ihd10[ii] = ihd10[ii-1]+nhd1[ii-1]  ; start position of header
   ihd11      = ihd10 + nhd1 - 1l                      ; end position of header
   ;
@@ -294,7 +305,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; loop through image sets and convolve if needed
   str        = '  '
   for ii = 0, nim-1 do str = str+numstr(kfwhm[ii])+'  '
-  plog,ll,prog,'will convolve images and grow masks with kernel widths [pixels] (R, Ha, NUV, FUV): '+str
+  plog,ll,prog,'will convolve images and grow masks with kernel widths [pixels] (Ha, R, NUV, FUV): '+str
   for ii = 0, nim-1 do begin 
      hdi            = hdcompile1[ihd10[ii]:ihd11[ii]] ; input header after alignment
      img            = imgtmp[*,*,ii]
