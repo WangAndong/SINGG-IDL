@@ -93,20 +93,20 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
   ENDELSE
   dbclose
   plog,ll,prog,'number of matching entries in optical database: '+numstr(noo)
-  ;
-  flx       = [mr, lfha, mnuv, mfuv]
+  ; FIXME: these are hardcoded number of wavelengths
+  flx       = [lfha, mr, mnuv, mfuv]
   ;flx       = [mr, lfha, mnuv0, mfuv0]
-  eflx      = [emr, elfha, emnuv, emfuv]
-  r50       = [rer, reha, r50n, r50f]
-  er50      = [erer, ereha, 0.0, 0.0]
+  eflx      = [elfha, emr, emnuv, emfuv]
+  r50       = [reha, rer, r50n, r50f]
+  er50      = [ereha, erer, 0.0, 0.0]
   ;
   nb        = n_elements(bandparam)
   ;
   ; get deredden parameters
-  dredf   = make_array(4, /float, value=1.0)
+  dredf   = make_array(nb, /float, value=1.0)
   IF ebv GT 0 THEN ccm_unred, photplam, dredf, ebv[0]
   plog,ll,prog,'will de-redden fluxes using the following band | wl | factor sets'
-  FOR ii = 0, 3 DO plog,ll,prog,'   '+ljust(bandparam[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
+  FOR ii = 0, nb DO plog,ll,prog,'   '+ljust(bandparam[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
   ;
   ; loop through bands
   plog,ll,prog,'opening output comparison file: '+fcomp
