@@ -268,7 +268,7 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fplot, dcorr=dcorr, kline=kline
   IF nfound2 GT 0 THEN oploterror_old, lsr2, lhafuv2, elsr2, elhafuv2, psym=gsym(1), symsize=symsize, color=!red, errcolor=!red, /nohat
   IF nfound3 GT 0 THEN oploterror_old, lsr3, lhafuv3, elsr3, elhafuv3, psym=gsym(1), symsize=symsize, color=!green, errcolor=!green, /nohat
   ;
-  ; plot profile and error - FIXME: COMPLETELY BROKEN!
+  ; plot profile and error
   if njhfr gt 0 then begin 
      oplot, lsr[jhfr], lewf[jhfr], linestyle=1, thick=thick                 ; plottable points: dotted line
      oplot, lsr[jhfr], lewf[jhfr], symsize=symsize, psym=gsym(9), color=!black ; linking hollow points

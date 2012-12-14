@@ -66,8 +66,10 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
   edlim   = alog10(1.0+1.0/snlimit)    ; dex
   emlim   = 2.5*edlim                  ; mag
   ;
-  ; read one header just to get number of galaxies
-  pfplt_rdhdr, fprofs[0], pixsize, filename, funits, fscale, fluxcal, $
+  ; read R header just to get number of galaxies
+  ir = where(band eq 'R', /null)
+  ir = ir[0]
+  pfplt_rdhdr, fprofs[ir], pixsize, filename, funits, fscale, fluxcal, $
                proftype, numgals, galindex, xcenter, ycenter, $
                axerat, posang, posangwc, skylev, skysigpx, skysigbx, $
                rads, radf, radc, fluxs, fluxf, fluxt, flsigskys, flsigskyf, flsigskyt, $
@@ -138,7 +140,8 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
   skylevr  = 0.0
   ;
   ; loop through bands
-  FOR ii = 0, nband-1 DO BEGIN 
+  ; this requires R band to execute first, otherwise it will break!
+  FOR ii = p1[0], nband-1 DO BEGIN 
      ;
      ; pointer to position in db arrays
      pp     = pb[ii]
@@ -247,6 +250,9 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
         esbproft[ptt0:ptt1,ii] = factsb*sqrt(eslev^2+ephotsb^2)          ; total error = sky+photon
         efbproft[ptt0:ptt1,ii] = factfb*sqrt((npixap*eslev)^2+ephotfb^2) ; total error = sky+photon
      ENDFOR 
+     ;stupid kludge to get R executing before Ha
+     if ii eq p1[0] then ii = p0[0]-1 
+     if ii eq p0[0] then ii = p1[0]
   ENDFOR
   ;
   ; some pointers to be sure
