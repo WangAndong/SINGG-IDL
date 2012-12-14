@@ -51,9 +51,6 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   slow       = keyword_set(goslow)
   if nim ne n_elements(inputstr.fimages_out) then $
      plog,-1,prog,'****WARNING: Number of output images NE number of input images'
-  if nim ne 4 then $
-     plog,-1,prog,'****WARNING: I think I can only cope with 4 images...'
-  ;
   IF inputstr.mbadval_out NE 0b AND inputstr.mbadval_out NE 1b THEN BEGIN 
      plog,-1,prog,'****WARNING: mbadval_out out of range, resetting to 1b'
      inputstr.mbadval_out = 1b
