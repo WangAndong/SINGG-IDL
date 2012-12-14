@@ -36,12 +36,10 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ;
   ; set constants and default parameters
   asdeg      = 3600.0           ; arcsec/degree
-  ; FIXME: hardcoding!
-  fwhm       = [0.0, 0.0, 5.3, 4.2] ; default seeing (Morrissey et al. 2007)
   COMMON bands, band, nband
   nim        = n_elements(inputstr.fimages_in)
   nthresh    = 1024l            ; used to determine where to trim input optical images
-  rot        = fltarr(nim)  ; initialize rotations
+  rota       = fltarr(nim)  ; initialize rotations
   scale      = fltarr(nim)  ; inititalize scale
   ufid       = 2                ; points to fiducial uv image
   ofid       = 0                ; points to fiducial optical image
@@ -70,14 +68,15 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ;
   ; read input images and compile headers
   ;
-  plog,ll,prog,'reading input images'
+  plog,ll,prog,'reading input images and compiling headers'
   ix = intarr(nband)
   photplam = 0
   photflam = 0
   photfluxha = 0
+  fwhm = fltarr(nband)
   nhd0 = intarr(nband)
-  imgs = fltarr(10000,10000,nband) ; should be enough
-  hdcompile0 = strarr(nband,1000) ; should be enough...
+  imgs = ptrarr(nband) ; pointers! YAY!
+  hdcompile0 = ptrarr(nband)
   for i=0,nband-1 do begin
       fits_read, inputstr.fimages_in[i], img, hdr
       texp[i]    = sxpar(hdr,'EXPTIME')
@@ -91,45 +90,41 @@ pro ssoup_align, ll, inputstr, goslow=goslow
           fwhm[i]      = SXPAR(hdr,'SEEING')
           photflux     = SXPAR(hdr,'PHOTFLUX')
       endif
-      img          = img*texp[i]
+      ; default seeing (Morrissey et al. 2007)
+      if (band[i] eq 'NUV') then begin
+          fwhm[i]      = 5.3
+      endif
+      if (band[i] eq 'FUV') then begin
+          fwhm[i]      = 4.2
+      endif
+      img           = img*texp[i]
       getrot, hdr, dum, cdelt
-      rot[i]       = dum
-      scale[i]     = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
-      imgs[*,*,i]  = img
-      hdcompile[i] = hdr
-      nhd0[i] = n_elements(hdcompile[i])
+      rota[i]       = dum
+      scale[i]      = asdeg*sqrt(abs(cdelt[0]*cdelt[1]))
+      imgs[i]       = ptr_new(img)
+      hdcompile0[i] = ptr_new(hdr)
+      nhd0[i]       = n_elements(hdr)
   endfor
   ;
   ; convert fwhm values to pixels in the fiducial image
   fwhm       = fwhm / scale[ufid]
   ;
-  ; compile headers
-  plog,ll,prog,'compiling headers'
-  ihd00       = make_array(nim, /long, value=0l)
-  ihd01       = make_array(nim, /long, value=1l)
-  FOR ii = 1, 3 DO ihd00[ii] = ihd00[ii-1]+nhd0[ii-1]  ; start position of header
-  ihd01       = ihd00 + nhd0 - 1l                      ; end position of header
-  ;
   ; extract info for fiducial optical image
   plog,-1,prog,'determining fiducial images'
-  oimg = imgs[*,*,ofid]
-  ohd  = hdcompile0[ofid]
+  oimg       = *imgs[ofid]
+  ohd        = *hdcompile0[ofid]
   ohdp       = ofid
   siz        = size(oimg)
   nxo        = long(siz[1])
   nyo        = long(siz[2])
   ;
   ; extract info for fiducial UV image
-  uhd = imgs[*,*,ufid]
-  ohd = hdcompile0[ufid]
+  uimg       = *imgs[ufid]
+  uhd        = *hdcompile0[ufid]
   uhdp       = ufid
   siz        = size(uimg)
   nxu        = long(siz[1])
   nyu        = long(siz[2])
-  ;
-  ; make copies of the fiducial headers
-  ohd        = hdcompile0[ihd00[ohdp]:ihd01[ohdp]]
-  uhd        = hdcompile0[ihd00[uhdp]:ihd01[uhdp]]
   ;
   ; determine limits of pixels to transform using H-alpha image.
   ; do this by collapsing image in each dimension, and finding first
@@ -193,37 +188,32 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   imgtmp     = make_array(nxx, nyy, nim, /float, value=0.0)
   ;
   ; trim UV images based on the above coords
-  plog,ll,prog,'trimming uv images'
-  HEXTRACT,imgf,hdf,img,newhd3,trminxu,trmaxxu,trminyu,trmaxyu
-  imgtmp[*,*,ifuv]  = img
-  HEXTRACT,imgn,hdn,img,newhd2,trminxu,trmaxxu,trminyu,trmaxyu
-  imgtmp[*,*,inuv]  = img
-  ;
   ; rebin and align optical images based on new fuv image header
-  plog,ll,prog,'transforming optical images'
-  HASTROM,imgr,hdr,img,newhd0,newhd3,MISSING=0
-  imgtmp[*,*,ir]  = img*(scale[ufid]/scale[0])^2
-  HASTROM,imgha,hdha,img,newhd1,newhd3,MISSING=0
-  imgtmp[*,*,ih]  = img*(scale[ufid]/scale[1])^2
-  ;
-  ; recompile headers
-  ; another fixme
-  hdcompile1 = [newhd1, newhd0, newhd2, newhd3]
-  nhd1       = [n_elements(newhd1), n_elements(newhd0), n_elements(newhd2), n_elements(newhd3)]
-  ihd10      = make_array(nim, /long, value=0l)
-  ihd11      = make_array(nim, /long, value=1l)
-  FOR ii = 1, 3 DO ihd10[ii] = ihd10[ii-1]+nhd1[ii-1]  ; start position of header
-  ihd11      = ihd10 + nhd1 - 1l                      ; end position of header
+  plog,ll,prog,'transforming uv and optical images'
+  hdcompile1 = ptrarr(nband)
+  nhd1       = intarr(nband)
+  ; we're kind of expecting FUV to be the canonical image and to be in the last slot
+  for i=nband-1,0,-1 do begin
+      if (band[i] eq 'NUV' or band[i] eq 'FUV') then begin        
+          HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxu,trmaxxu,trminyu,trmaxyu
+          imgtmp[*,*,i] = img
+          hdcompile1[i] = ptr_new(newhd)
+      endif else begin
+          HASTROM,*imgs[i],*hdcompile0[i],img,newhd,*hdcompile1[nband-1],MISSING=0
+          imgtmp[*,*,i]  = img*(scale[ufid]/scale[i])^2
+          hdcompile1[i] = ptr_new(newhd)
+     endelse
+     nhd1[i] = n_elements(*hdcompile1[i])
+  endfor
   ;
   ; make data cube for input masks in output coord sys
   msktmp     = make_array(nxx, nyy, nim, /byte, value=0b)
   ;
   ; loop through masks and transform to new coord sys
   plog,ll,prog,'transforming masks'
-  uhd        = hdcompile1[ihd10[uhdp]:ihd11[uhdp]]     ; fiducial header for transformation
-  FOR ii = 0, nim-1 DO BEGIN 
-     ;IF ii LE 1 THEN hdi = ohd ELSE hdi = uhd 
-     hdi     = hdcompile0[ihd00[ii]:ihd01[ii]]         ; get input header from hdcompile0
+  uhd        = *hdcompile1[uhdp]     ; fiducial header for transformation
+  FOR ii = 0, nim-1 DO BEGIN
+     hdi     = *hdcompile0[ii]         ; get input header from hdcompile0
      ;
      ; Only do mask stuff if the mask file name is not an empty string
      if strlen(strtrim(inputstr.fmasks_in[ii],2)) gt 0 then begin 
@@ -251,7 +241,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   for ii = 0, nim-1 do str = str+numstr(kfwhm[ii])+'  '
   plog,ll,prog,'will convolve images and grow masks with kernel widths [pixels] (Ha, R, NUV, FUV): '+str
   for ii = 0, nim-1 do begin 
-     hdi            = hdcompile1[ihd10[ii]:ihd11[ii]] ; input header after alignment
+     hdi            = *hdcompile1[ii] ; input header after alignment
      img            = imgtmp[*,*,ii]
      imgo           = img
      if (ii ne ufid) and (kfwhm[ii] gt 0.0) then begin 
@@ -287,10 +277,10 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; Make sky mask from final mask
   plog,ll,prog,'making sky mask'
   buffer   = round(200.0*scale[ofid]/scale[ufid])
-  msks     = ssoup_askymask(ll, inputstr.hname, hdcompile1[ihd10[ufid]:ihd11[ufid]], buffer, msko)
+  msks     = ssoup_askymask(ll, inputstr.hname, *hdcompile1[ufid], buffer, msko)
   ;
   ; Make object to measure only mask
-  msks2    = ssoup_askymask(ll, inputstr.hname, hdcompile1[ihd10[ufid]:ihd11[ufid]], 0, msko)
+  msks2    = ssoup_askymask(ll, inputstr.hname, *hdcompile1[ufid], 0, msko)
   mopix   = 0*msks2 + inputstr.mbadval_out
   pp       = where(msks2 EQ 1b AND msko EQ mgoodval_out, npp)
   IF npp GT 0 THEN mopix[pp] = mgoodval_out
@@ -304,8 +294,8 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ;
   ; Loop to measure sky levels and update headers
   for ii = 0, nim-1 do begin
-     hd0    = hdcompile0[ihd00[ii]:ihd01[ii]]  ; initial header
-     hdi    = hdcompile1[ihd10[ii]:ihd11[ii]] ; input header after alignment
+     hd0    = *hdcompile0[ii]  ; initial header
+     hdi    = *hdcompile1[ii]  ; input header after alignment
      img    = imgtmp[*,*,ii]     
      ord    = inputstr.skyord[ii]
      ;
@@ -412,5 +402,6 @@ pro ssoup_align, ll, inputstr, goslow=goslow
      free_lun,lu
      IF slow THEN keywait, 'type any key to continue: '
   endfor 
+  ptr_free,imgs,hdcompile0,hdcompile1 ; don't leak memory
   plog,ll,prog,'finished '
 end 
