@@ -50,7 +50,7 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fplot
   ; determine max radii and corresponding pointers
   plog,ll,prog,'determining maxima radii, and points to plot'
   ;
-  ; indecis below are named as follows:
+  ; indices below are named as follows:
   ; 1 [j,k,l,m] indicates how to plot points
   ;   j: plottable (good or an upper or lower limit)
   ;   k: good
@@ -58,46 +58,46 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fplot
   ;   m: upper limit
   ; 2 [r,h,f,n,fn,nr,hr,hf] indicates band or colour
   ; 3 append 0 for dust corrected
-  ; 4 prepend n to indicate count of the indecis
+  ; 4 prepend n to indicate count of the indices
   ;
-  ssoup_psp_indecis, ll, 'R', sma, sr, esr, mflag, emflag, clflag, emflag, $
+  ssoup_psp_indices, ll, 'R', sma, sr, esr, mflag, emflag, clflag, emflag, $
                      rmax_r, jmax_r, jr, kr, lr, mr, njr, nkr, nlr, nmr
-  ssoup_psp_indecis, ll, 'R0', sma0, sr0, esr0, mflag, emflag, clflag, emflag, $
+  ssoup_psp_indices, ll, 'R0', sma0, sr0, esr0, mflag, emflag, clflag, emflag, $
                      rmax_r0, jmax_r0, jr0, kr0, lr0, mr0, njr0, nkr0, nlr0, nmr0
   ;
-  ssoup_psp_indecis, ll, 'HALPHA', sma, sha, eshat, lflag, elflag, clflag, elflag, $
+  ssoup_psp_indices, ll, 'HALPHA', sma, sha, eshat, lflag, elflag, clflag, elflag, $
                      rmax_h, jmax_h, jh, kh, lh, mh, njh, nkh, nlh, nmh
-  ssoup_psp_indecis, ll, 'HALPHA0', sma0, sha0, eshat0, lflag, elflag, clflag, elflag, $
+  ssoup_psp_indices, ll, 'HALPHA0', sma0, sha0, eshat0, lflag, elflag, clflag, elflag, $
                      rmax_h0, jmax_h0, jh0, kh0, lh0, mh0, njh0, nkh0, nlh0, nmh0
   ;
-  ssoup_psp_indecis, ll, 'NUV', sma, snuv, esnuv, mflag, emflag, clflag, emflag, $
+  ssoup_psp_indices, ll, 'NUV', sma, snuv, esnuv, mflag, emflag, clflag, emflag, $
                      rmax_n, jmax_n, jn, kn, ln, mn, njn, nkn, nln, nmn
-  ssoup_psp_indecis, ll, 'NUV0', sma0, snuv0, esnuv0, mflag, emflag, clflag, emflag, $
+  ssoup_psp_indices, ll, 'NUV0', sma0, snuv0, esnuv0, mflag, emflag, clflag, emflag, $
                      rmax_n0, jmax_n0, jn0, kn0, ln0, mn0, njn0, nkn0, nln0, nmn0
   ;
-  ssoup_psp_indecis, ll, 'FUV', sma, sfuv, esfuv, mflag, emflag, clflag, emflag, $
+  ssoup_psp_indices, ll, 'FUV', sma, sfuv, esfuv, mflag, emflag, clflag, emflag, $
                      rmax_f, jmax_f, jf, kf, lf, mf, njf, nkf, nlf, nmf
-  ssoup_psp_indecis, ll, 'FUV0', sma0, sfuv0, esfuv0, mflag, emflag, clflag, emflag, $
+  ssoup_psp_indices, ll, 'FUV0', sma0, sfuv0, esfuv0, mflag, emflag, clflag, emflag, $
                      rmax_f0, jmax_f0, jf0, kf0, lf0, mf0, njf0, nkf0, nlf0, nmf0
   ;
-  ssoup_psp_indecis, ll, '(FUV-NUV)', sma, scfn, escfn, mflag, emflag, clflag, cuflag, $
+  ssoup_psp_indices, ll, '(FUV-NUV)', sma, scfn, escfn, mflag, emflag, clflag, cuflag, $
                      rmax_fn, jmax_fn, jfn, kfn, lfn, mfn, njfn, nkfn, nlfn, nmfn
-  ssoup_psp_indecis, ll, '(FUV-NUV)0', sma0, scfn0, escfn0, mflag, emflag, clflag, cuflag, $
+  ssoup_psp_indices, ll, '(FUV-NUV)0', sma0, scfn0, escfn0, mflag, emflag, clflag, cuflag, $
                      rmax_fn0, jmax_fn0, jfn0, kfn0, lfn0, mfn0, njfn0, nkfn0, nlfn0, nmfn0
   ;
-  ssoup_psp_indecis, ll, '(NUV-R)', sma, scnr, escnr, mflag, emflag, clflag, cuflag, $
+  ssoup_psp_indices, ll, '(NUV-R)', sma, scnr, escnr, mflag, emflag, clflag, cuflag, $
                      rmax_nr, jmax_nr, jnr, knr, lnr, mnr, njnr, nknr, nlnr, nmnr
-  ssoup_psp_indecis, ll, '(NUV-R)0', sma0, scnr0, escnr0, mflag, emflag, clflag, cuflag, $
+  ssoup_psp_indices, ll, '(NUV-R)0', sma0, scnr0, escnr0, mflag, emflag, clflag, cuflag, $
                      rmax_nr0, jmax_nr0, jnr0, knr0, lnr0, mnr0, njnr0, nknr0, nlnr0, nmnr0
   ;
-  ssoup_psp_indecis, ll, 'log(HALPHA/R)', sma, slewr, eslewr, lflag, emflag, clflag, cuflag, $
+  ssoup_psp_indices, ll, 'log(HALPHA/R)', sma, slewr, eslewr, lflag, emflag, clflag, cuflag, $
                      rmax_hr, jmax_hr, jhr, khr, lhr, mhr, njhr, nkhr, nlhr, nmhr
-  ssoup_psp_indecis, ll, 'log(HALPHA/R)0', sma0, slewr0, eslewr0, lflag, emflag, clflag, cuflag, $
+  ssoup_psp_indices, ll, 'log(HALPHA/R)0', sma0, slewr0, eslewr0, lflag, emflag, clflag, cuflag, $
                      rmax_hr0, jmax_hr0, jhr0, khr0, lhr0, mhr0, njhr0, nkhr0, nlhr0, nmhr0
   ;
-  ssoup_psp_indecis, ll, 'log(HALPHA/FUV)', sma, slewf, eslewf, lflag, emflag, clflag, cuflag, $
+  ssoup_psp_indices, ll, 'log(HALPHA/FUV)', sma, slewf, eslewf, lflag, emflag, clflag, cuflag, $
                      rmax_hf, jmax_hf, jhf, khf, lhf, mhf, njhf, nkhf, nlhf, nmhf
-  ssoup_psp_indecis, ll, 'log(HALPHA/FUV)0', sma0, slewf0, eslewf0, lflag, emflag, clflag, cuflag, $
+  ssoup_psp_indices, ll, 'log(HALPHA/FUV)0', sma0, slewf0, eslewf0, lflag, emflag, clflag, cuflag, $
                      rmax_hf0, jmax_hf0, jhf0, khf0, lhf0, mhf0, njhf0, nkhf0, nlhf0, nmhf0
   ;
   rmax      = 1.05*max([rmax_r,rmax_h,rmax_n,rmax_f,rmax_fn,rmax_nr,rmax_hr,rmax_hf,rmax_r0,rmax_h0,rmax_n0,rmax_f0,rmax_fn0,rmax_nr0,rmax_hr0,rmax_hf0])

@@ -117,11 +117,11 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fplot, dcorr=dcorr, kline=kline
   ;
   ; determine max radii and corresponding pointers
   plog,ll,prog,'determining points to plot'
-  ssoup_psp_indecis, ll, 'R', sma, sr, esr, mflag, emflag, clflag, emflag, $
+  ssoup_psp_indices, ll, 'R', sma, sr, esr, mflag, emflag, clflag, emflag, $
                      rmax_r, jmax_r, jr, kr, lr, mr, njr, nkr, nlr, nmr
-  ssoup_psp_indecis, ll, 'HALPHA', sma, sha, eshat, lflag, elflag, clflag, elflag, $
+  ssoup_psp_indices, ll, 'HALPHA', sma, sha, eshat, lflag, elflag, clflag, elflag, $
                      rmax_h, jmax_h, jh, kh, lh, mh, njh, nkh, nlh, nmh
-  ssoup_psp_indecis, ll, 'log(HALPHA/FUV)', sma, slewf, eslewf, lflag, emflag, clflag, cuflag, $
+  ssoup_psp_indices, ll, 'log(HALPHA/FUV)', sma, slewf, eslewf, lflag, emflag, clflag, cuflag, $
                      rmax_hf, jmax_hf, jhf, khf, lhf, mhf, njhf, nkhf, nlhf, nmhf
   jhfr      = where(slewf ne lflag and sr ne mflag, njhfr)
   khfr      = where(esr ne emflag and esr ne clflag and eslewf ne emflag and eslewf ne clflag and eslewf ne cuflag, nkhfr)
