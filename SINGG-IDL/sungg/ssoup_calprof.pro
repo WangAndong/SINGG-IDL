@@ -81,13 +81,12 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
   plog,ll,prog,'number of galaxies in profile files = '+numstr(ngal)
   ;
   ; work out bandparam <-> band correspondence 
-  ; FIXME: hardcoded no. wavelengths
   plog,ll,prog,'working out band name correspondence'
-  p0       = where(bandparam EQ band[0],np0)
-  p1       = where(bandparam EQ band[1],np1)
-  p2       = where(bandparam EQ band[2],np2)
-  p3       = where(bandparam EQ band[3],np3)
-  pb       = [p0, p1, p2, p3]
+  pb = intarr(nband)
+  for i=0,nband-1 do begin
+      px = where(bandparam EQ band[i], /null)
+      pb[i] = px[0]
+  endfor
   ;
   ; get deredden parameters
   dredf    = make_array(nband, /float, value=1.0)
@@ -141,7 +140,7 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
   ;
   ; loop through bands
   ; this requires R band to execute first, otherwise it will break!
-  FOR ii = p1[0], nband-1 DO BEGIN 
+  FOR ii = pb[1], nband-1 DO BEGIN 
      ;
      ; pointer to position in db arrays
      pp     = pb[ii]
@@ -251,8 +250,8 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
         efbproft[ptt0:ptt1,ii] = factfb*sqrt((npixap*eslev)^2+ephotfb^2) ; total error = sky+photon
      ENDFOR 
      ;stupid kludge to get R executing before Ha
-     if ii eq p1[0] then ii = p0[0]-1 
-     if ii eq p0[0] then ii = p1[0]
+     if ii eq pb[1] then ii = pb[0]-1 
+     if ii eq pb[0] then ii = pb[1]
   ENDFOR
   ;
   ; some pointers to be sure
@@ -421,8 +420,8 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
      ptt1     = pt1[jj]    ; this saves me some typing
      ;
      ; pointers to how far out the reddening correction goes
-     ksnf = min([kssnlim[jj,p2],kssnlim[jj,p3]])  
-     kfnf = min([kssnlim[jj,p2],kssnlim[jj,p3]])
+     ksnf = min([kssnlim[jj,pb[2]],kssnlim[jj,pb[3]]])  
+     kfnf = min([kssnlim[jj,pb[2]],kssnlim[jj,pb[3]]])
      ;
      ; loop through bands
      FOR ii = 0, nband-1 DO BEGIN 
