@@ -24,7 +24,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
   pn    = where(bandparam EQ 'NUV',npn)
   pf    = where(bandparam EQ 'FUV',npf)
   pr    = where(bandparam EQ 'R',npr)
-  ph    = where(bandparam EQ 'Halpha',nph)
+  ph    = where(bandparam EQ 'HALPHA',nph)
   IF npn EQ 1 THEN wlnuv = photplam[pn] ELSE wlnuv = 2300.8
   IF npf EQ 1 THEN wlfuv = photplam[pf] ELSE wlfuv = 1535.1
   ;
