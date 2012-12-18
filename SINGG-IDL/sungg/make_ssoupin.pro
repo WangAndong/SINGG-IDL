@@ -19,16 +19,13 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ;      J0008-59; now tries either hname+'_mask.fits' and
   ;      hname+'_R_mask.fits'
   ;
-  skyord_r   = 2
-  skyord_ha  = 2
-  skyord_nuv = 1
-  skyord_fuv = 1
   rulen      = '*'+['-nd-int.fits', '_nuv.fits']
   rulef      = '*'+['-fd-int.fits', '_fuv.fits']
   ; some arrays we will need later
   bands = ['']
   fili  = ['']
   film  = ['']
+  skyord = [0]
   ;
   ; set logical unit for log file
   IF NOT keyword_set(ll) THEN ll = -1
@@ -68,6 +65,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ENDIF ELSE BEGIN 
      fili  = [fili,  fili_ha[0]]
      bands = [bands, 'HALPHA']
+     skyord = [skyord, 2]
   ENDELSE 
   ;
   ; find R image
@@ -80,6 +78,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ENDIF ELSE BEGIN 
      fili  = [fili,  fili_r[0]]
      bands = [bands, 'R']
+     skyord = [skyord, 2]
   ENDELSE 
   ;
   ; find NUV image
@@ -93,6 +92,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      ENDIF ELSE BEGIN 
         fili  = [fili,  fili_nuv[0]]
         bands = [bands, 'NUV']
+        skyord = [skyord, 1]
      ENDELSE
      ii    = ii + 1
   endrep until ((ii eq nr) or (count gt 0))
@@ -112,6 +112,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      ENDIF ELSE BEGIN 
         fili  = [fili,  fili_fuv[0]]
         bands = [bands, 'FUV']
+        skyord = [skyord, 1]
      ENDELSE
      ii    = ii + 1
   endrep until ((ii eq nr) or (count gt 0))
@@ -170,30 +171,28 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   bands = bands[1:*]
   fili = fili[1:*]
   film = film[1:*]
+  skyord = skyord[1:*]
+  nbands = n_elements(bands)
   ;
   ; derive other names
-  filo_r          = hname+'_aligned_R.fits'
-  filo_ha         = hname+'_aligned_Halpha.fits'
-  filo_nuv        = hname+'_aligned_NUV.fits'
-  filo_fuv        = hname+'_aligned_FUV.fits'
+  filo = strarr(nbands)
+  filp = strarr(nbands)
+  fbox = strarr(nbands)
+  fbplot_jpg = strarr(nbands)
+  fbplot_eps = strarr(nbands)
+  ; silly little hack
+  ih = where(bands eq 'HALPHA', nih)
+  if nih gt 0 then bands[ih[0]] = 'Halpha'
+  for i=0,nbands-1 do begin
+      filo[i] = hname+'_aligned_' + bands[i] + '.fits'
+      filp[i] = hname+'_aligned_' + bands[i] + '.profile'
+      fbox[i] = hname+'_aligned_box_' + bands[i] + '.dat'
+      fbplot_jpg[i] = hname+'_aligned_skyplot_' + bands[i] + '.jpg'
+      fbplot_eps[i] = hname+'_aligned_skyplot_' + bands[i] + '.eps'
+  endfor
+  if nih gt 0 then bands[ih[0]] = 'HAPLHA' ; unhack
   film_out        = hname+'_aligned_mask.fits'
   film_sout       = hname+'_aligned_skymask.fits'
-  filp_r          = hname+'_aligned_R.profile'
-  filp_ha         = hname+'_aligned_Halpha.profile'
-  filp_nuv        = hname+'_aligned_NUV.profile'
-  filp_fuv        = hname+'_aligned_FUV.profile'
-  fbox_r          = hname+'_aligned_box_R.dat'
-  fbox_ha         = hname+'_aligned_box_Halpha.dat'
-  fbox_nuv        = hname+'_aligned_box_NUV.dat'
-  fbox_fuv        = hname+'_aligned_box_FUV.dat'
-  fbplot_jpg_r    = hname+'_aligned_skyplot_R.jpg'
-  fbplot_jpg_ha   = hname+'_aligned_skyplot_Halpha.jpg'
-  fbplot_jpg_nuv  = hname+'_aligned_skyplot_NUV.jpg'
-  fbplot_jpg_fuv  = hname+'_aligned_skyplot_FUV.jpg'
-  fbplot_eps_r    = hname+'_aligned_skyplot_R.eps'
-  fbplot_eps_ha   = hname+'_aligned_skyplot_Halpha.eps'
-  fbplot_eps_nuv  = hname+'_aligned_skyplot_NUV.eps'
-  fbplot_eps_fuv  = hname+'_aligned_skyplot_FUV.eps'
   fcompare        = hname+'_compare.dat'
   scalprof        = hname+'_aligned_sprof.dat'
   fcalprof        = hname+'_aligned_fprof.dat'
@@ -270,64 +269,28 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ; write output file, copy to log file
   printf,lu, 'HNAME           = '+hname
   plog,ll,'','HNAME           = '+hname
-  for i=0,n_elements(bands)-1 do begin
-      printf,lu, 'FILI_' + bands[i] + '          = ' + fili[i]
-      plog,ll,'','FILI_' + bands[i] + '          = ' + fili[i]
-      printf,lu, 'FILM_' + bands[i] + '          = ' + film[i]
-      plog,ll,'','FILM_' + bands[i] + '          = ' + film[i]
+  for i=0,nbands-1 do begin
+      printf,lu, 'FILI_'       + bands[i] + ' = ' + fili[i]
+      plog,ll,'','FILI_'       + bands[i] + ' = ' + fili[i]
+      printf,lu, 'FILM_'       + bands[i] + ' = ' + film[i]
+      plog,ll,'','FILM_'       + bands[i] + ' = ' + film[i]
+      printf,lu, 'FILO_'       + bands[i] + ' = ' + filo[i]
+      plog,ll,'','FILO_'       + bands[i] + ' = ' + filo[i]
+      printf,lu, 'SKYORD_'     + bands[i] + ' = ' + strtrim(string(skyord[i]),2)
+      plog,ll,'','SKYORD_'     + bands[i] + ' = ' + strtrim(string(skyord[i]),2)
+      printf,lu, 'FILP_'       + bands[i] + ' = ' +filp[i]
+      plog,ll,'','FILP_'       + bands[i] + ' = ' +filp[i]
+      printf,lu, 'FBOX_'       + bands[i] + ' = ' +fbox[i]
+      plog,ll,'','FBOX_'       + bands[i] + ' = ' +fbox[i]
+      printf,lu, 'FBPLOT_JPG_' + bands[i] + ' = ' +fbplot_jpg[i]
+      plog,ll,'','FBPLOT_JPG_' + bands[i] + ' = ' +fbplot_jpg[i]
+      printf,lu, 'FBPLOT_EPS_' + bands[i] + ' = ' +fbplot_eps[i]
+      plog,ll,'','FBPLOT_EPS_' + bands[i] + ' = ' +fbplot_eps[i]
   endfor
-  printf,lu, 'FILO_R          = '+filo_r
-  plog,ll,'','FILO_R          = '+filo_r
-  printf,lu, 'FILO_HALPHA     = '+filo_ha
-  plog,ll,'','FILO_HALPHA     = '+filo_ha
-  printf,lu, 'FILO_NUV        = '+filo_nuv
-  plog,ll,'','FILO_NUV        = '+filo_nuv
-  printf,lu, 'FILO_FUV        = '+filo_fuv
-  plog,ll,'','FILO_FUV        = '+filo_fuv
-  printf,lu, 'SKYORD_R        = '+strtrim(string(skyord_r),2)
-  plog,ll,'','SKYORD_R        = '+strtrim(string(skyord_r),2)
-  printf,lu, 'SKYORD_HALPHA   = '+strtrim(string(skyord_ha),2)
-  plog,ll,'','SKYORD_HALPHA   = '+strtrim(string(skyord_ha),2)
-  printf,lu, 'SKYORD_NUV      = '+strtrim(string(skyord_nuv),2)
-  plog,ll,'','SKYORD_NUV      = '+strtrim(string(skyord_nuv),2)
-  printf,lu, 'SKYORD_FUV      = '+strtrim(string(skyord_fuv),2)
-  plog,ll,'','SKYORD_FUV      = '+strtrim(string(skyord_fuv),2)
   printf,lu, 'FILM_OUT        = '+film_out
   plog,ll,'','FILM_OUT        = '+film_out
   printf,lu, 'FILM_SOUT       = '+film_sout
   plog,ll,'','FILM_SOUT       = '+film_sout
-  printf,lu, 'FILP_R          = '+filp_r
-  plog,ll,'','FILP_R          = '+filp_r
-  printf,lu, 'FILP_HALPHA     = '+filp_ha
-  plog,ll,'','FILP_HALPHA     = '+filp_ha
-  printf,lu, 'FILP_NUV        = '+filp_nuv
-  plog,ll,'','FILP_NUV        = '+filp_nuv
-  printf,lu, 'FILP_FUV        = '+filp_fuv
-  plog,ll,'','FILP_FUV        = '+filp_fuv
-  printf,lu, 'FBOX_R          = '+fbox_r
-  plog,ll,'','FBOX_R          = '+fbox_r
-  printf,lu, 'FBOX_HALPHA     = '+fbox_ha
-  plog,ll,'','FBOX_HALPHA     = '+fbox_ha
-  printf,lu, 'FBOX_NUV        = '+fbox_nuv
-  plog,ll,'','FBOX_NUV        = '+fbox_nuv
-  printf,lu, 'FBOX_FUV        = '+fbox_fuv
-  plog,ll,'','FBOX_FUV        = '+fbox_fuv
-  printf,lu, 'FBPLOT_JPG_R    = '+fbplot_jpg_r
-  plog,ll,'','FBPLOT_JPG_R    = '+fbplot_jpg_r
-  printf,lu, 'FBPLOT_JPG_HALPHA = '+fbplot_jpg_ha
-  plog,ll,'','FBPLOT_JPG_HALPHA = '+fbplot_jpg_ha
-  printf,lu, 'FBPLOT_JPG_NUV  = '+fbplot_jpg_nuv
-  plog,ll,'','FBPLOT_JPG_NUV  = '+fbplot_jpg_nuv
-  printf,lu, 'FBPLOT_JPG_FUV  = '+fbplot_jpg_fuv
-  plog,ll,'','FBPLOT_JPG_FUV  = '+fbplot_jpg_fuv
-  printf,lu, 'FBPLOT_EPS_R    = '+fbplot_eps_r
-  plog,ll,'','FBPLOT_EPS_R    = '+fbplot_eps_r
-  printf,lu, 'FBPLOT_EPS_HALPHA = '+fbplot_eps_ha
-  plog,ll,'','FBPLOT_EPS_HALPHA = '+fbplot_eps_ha
-  printf,lu, 'FBPLOT_EPS_NUV  = '+fbplot_eps_nuv
-  plog,ll,'','FBPLOT_EPS_NUV  = '+fbplot_eps_nuv
-  printf,lu, 'FBPLOT_EPS_FUV  = '+fbplot_eps_fuv
-  plog,ll,'','FBPLOT_EPS_FUV  = '+fbplot_eps_fuv
   printf,lu, 'FJPGL_HNF       = '+fjpgl_hnf
   plog,ll,'','FJPGL_HNF       = '+fjpgl_hnf
   printf,lu, 'FJPGL_HRF       = '+fjpgl_hrf
