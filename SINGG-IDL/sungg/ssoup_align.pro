@@ -66,7 +66,6 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; read input images and compile headers
   ;
   plog,ll,prog,'reading input images and compiling headers'
-  ix = intarr(nband)
   photplam = 0
   photflam = 0
   photfluxha = 0

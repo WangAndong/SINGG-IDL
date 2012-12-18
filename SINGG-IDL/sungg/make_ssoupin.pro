@@ -25,6 +25,10 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   skyord_fuv = 1
   rulen      = '*'+['-nd-int.fits', '_nuv.fits']
   rulef      = '*'+['-fd-int.fits', '_fuv.fits']
+  ; some arrays we will need later
+  bands = ['']
+  fili  = ['']
+  film  = ['']
   ;
   ; set logical unit for log file
   IF NOT keyword_set(ll) THEN ll = -1
@@ -54,17 +58,6 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      plog,ll,prog,'will use passed HIPASS target name: '+hname
   ENDELSE 
   ;
-  ; find R image
-  sstr     = hname+'_?_ss.fits'
-  fili_r   = file_search(sstr,count=count)
-  IF count EQ 0 THEN BEGIN 
-     plog,ll,prog,'could not find R band image using search string: "'+sstr+'", exiting'
-     status = 0b
-     return
-  ENDIF ELSE BEGIN 
-     fili_r   = fili_r[0]
-  ENDELSE 
-  ;
   ; find Halpha image
   sstr     = '*_?sub_ss.fits'
   fili_ha  = file_search(hname+sstr,count=count)
@@ -73,7 +66,20 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      status = 0b
      return
   ENDIF ELSE BEGIN 
-     fili_ha  = fili_ha[0]
+     fili  = [fili,  fili_ha[0]]
+     bands = [bands, 'HALPHA']
+  ENDELSE 
+  ;
+  ; find R image
+  sstr     = hname+'_?_ss.fits'
+  fili_r   = file_search(sstr,count=count)
+  IF count EQ 0 THEN BEGIN 
+     plog,ll,prog,'could not find R band image using search string: "'+sstr+'", exiting'
+     status = 0b
+     return
+  ENDIF ELSE BEGIN 
+     fili  = [fili,  fili_r[0]]
+     bands = [bands, 'R']
   ENDELSE 
   ;
   ; find NUV image
@@ -85,7 +91,8 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      IF count EQ 0 THEN BEGIN 
         plog,ll,prog,'could not find NUV band image using search string: "'+sstr+'" ...'
      ENDIF ELSE BEGIN 
-        fili_nuv = fili_nuv[0]
+        fili  = [fili,  fili_nuv[0]]
+        bands = [bands, 'NUV']
      ENDELSE
      ii    = ii + 1
   endrep until ((ii eq nr) or (count gt 0))
@@ -103,30 +110,15 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      IF count EQ 0 THEN BEGIN 
         plog,ll,prog,'could not find FUV band image using search string: "'+sstr+'" ...'
      ENDIF ELSE BEGIN 
-        fili_fuv = fili_fuv[0]
+        fili  = [fili,  fili_fuv[0]]
+        bands = [bands, 'FUV']
      ENDELSE
      ii    = ii + 1
   endrep until ((ii eq nr) or (count gt 0))
   if count eq 0 then begin
      plog,ll,prog,'could not find FUV band image using any rule, exiting'
      status = 0b
-  endif
-  ;
-  ; find R mask image
-  film_r   = hname+'_mask.fits'
-  inf      = file_info(film_r)
-  IF NOT inf.exists THEN BEGIN 
-     try1  = film_r
-     try2  = hname+'_R_mask.fits'
-     inf   = file_info(try2)
-     IF inf.exists THEN BEGIN 
-        film_r = try2
-     ENDIF ELSE BEGIN 
-        plog,ll,prog,'**** warning could not find either guesses for R mask: '+try1+' , '+try2
-        plog,ll,prog,'continuing, anyway (but you will want to fix this)...'
-        film_r = try1
-     ENDELSE 
-  ENDIF 
+  endif 
   ;
   ; find Halpha mask image
   sstr    = hname+'*_*sub_mask.fits'
@@ -136,27 +128,48 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      film_ha  = hname+'_Rsub_mask.fits'
      plog,ll,prog,'continuing using default name: '+film_ha
   ENDIF ELSE BEGIN 
-     film_ha  = film_ha[0]
+     film  = [film, film_ha[0]]
   ENDELSE
+  ;
+  ; find R mask image
+  film_r   = hname+'_mask.fits'
+  inf      = file_info(film_r)
+  IF NOT inf.exists THEN BEGIN 
+     try1  = film_r
+     try2  = hname+'_R_mask.fits'
+     inf   = file_info(try2)
+     IF inf.exists THEN BEGIN 
+        film = [film, try2]
+     ENDIF ELSE BEGIN 
+        plog,ll,prog,'**** warning could not find either guesses for R mask: '+try1+' , '+try2
+        plog,ll,prog,'continuing, anyway (but you will want to fix this)...'
+        film = [film, try1]
+     ENDELSE 
+  ENDIF else begin
+      film = [film, film_r]
+  endelse
   ;
   ; find UV mask image
   sstr     = '*_uv_mask.fits'
-  film     = file_search(sstr,count=count)
+  filmuv   = file_search(sstr,count=count)
   IF count eq 0 THEN BEGIN 
      ;
      ; that didn't work try another guess
      plog,ll,prog,'could not find file containing: '+sstr+'  will try another guess.'
      sstr  = '*mask.fuv.fits'
-     film  = file_search(sstr,count=count)
+     filmuv = file_search(sstr,count=count)
      if count gt 0 then begin 
-        film_nuv = film[0]
+        film = [film, filmuv[0], filmuv[0]]
      endif else begin 
         plog,ll,prog,'**** warning could not find a UV mask file using search string : '+sstr+'  continuing, anyway ...'
      endelse 
   ENDIF else begin 
-     film_nuv = film[0]
+     film = [film, filmuv[0], filmuv[0]]
   endelse 
-  film_fuv = film_nuv
+  ; trim arrays
+  bands = bands[1:*]
+  fili = fili[1:*]
+  film = film[1:*]
   ;
   ; derive other names
   filo_r          = hname+'_aligned_R.fits'
@@ -257,22 +270,12 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ; write output file, copy to log file
   printf,lu, 'HNAME           = '+hname
   plog,ll,'','HNAME           = '+hname
-  printf,lu, 'FILI_R          = '+fili_r
-  plog,ll,'','FILI_R          = '+fili_r
-  printf,lu, 'FILI_HALPHA     = '+fili_ha
-  plog,ll,'','FILI_HALPHA     = '+fili_ha
-  printf,lu, 'FILI_NUV        = '+fili_nuv
-  plog,ll,'','FILI_NUV        = '+fili_nuv
-  printf,lu, 'FILI_FUV        = '+fili_fuv
-  plog,ll,'','FILI_FUV        = '+fili_fuv
-  printf,lu, 'FILM_R          = '+film_r
-  plog,ll,'','FILM_R          = '+film_r
-  printf,lu, 'FILM_HALPHA     = '+film_ha
-  plog,ll,'','FILM_HALPHA     = '+film_ha
-  printf,lu, 'FILM_NUV        = '+film_nuv
-  plog,ll,'','FILM_NUV        = '+film_nuv
-  printf,lu, 'FILM_FUV        = '+film_fuv
-  plog,ll,'','FILM_FUV        = '+film_fuv
+  for i=0,n_elements(bands)-1 do begin
+      printf,lu, 'FILI_' + bands[i] + '          = ' + fili[i]
+      plog,ll,'','FILI_' + bands[i] + '          = ' + fili[i]
+      printf,lu, 'FILM_' + bands[i] + '          = ' + film[i]
+      plog,ll,'','FILM_' + bands[i] + '          = ' + film[i]
+  endfor
   printf,lu, 'FILO_R          = '+filo_r
   plog,ll,'','FILO_R          = '+filo_r
   printf,lu, 'FILO_HALPHA     = '+filo_ha
