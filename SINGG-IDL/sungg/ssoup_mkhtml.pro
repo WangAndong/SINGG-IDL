@@ -58,7 +58,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   widthh    = 400
   widths    = 600
   ;
-  COMMON bands, band, nband, nclr, bandnam
+  COMMON bands, band, nband, ncombo, bandnam
   ;
   ; expand base and source directories
   IF basedir EQ '.' THEN bdir = file_expand_path(basedir) ELSE bdir = expand_path(basedir)
@@ -133,18 +133,14 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   printf,lu,'  <th colspan=2><b>Three colour images, high cut</b></th>'
   printf,lu,'  <th colspan=2><b>Three colour images, low cut</b></th>'
   printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_high[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_high[1],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_low[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_low[1],fjpgo,width=widthi
-  printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_high[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_high[3],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_low[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_low[3],fjpgo,width=widthi
-  printf,lu,'</tr>'
+  for i=0,ncombo-1,2 do begin
+      printf,lu,'<tr>'
+      ssoup_imcell,ll,lu,inputstr.fjpg_high[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_high[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_low[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_low[i+1],fjpgo,width=widthi
+      printf,lu,'</tr>'
+  endfor
   printf,lu,'</table>'
   printf,lu,'<hr>'
   ;
@@ -222,18 +218,14 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   printf,lu,'  <th colspan=2><b>Three colour images, bad objects mask, high cut</b></th>'
   printf,lu,'  <th colspan=2><b>Three colour images, bad objects inverted mask, high cut</b></th>'
   printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh1[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh1[1],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh1[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh1[1],fjpgo,width=widthi
-  printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh1[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh1[3],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh1[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh1[3],fjpgo,width=widthi
-  printf,lu,'</tr>'
+  for i=0,ncombo-1,2 do begin
+      printf,lu,'<tr>'
+      ssoup_imcell,ll,lu,inputstr.fjpg_mhigh1[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mhigh1[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_imhigh1[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imhigh1[i+1],fjpgo,width=widthi
+      printf,lu,'</tr>'
+  endfor
   printf,lu,'</table>'
   ;
   plog,ll,prog,'creating 3 colour bad object masked images table, low cut.'
@@ -242,18 +234,14 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   printf,lu,'  <th colspan=2><b>Three colour images, bad objects mask, low cut</b></th>'
   printf,lu,'  <th colspan=2><b>Three colour images, bad objects inverted mask, low cut</b></th>'
   printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow1[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow1[1],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow1[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow1[1],fjpgo,width=widthi
-  printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow1[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow1[3],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow1[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow1[3],fjpgo,width=widthi
-  printf,lu,'</tr>'
+  for i=0,ncombo-1,2 do begin
+      printf,lu,'<tr>'
+      ssoup_imcell,ll,lu,inputstr.fjpg_mlow1[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mlow1[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_imlow1[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imlow1[i+1],fjpgo,width=widthi
+      printf,lu,'</tr>'
+  endfor
   printf,lu,'</table>'
   ;
   ;
@@ -264,17 +252,14 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   printf,lu,'  <th colspan=2><b>Three colour images, sky inverted mask, high cut</b></th>'
   printf,lu,'</tr>'
   printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh2[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh2[1],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh2[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh2[1],fjpgo,width=widthi
-  printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh2[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh2[3],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh2[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh2[3],fjpgo,width=widthi
-  printf,lu,'</tr>'
+  for i=0,ncombo-1,2 do begin
+      printf,lu,'<tr>'
+      ssoup_imcell,ll,lu,inputstr.fjpg_mhigh2[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mhigh2[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_imhigh2[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imhigh2[i+1],fjpgo,width=widthi
+      printf,lu,'</tr>'
+  endfor
   printf,lu,'</table>'
   ;
   plog,ll,prog,'creating 3 colour sky masked images table, low cut.'
@@ -283,18 +268,14 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   printf,lu,'  <th colspan=2><b>Three colour images, sky mask, low cut</b></th>'
   printf,lu,'  <th colspan=2><b>Three colour images, sky inverted mask, low cut</b></th>'
   printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow2[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow2[1],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow2[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow2[1],fjpgo,width=widthi
-  printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow2[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow2[3],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow2[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow2[3],fjpgo,width=widthi
-  printf,lu,'</tr>'
+  for i=0,ncombo-1,2 do begin
+      printf,lu,'<tr>'
+      ssoup_imcell,ll,lu,inputstr.fjpg_mlow2[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mlow2[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_imlow2[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imlow2[i+1],fjpgo,width=widthi
+      printf,lu,'</tr>'
+  endfor
   printf,lu,'</table>'
   ;
   plog,ll,prog,'creating 3 colour object only masked images table, high cut.'
@@ -303,18 +284,14 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   printf,lu,'  <th colspan=2><b>Three colour images, object only mask, high cut</b></th>'
   printf,lu,'  <th colspan=2><b>Three colour images, object only inverted mask, high cut</b></th>'
   printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh3[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh3[1],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh3[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh3[1],fjpgo,width=widthi
-  printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh3[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mhigh3[3],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh3[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imhigh3[3],fjpgo,width=widthi
-  printf,lu,'</tr>'
+  for i=0,ncombo-1,2 do begin
+      printf,lu,'<tr>'
+      ssoup_imcell,ll,lu,inputstr.fjpg_mhigh3[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mhigh3[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_imhigh3[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imhigh3[i+1],fjpgo,width=widthi
+      printf,lu,'</tr>'
+  endfor
   printf,lu,'</table>'
   ;
   plog,ll,prog,'creating 3 colour object only masked images table, low cut.'
@@ -323,18 +300,14 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   printf,lu,'  <th colspan=2><b>Three colour images, object only mask, low cut</b></th>'
   printf,lu,'  <th colspan=2><b>Three colour images, object only inverted mask, low cut</b></th>'
   printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow3[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow3[1],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow3[0],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow3[1],fjpgo,width=widthi
-  printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow3[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_mlow3[3],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow3[2],fjpgo,width=widthi
-  ssoup_imcell,ll,lu,inputstr.fjpg_imlow3[3],fjpgo,width=widthi
-  printf,lu,'</tr>'
+  for i=0,ncombo-1,2 do begin
+      printf,lu,'<tr>'
+      ssoup_imcell,ll,lu,inputstr.fjpg_mlow3[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mlow3[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_imlow3[i],fjpgo,width=widthi
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imlow3[i+1],fjpgo,width=widthi
+      printf,lu,'</tr>'
+  endfor
   printf,lu,'</table>'
   ;
   ; mark up comparison table
