@@ -57,8 +57,7 @@ pro ssoup_inputs, fili, ll, inputstr
       nband     = n_elements(band)
       ncombo    = factorial(nband)/(6*factorial(nband-3)) ; number of 3 color combos
       bandnam   = ['H&alpha;', 'R', 'NUV', 'FUV']
-   combo = transpose(combigen(nband, 3))
-   combostr = string(strmid(band[combo], 0, 1), format='(3A)') ; generates RHN, RHF, etc.
+   bandavail = [''] ; available bands
    ;
    ; initialize all the variables
    inputstr = { $
@@ -127,15 +126,22 @@ pro ssoup_inputs, fili, ll, inputstr
    ; now extract parameters from keyword value pairs
    inputstr.hname               = pfplt_kwdread('HNAME',keywd,value,'',usetype='STRING')
    for i=0, nband-1 do begin
-      inputstr.fimages_in[i]    = pfplt_kwdread('FILI_'       + band[i], keywd,value,'',usetype='STRING')
-      inputstr.fmasks_in[i]     = pfplt_kwdread('FILM_'       + band[i], keywd,value,'',usetype='STRING')
-      inputstr.skyord[i]        = pfplt_kwdread('SKYORD_'     + band[i], keywd,value,'',usetype='INT')
-      inputstr.fimages_out[i]   = pfplt_kwdread('FILO_'       + band[i], keywd,value,'',usetype='STRING')
-      inputstr.fprofs_out[i]    = pfplt_kwdread('FILP_'       + band[i], keywd,value,'',usetype='STRING')
-      inputstr.fbox[i]          = pfplt_kwdread('FBOX_'       + band[i], keywd,value,'',usetype='STRING')
-      inputstr.fbplotj[i]       = pfplt_kwdread('FBPLOT_JPG_' + band[i], keywd,value,'',usetype='STRING')
-      inputstr.fbplote[i]       = pfplt_kwdread('FBPLOT_EPS_' + band[i], keywd,value,'',usetype='STRING')
+      tmp                       = pfplt_kwdread('FILI_'       + band[i], keywd,value,'',usetype='STRING')
+      if tmp ne '' then begin ; we have an image for this band
+          inputstr.fimages_in[i]  = tmp
+          bandavail = [bandavail, band[i]]
+          inputstr.fmasks_in[i]   = pfplt_kwdread('FILM_'       + band[i], keywd,value,'',usetype='STRING')
+          inputstr.skyord[i]      = pfplt_kwdread('SKYORD_'     + band[i], keywd,value,'',usetype='INT')
+          inputstr.fimages_out[i] = pfplt_kwdread('FILO_'       + band[i], keywd,value,'',usetype='STRING')
+          inputstr.fprofs_out[i]  = pfplt_kwdread('FILP_'       + band[i], keywd,value,'',usetype='STRING')
+          inputstr.fbox[i]        = pfplt_kwdread('FBOX_'       + band[i], keywd,value,'',usetype='STRING')
+          inputstr.fbplotj[i]     = pfplt_kwdread('FBPLOT_JPG_' + band[i], keywd,value,'',usetype='STRING')
+          inputstr.fbplote[i]     = pfplt_kwdread('FBPLOT_EPS_' + band[i], keywd,value,'',usetype='STRING')
+      endif
    endfor
+   bandavail = bandavail[1:*]
+   combo = transpose(combigen(n_elements(bandavail), 3))
+   combostr = string(strmid(bandavail[combo], 0, 1), format='(3A)') ; generates RHN, RHF, etc.
    inputstr.fmask_out           = pfplt_kwdread('FILM_OUT',keywd,value,'',usetype='STRING')
    inputstr.fmask_sky           = pfplt_kwdread('FILM_SOUT',keywd,value,'',usetype='STRING')
    for i=0, ncombo-1 do begin
