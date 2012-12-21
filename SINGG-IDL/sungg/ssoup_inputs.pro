@@ -52,12 +52,26 @@ pro ssoup_inputs, fili, ll, inputstr
    ; G. Meurer 6/2010 (ICRAR/UWA)
    ; G. Meurer 8/2012 (ICRAR/UWA) add inputs for box plots
    prog         = 'SSOUP_INPUTS: '
-   COMMON bands, band, nband, ncombo, bandnam
-      band      = ['HALPHA', 'R', 'NUV', 'FUV']
-      nband     = n_elements(band)
-      ncombo    = factorial(nband)/(6*factorial(nband-3)) ; number of 3 color combos
+   COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo
+      ; these are the possible bands (I hate you, IDL, for being case-insensitive)
+      ; think of this as an enumeration
+      band      = { $
+        halpha : 'HALPHA', $
+        r      : 'R', $
+        nuv    : 'NUV', $
+        fuv    : 'FUV' $
+        ; ps_u : "u", $
+        ; ps_g : "g", $
+        ; ps_r : "r", $
+        ; ps_i : "i", $
+        ; ps_z : "z", $
+        ; mir  : "MIR", $
+        ; fir  : "FIR" $
+      } 
+      nband     = n_tags(band)
       bandnam   = ['H&alpha;', 'R', 'NUV', 'FUV']
-   bandavail = [''] ; available bands
+      bandavail = [''] ; these are the bands we have for this galaxy
+      ncombo = factorial(nband)/(6*factorial(nband-3)) ; we'll trim this later
    ;
    ; initialize all the variables
    inputstr = { $
@@ -74,6 +88,7 @@ pro ssoup_inputs, fili, ll, inputstr
      fbox         : strarr(nband), $
      fbplotj      : strarr(nband), $
      fbplote      : strarr(nband), $
+     ; we shouldn't have to trim these
      fjpg_low     : strarr(ncombo), $
      fjpg_high    : strarr(ncombo), $
      fjpg_mlow1   : strarr(ncombo), $
@@ -126,24 +141,27 @@ pro ssoup_inputs, fili, ll, inputstr
    ; now extract parameters from keyword value pairs
    inputstr.hname               = pfplt_kwdread('HNAME',keywd,value,'',usetype='STRING')
    for i=0, nband-1 do begin
-      tmp                       = pfplt_kwdread('FILI_'       + band[i], keywd,value,'',usetype='STRING')
+      tmp                       = pfplt_kwdread('FILI_'       + band.(i), keywd,value,'',usetype='STRING')
       if tmp ne '' then begin ; we have an image for this band
           inputstr.fimages_in[i]  = tmp
-          bandavail = [bandavail, band[i]]
-          inputstr.fmasks_in[i]   = pfplt_kwdread('FILM_'       + band[i], keywd,value,'',usetype='STRING')
-          inputstr.skyord[i]      = pfplt_kwdread('SKYORD_'     + band[i], keywd,value,'',usetype='INT')
-          inputstr.fimages_out[i] = pfplt_kwdread('FILO_'       + band[i], keywd,value,'',usetype='STRING')
-          inputstr.fprofs_out[i]  = pfplt_kwdread('FILP_'       + band[i], keywd,value,'',usetype='STRING')
-          inputstr.fbox[i]        = pfplt_kwdread('FBOX_'       + band[i], keywd,value,'',usetype='STRING')
-          inputstr.fbplotj[i]     = pfplt_kwdread('FBPLOT_JPG_' + band[i], keywd,value,'',usetype='STRING')
-          inputstr.fbplote[i]     = pfplt_kwdread('FBPLOT_EPS_' + band[i], keywd,value,'',usetype='STRING')
+          bandavail = [bandavail, band.(i)]
+          inputstr.fmasks_in[i]   = pfplt_kwdread('FILM_'       + band.(i), keywd,value,'',usetype='STRING')
+          inputstr.skyord[i]      = pfplt_kwdread('SKYORD_'     + band.(i), keywd,value,'',usetype='INT')
+          inputstr.fimages_out[i] = pfplt_kwdread('FILO_'       + band.(i), keywd,value,'',usetype='STRING')
+          inputstr.fprofs_out[i]  = pfplt_kwdread('FILP_'       + band.(i), keywd,value,'',usetype='STRING')
+          inputstr.fbox[i]        = pfplt_kwdread('FBOX_'       + band.(i), keywd,value,'',usetype='STRING')
+          inputstr.fbplotj[i]     = pfplt_kwdread('FBPLOT_JPG_' + band.(i), keywd,value,'',usetype='STRING')
+          inputstr.fbplote[i]     = pfplt_kwdread('FBPLOT_EPS_' + band.(i), keywd,value,'',usetype='STRING')
       endif
    endfor
-   bandavail = bandavail[1:*]
-   combo = transpose(combigen(n_elements(bandavail), 3))
-   combostr = string(strmid(bandavail[combo], 0, 1), format='(3A)') ; generates RHN, RHF, etc.
    inputstr.fmask_out           = pfplt_kwdread('FILM_OUT',keywd,value,'',usetype='STRING')
    inputstr.fmask_sky           = pfplt_kwdread('FILM_SOUT',keywd,value,'',usetype='STRING')
+   ; generate image combos
+   bandavail = bandavail[1:*]
+   nbandavail = n_elements(bandavail)
+   ncombo = factorial(nbandavail)/(6*factorial(nbandavail-3))
+   combo = transpose(combigen(nbandavail, 3))
+   combostr = string(strmid(bandavail[combo], 0, 1), format='(3A)') ; generates RHN, RHF, etc.
    for i=0, ncombo-1 do begin
       inputstr.fjpg_low[i]      = pfplt_kwdread('FJPGL_'       + combostr[i], keywd,value,'',usetype='STRING')
       inputstr.fjpg_high[i]     = pfplt_kwdread('FJPGH_'       + combostr[i], keywd,value,'',usetype='STRING')
@@ -175,8 +193,8 @@ pro ssoup_inputs, fili, ll, inputstr
    ; **** should probably allow badvalues to be read in...
    ;
    ; check status of essential input images
-   existi         = make_array(nband, /byte, value=0b)
-   existm         = make_array(nband, /byte, value=0b)
+   existi         = make_array(nbandavail, /byte, value=0b)
+   existm         = make_array(nbandavail, /byte, value=0b)
    for ii = 0,nband-1 do begin
       inf         = file_info(inputstr.fimages_in[ii])
       existi[ii]  = inf.exists
@@ -210,8 +228,8 @@ pro ssoup_inputs, fili, ll, inputstr
    if nqqo gt 0 or nqqp gt 0 then begin
       inputstr.status      = 0b
       plog,ll,prog,'The following output images or profile names are empty: '
-      for ii = 0, nqqo-1 do plog,ll,' ','output image name for band = '+band[qqo[ii]]
-      for ii = 0, nqqm-1 do plog,ll,' ','output profile file name for band = '+band[qqm[ii]]
+      for ii = 0, nqqo-1 do plog,ll,' ','output image name for band = '+band.(qqo[ii])
+      for ii = 0, nqqm-1 do plog,ll,' ','output profile file name for band = '+band.(qqm[ii])
    endif else begin
       plog,ll,prog,'checked that output image and profile names are reasonable'
    endelse 

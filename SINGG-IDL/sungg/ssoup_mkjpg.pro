@@ -1,4 +1,4 @@
-PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
+PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
                  highcut=highcut, maskcmd=maskcmd, omask=omask, smask=smask, $
                  goslow=goslow
    ;
@@ -7,9 +7,6 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    ;  ll       -> logical unit of log file (should be open)
    ;  imcube   -> image cube storing the multi-wavelength data
    ;              in individual planes
-   ;  bandparam -> name of the photometric band for each plane
-   ;              of the cube.  This should have entries 
-   ;              'R', 'HALPHA', 'NUV', 'FUV' (at least).
    ;  photfl   -> the PHOTFLAM or PHOTFLUX (Halpha) for each plane
    ;              of the cube
    ;  photplam -> Pivot wavelength of each of the planes.
@@ -37,7 +34,8 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    ;              to a speed a user can monitor.
    ;
    ; G. Meurer (ICRAR/UWA) 06/2010  based on sample.pro by Ji Hoon Kim
-   nrgb    = 4
+   COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
+   nrgb    = 4 ; fixme?
    minr_h  = -2.0e-19
    minr_l  = -1.0e-19
    maxr_h  =  2.0e-16
@@ -54,10 +52,10 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    slow    = keyword_set(goslow)
    ;
    ; pointers to bands
-   jr      = where(bandparam EQ 'R', njr)
-   jh      = where(bandparam EQ 'HALPHA', njh)
-   jn      = where(bandparam EQ 'NUV', njn)
-   jf      = where(bandparam EQ 'FUV', njf)
+   jr      = where(bandavail EQ band.R, njr)
+   jh      = where(bandavail EQ band.HALPHA, njh)
+   jn      = where(bandavail EQ band.NUV, njn)
+   jf      = where(bandavail EQ band.FUV, njf)
    IF njr NE 1 THEN plog,ll,'image cube must have only one R plane; found = '+numstr(njr)
    IF njh NE 1 THEN plog,ll,'image cube must have only one HALPHA plane; found = '+numstr(njh)
    IF njn NE 1 THEN plog,ll,'image cube must have only one NUV plane; found = '+numstr(njn)
@@ -68,14 +66,13 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    ENDIF 
    ;
    ; set up combo names
-   COMMON bands, band, nband, ncombo
-   combo     = transpose(combigen(nband, 3))
-   cname     = string(band[combo], format='(A,",",A,",",A)')
+   cname     = string(bandavail[combo], format='(A,",",A,",",A)')
    nfo       = N_elements(filo)
-   kr      = where(band EQ 'R', /NULL)
-   kh      = where(band EQ 'HALPHA', /NULL)
-   kn      = where(band EQ 'NUV', /NULL)
-   kf      = where(band EQ 'FUV', /NULL)
+   ; fixme?
+   kr      = where(tag_names(band) eq band.R, /NULL)
+   kh      = where(tag_names(band) eq band.HALPHA, /NULL)
+   kn      = where(tag_names(band) eq band.NUV, /NULL)
+   kf      = where(tag_names(band) eq band.FUV, /NULL)
    
    IF nfo NE ncombo THEN BEGIN 
       plog,ll,prog,'Number of output files ('+numstr(nfo)+') does not equal number of combos ('+numstr(ncombo)+')'
@@ -166,7 +163,7 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    IF keyword_set(ebv) THEN BEGIN
          ccm_unred, photplam, dredf, ebv[0]
       plog,ll,prog,'will de-redden fluxes using the following band | wl | factor sets'
-      FOR ii = 0, nband-1 DO plog,ll,prog,'   '+ljust(band[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
+      FOR ii = 0, nband-1 DO plog,ll,prog,'   '+ljust(bandavail[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
    ENDIF 
    ;
    ; set levels
@@ -198,11 +195,11 @@ PRO ssoup_mkjpg, ll, imcube, bandparam, photfl, photplam, filo, ebv=ebv, $
    mind[kf] = mind[kr]*(photplam[jf]/photplam[jr])^beta
    maxd[kf] = maxd[kr]*(photplam[jf]/photplam[jr])^beta
    plog,ll,prog,'will use the following flux calibrated display levels (band   min   max)'
-   FOR ii = 0, 3 DO plog,ll,'  ',ljust(band[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
+   FOR ii = 0, 3 DO plog,ll,'  ',ljust(bandavail[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
    ;
    ; empty cube for putting only the planes we want,
    ; and in the order we want
-   imcal    = make_array(nx, ny, nband, /float, value=0.0)
+   imcal    = make_array(nx, ny, nbandavail, /float, value=0.0)
    kk       = [jh, jr, jn, jf] ;FIXME - hardcoded limitation
    ;
    ; assemble cube of signed-sqrt calibrated fluxes

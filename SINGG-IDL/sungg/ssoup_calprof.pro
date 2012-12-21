@@ -41,7 +41,7 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
   ;              order in band or bandparam is different from default.
   ;
   ; setup stuff
-  COMMON bands, band, nband
+   COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
   fmto    = '(f7.2,f8.3,f6.3,f9.3,f6.3,f6.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3)'
   hlines1 = '# Surface quantities (in annuli)'
   hlines2 = '#  sma   mu_R   err     lSHa   esky  ecnt  etot   mu_nuv err    mu_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
@@ -67,7 +67,7 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
   emlim   = 2.5*edlim                  ; mag
   ;
   ; read R header just to get number of galaxies
-  ir = where(band eq 'R', /null)
+  ir = where(bandavail eq band.R, /null)
   ir = ir[0]
   pfplt_rdhdr, fprofs[ir], pixsize, filename, funits, fscale, fluxcal, $
                proftype, numgals, galindex, xcenter, ycenter, $
@@ -168,7 +168,7 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
      plog,ll,prog,'    SKYSIGBX = '+numstr(eslev)
      skylev     = sxpar(hd, 'SKYLEV', count=count)
      IF count NE 1 THEN stop, '**** should be one & only one SKYLEV in header, found '+numstr(count)
-     IF band[ii] EQ 'HALPHA' THEN BEGIN 
+     IF bandavail[ii] EQ band.HALPHA THEN BEGIN 
         ;
         ; get PHOTFLUX, CNTRAT1, ECNTRAT2
         netflag = 1b

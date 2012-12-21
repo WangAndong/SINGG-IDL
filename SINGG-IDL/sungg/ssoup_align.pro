@@ -36,11 +36,10 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ;
   ; set constants and default parameters
   asdeg      = 3600.0           ; arcsec/degree
-  COMMON bands, band, nband
-  nim        = n_elements(inputstr.fimages_in)
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
   nthresh    = 1024l            ; used to determine where to trim input optical images
-  rota       = fltarr(nim)  ; initialize rotations
-  scale      = fltarr(nim)  ; inititalize scale
+  rota       = fltarr(nbandavail)  ; initialize rotations
+  scale      = fltarr(nbandavail)  ; inititalize scale
   ufid       = 2                ; points to fiducial uv image
   ofid       = 0                ; points to fiducial optical image
   kbox       = 25               ; convolution kernel size in pixels
@@ -49,7 +48,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; do some error checking
   plog,ll,prog,'-------------------------- starting '+prog+'----------------------------'
   slow       = keyword_set(goslow)
-  if nim ne n_elements(inputstr.fimages_out) then $
+  if nbandavail ne n_elements(inputstr.fimages_out) then $
      plog,-1,prog,'****WARNING: Number of output images NE number of input images'
   IF inputstr.mbadval_out NE 0b AND inputstr.mbadval_out NE 1b THEN BEGIN 
      plog,-1,prog,'****WARNING: mbadval_out out of range, resetting to 1b'
@@ -61,7 +60,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   IF inputstr.mbadval_out EQ 0b THEN mgoodval_out = 1b
   ;
   ; store exposure times here
-  texp       = make_array(nim, /float, value=1.0)
+  texp       = make_array(nbandavail, /float, value=1.0)
   ;
   ; read input images and compile headers
   ;
@@ -69,28 +68,28 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   photplam = 0
   photflam = 0
   photfluxha = 0
-  fwhm = fltarr(nband)
-  nhd0 = intarr(nband)
-  imgs = ptrarr(nband) ; pointers! YAY!
-  hdcompile0 = ptrarr(nband)
-  for i=0,nband-1 do begin
+  fwhm = fltarr(nbandavail)
+  nhd0 = intarr(nbandavail)
+  imgs = ptrarr(nbandavail) ; pointers! YAY!
+  hdcompile0 = ptrarr(nbandavail)
+  for i=0,nbandavail-1 do begin
       fits_read, inputstr.fimages_in[i], img, hdr
       texp[i]    = sxpar(hdr,'EXPTIME')
       ; read wavelength specific headers
-      if (band[i] eq 'R') then begin
+      if (bandavail[i] eq band.R) then begin
           fwhm[i]      = SXPAR(hdr,'SEEING')
           photflam     = SXPAR(hdr,'PHOTFLAM')
           photplam     = SXPAR(hdr,'PHOTPLAM')
       endif
-      if (band[i] eq 'HALPHA') then begin
+      if (bandavail[i] eq band.HALPHA) then begin
           fwhm[i]      = SXPAR(hdr,'SEEING')
           photflux     = SXPAR(hdr,'PHOTFLUX')
       endif
       ; default seeing (Morrissey et al. 2007)
-      if (band[i] eq 'NUV') then begin
+      if (bandavail[i] eq band.NUV) then begin
           fwhm[i]      = 5.3
       endif
-      if (band[i] eq 'FUV') then begin
+      if (bandavail[i] eq band.FUV) then begin
           fwhm[i]      = 4.2
       endif
       img           = img*texp[i]
@@ -127,8 +126,8 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; and last row/column that are masked in less than some 
   ; threshold number of columns/rows
   plog,ll,prog,'determining pixel limits of optical images to transform'
-  ih = where(band eq 'HALPHA', /null)
-  ih = ih[0]
+  ih = where(bandavail eq band.HALPHA, /null)
+  ih = ih[0] ; fixme? should do something intelligent here if HALPHA is not present
   fits_read, inputstr.fmasks_in[ih], imgm, hd             ; read Halpha mask
   pp         = where(imgm EQ inputstr.mbadval_in[ih], npp)  ; index of bad pixels
   imgm       = 0l*long(imgm) + 1l                ; convert to long array
@@ -181,16 +180,16 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; make data cube for easy storage of intermediate products...
   nxx        = trmaxxu - trminxu + 1
   nyy        = trmaxyu - trminyu + 1
-  imgtmp     = make_array(nxx, nyy, nim, /float, value=0.0)
+  imgtmp     = make_array(nxx, nyy, nbandavail, /float, value=0.0)
   ;
   ; trim UV images based on the above coords
   ; rebin and align optical images based on new fuv image header
   plog,ll,prog,'transforming uv and optical images'
-  hdcompile1 = ptrarr(nband)
-  nhd1       = intarr(nband)
+  hdcompile1 = ptrarr(nbandavail)
+  nhd1       = intarr(nbandavail)
   ; we're kind of expecting FUV to be the canonical image and to be in the last slot
-  for i=nband-1,0,-1 do begin
-      if (band[i] eq 'NUV' or band[i] eq 'FUV') then begin        
+  for i=nbandavail-1,0,-1 do begin
+      if (bandavail[i] eq band.NUV or bandavail[i] eq band.FUV) then begin        
           HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxu,trmaxxu,trminyu,trmaxyu
           imgtmp[*,*,i] = img
           hdcompile1[i] = ptr_new(newhd)
@@ -203,12 +202,12 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   endfor
   ;
   ; make data cube for input masks in output coord sys
-  msktmp     = make_array(nxx, nyy, nim, /byte, value=0b)
+  msktmp     = make_array(nxx, nyy, nbandavail, /byte, value=0b)
   ;
   ; loop through masks and transform to new coord sys
   plog,ll,prog,'transforming masks'
   uhd        = *hdcompile1[uhdp]     ; fiducial header for transformation
-  FOR ii = 0, nim-1 DO BEGIN
+  FOR ii = 0, nbandavail-1 DO BEGIN
      hdi     = *hdcompile0[ii]         ; get input header from hdcompile0
      ;
      ; Only do mask stuff if the mask file name is not an empty string
@@ -234,14 +233,14 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ;
   ; loop through image sets and convolve if needed
   str        = '  '
-  for ii = 0, nim-1 do str = str+numstr(kfwhm[ii])+'  '
-  plog,ll,prog,'will convolve images and grow masks with kernel widths [pixels] (Ha, R, NUV, FUV): '+str
-  for ii = 0, nim-1 do begin 
+  for ii = 0, nbandavail-1 do str = str+numstr(kfwhm[ii])+'  '
+  plog,ll,prog,'will convolve images and grow masks with kernel widths [pixels] (Ha, R, NUV, FUV): '+str ; FIXME
+  for ii = 0, nbandavail-1 do begin 
      hdi            = *hdcompile1[ii] ; input header after alignment
      img            = imgtmp[*,*,ii]
      imgo           = img
      if (ii ne ufid) and (kfwhm[ii] gt 0.0) then begin 
-        plog,ll,prog,'working on convolving '+band[ii]+' band image '
+        plog,ll,prog,'working on convolving '+bandavail[ii]+' band image '
         ;
         ; convolve the images that need it
         kern        = psf_gaussian(npixel=kbox,fwhm=kfwhm[ii],/normalize)
@@ -253,7 +252,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
      ;
      ; grow the mask if needed
      IF (kfwhm[ii] GE 1.0) and (strlen(strtrim(inputstr.fmasks_in[ii],2)) gt 0) THEN BEGIN 
-        plog,ll,prog,'growing '+band[ii]+' band mask'
+        plog,ll,prog,'growing '+bandavail[ii]+' band mask'
         mski           = msktmp[*,*,ii]
         grow_mask, mski, msko, kfwhm[ii], goodval=1b, badval=0b
         msktmp[*,*,ii] = msko
@@ -289,14 +288,14 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   IF slow THEN keywait, 'type any key to continue: '
   ;
   ; Loop to measure sky levels and update headers
-  for ii = 0, nim-1 do begin
+  for ii = 0, nbandavail-1 do begin
      hd0    = *hdcompile0[ii]  ; initial header
      hdi    = *hdcompile1[ii]  ; input header after alignment
      img    = imgtmp[*,*,ii]     
      ord    = inputstr.skyord[ii]
      ;
      ; read in and adjust old sky values and errors for new pixel size
-     plog,ll,prog,'retrieving original sky level for image #'+numstr(ii)+' (band = '+band[ii]+')'
+     plog,ll,prog,'retrieving original sky level for image #'+numstr(ii)+' (band = '+bandavail[ii]+')'
      afact     = (scale[ufid]/scale[ii])^2
      skylev0   = sxpar(hd0,'skylev',count=njj)
      if njj eq 0 then skylev0 = 0.0
@@ -381,7 +380,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
      ;
      ; Tidy the headers
      plog,ll,prog,'tidying header'
-     ssoup_atidyhdr, ll, band[ii], inputstr.fimages_in[ii], inputstr.fimages_out[ii], kfwhm[ii], img, hdi, hdo 
+     ssoup_atidyhdr, ll, bandavail[ii], inputstr.fimages_in[ii], inputstr.fimages_out[ii], kfwhm[ii], img, hdi, hdo 
      ;
      ; write output images
      plog,ll,prog,'writing output fits file: '+inputstr.fimages_out[ii]

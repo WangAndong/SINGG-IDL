@@ -1,4 +1,4 @@
-PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
+PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
   ;
   ; Compare magnitudes and radii from SSOUP and what's in
   ; various databases
@@ -16,13 +16,13 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
   hline1  = '#                         <---- Database ----> <------ SSOUP ------>'
   hline2  = '#SName         Band        R_50   mag    err      R_50   mag    err '
   wlv     = 5500.0
-  COMMON bands, band
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
   plog,ll,prog,'------------------- starting '+prog+'-------------------------'
   ;
   ; need pivot wavelength of NUV & FUV.  Should
   ; be passed, but have defaults, just in case
-  pn    = where(bandparam EQ 'NUV',npn)
-  pf    = where(bandparam EQ 'FUV',npf)
+  pn    = where(bandavail EQ band.NUV,npn)
+  pf    = where(bandavail EQ band.FUV,npf)
   IF npn EQ 1 THEN wlnuv = photplam[pn] ELSE wlnuv = 2300.8
   IF npf EQ 1 THEN wlfuv = photplam[pf] ELSE wlfuv = 1535.1
   ;
@@ -101,7 +101,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
   nb        = n_elements(bandparam)
   ;
   ; get deredden parameters
-  dredf   = make_array(nb, /float, value=1.0)
+  dredf   = make_array(nbandavail, /float, value=1.0)
   IF ebv GT 0 THEN ccm_unred, photplam, dredf, ebv[0]
   plog,ll,prog,'will de-redden fluxes using the following band | wl | factor sets'
   FOR ii = 0, nb-1 DO plog,ll,prog,'   '+ljust(bandparam[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
@@ -129,7 +129,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
                   flsigcnts, flsigcntf, flsigcntt, ref, ret, $
                   resigskyf, resigskyt, resigcntf, resigcntt, sef, set, $
                   lstart, lend, isoflag, netflag, /silent
-     IF strupcase(bandparam[ii]) NE 'HALPHA' THEN BEGIN 
+     IF bandavail[ii] NE band.HALPHA THEN BEGIN 
         fits_read, filename, im, hd, /header_only
         m0      = sxpar(hd, 'magzpt1')
         flx_p   = m0 - 2.5*alog10(dredf[ii]*fluxf/fscale)

@@ -31,11 +31,10 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   proftype = 'aligned'
   headline = '# profiles from aligned images convolved to common seeing and pixel grid'
   prog     = 'SSOUP_PROFILES: '
-  COMMON bands, band
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail
   ;
   plog,ll,prog,'------------------------- starting '+prog+'---------------------------------'
   ;
-  nim      = n_elements(fimages)
   vb       = keyword_set(verbose)
   ;
   ; decide on shape parameter
@@ -47,7 +46,7 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   endif 
   ;
   ; get a fiducial header
-  fid = where(band eq 'R', /null)
+  fid = where(bandavail eq band.R, /null) ; fixme: what if R is not present?
   plog,ll,prog,'reading fiducial header from '+fimages[fid]
   fits_read, fimages[fid], img, hdr, /header_only
   ;
@@ -153,14 +152,14 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   fits_read, fmask, mask, hdm
   ;
   ; Loop through images
-  FOR jj = 0, nim-1 DO BEGIN 
+  FOR jj = 0, nbandavail-1 DO BEGIN 
      plog,ll,prog,'Working on image: '+fimages[jj]
      ;
      ; read in image
      fits_read, fimages[jj], img, hdr
      ;
      ; get some stuff from header
-     IF band[jj] EQ 'HALPHA' THEN BEGIN 
+     IF bandavail[jj] EQ band.HALPHA THEN BEGIN 
         fscale = sxpar(hdr, 'photflux', count=nmtch) 
         units = 'erg/cm^2/s'
      ENDIF ELSE BEGIN 
