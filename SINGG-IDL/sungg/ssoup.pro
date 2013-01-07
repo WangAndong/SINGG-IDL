@@ -105,7 +105,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      nx   = sxpar(hd,'NAXIS1')
      ny   = sxpar(hd,'NAXIS2')
      imgc = make_array(nx,ny,nbandavail,/float,value=0.0)
-     FOR ii = 0, nband-1 DO BEGIN
+     FOR ii = 0, nbandavail-1 DO BEGIN
         fits_read, inputstr.fimages_out[ii], img, hd
         imgc[*,*,ii] = img
         IF bandavail[ii] EQ band.HALPHA THEN phfl[ii] = sxpar(hd,'photflux') ELSE phfl[ii] = sxpar(hd,'photflam')
@@ -156,7 +156,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; calibrate surface brightness profiles
      plog,ll,prog,'making calibrated profiles'
-     ssoup_calprof, ll, band, phpl, ebv, inputstr.fprofs_out, inputstr.scalprof, inputstr.fcalprof, $
+     ssoup_calprof, ll, phpl, ebv, (inputstr.fprofs_out), inputstr.scalprof, inputstr.fcalprof, $
                     (inputstr.scalprof0), inputstr.fcalprof0, fecntrat=fecntrat
      IF slow THEN keywait, 'type any key to continue: '
      ;

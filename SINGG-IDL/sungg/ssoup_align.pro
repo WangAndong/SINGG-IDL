@@ -194,7 +194,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
           imgtmp[*,*,i] = img
           hdcompile1[i] = ptr_new(newhd)
       endif else begin
-          HASTROM,*imgs[i],*hdcompile0[i],img,newhd,*hdcompile1[nband-1],MISSING=0
+          HASTROM,*imgs[i],*hdcompile0[i],img,newhd,*hdcompile1[nbandavail-1],MISSING=0
           imgtmp[*,*,i]  = img*(scale[ufid]/scale[i])^2
           hdcompile1[i] = ptr_new(newhd)
      endelse

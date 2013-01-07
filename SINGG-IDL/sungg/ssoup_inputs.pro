@@ -59,12 +59,12 @@ pro ssoup_inputs, fili, ll, inputstr
         halpha : 'HALPHA', $
         r      : 'R', $
         nuv    : 'NUV', $
-        fuv    : 'FUV' $
-        ; ps_u : "u", $
+        fuv    : 'FUV', $
+        ps_u   : "u" $
         ; ps_g : "g", $
-        ; ps_r : "r", $
-        ; ps_i : "i", $
-        ; ps_z : "z", $
+        ; psr : "r", $
+        ; psi : "i", $
+        ; psz : "z", $
         ; mir  : "MIR", $
         ; fir  : "FIR" $
       } 
@@ -73,22 +73,56 @@ pro ssoup_inputs, fili, ll, inputstr
       bandavail = [''] ; these are the bands we have for this galaxy
       ncombo = factorial(nband)/(6*factorial(nband-3)) ; we'll trim this later
    ;
-   ; initialize all the variables
+   plog,ll,prog,'----------------------- starting SSOUP_INPUTS ---------------------------'
+   ;
+   ; first read in the whole file, then just save the keyword lines.
+   plog,ll,prog,'reading input file: '+fili
+   fmt      = '(a120)'
+   readfmt, fili, fmt, line
+   jj       = where(strpos(line, ' = ') GT 0, nkwd)
+   kline    = line[jj]
+   ;
+   ; make arrays to store things
+   keywd    = make_array(nkwd, /string, value=' ')
+   value    = make_array(nkwd, /string, value=' ')
+   ;
+   ; keywd is array of all keywords in header lines
+   ; value is array of the corresponding columns
+   FOR ii = 0, nkwd-1 DO BEGIN 
+      str       = kline[ii]
+      keywd[ii] = strupcase(gettok(str, ' '))
+      dum       = gettok(str, ' ')
+      value[ii] = strtrim(str,2)
+   ENDFOR 
+   ;
+   ; count how many bands we have
+   for i=0, nband-1 do begin
+      tmp = pfplt_kwdread('FILI_'       + band.(i), keywd,value,'',usetype='STRING')
+      if tmp ne '' then begin ; we have an image for this band
+          bandavail = [bandavail, band.(i)]
+      endif
+   endfor
+   ; now we know how big the arrays in the structure are going to be
+   ; so we can now initialize them
+   bandavail = bandavail[1:*]
+   nbandavail = n_elements(bandavail)
+   ncombo = factorial(nbandavail)/(6*factorial(nbandavail-3))
+   combo = transpose(combigen(nbandavail, 3))
+   combostr = string(strmid(bandavail[combo], 0, 1), format='(3A)') ; generates RHN, RHF, etc.
    inputstr = { $
      hname        : '', $
-     fimages_in   : strarr(nband), $
-     fmasks_in    : strarr(nband), $
-     mbadval_in   : make_array(nband, /byte, value=1b), $
-     fimages_out  : strarr(nband), $
+     fimages_in   : strarr(nbandavail), $
+     fmasks_in    : strarr(nbandavail), $
+     mbadval_in   : make_array(nbandavail, /byte, value=1b), $
+     fimages_out  : strarr(nbandavail), $
      fmask_out    : '', $
      fmask_sky    : '', $
-     skyord       : intarr(nband), $
+     skyord       : intarr(nbandavail), $
      mbadval_out  : 1b, $
-     fprofs_out   : strarr(nband), $
-     fbox         : strarr(nband), $
-     fbplotj      : strarr(nband), $
-     fbplote      : strarr(nband), $
-     ; we shouldn't have to trim these
+     fprofs_out   : strarr(nbandavail), $
+     fbox         : strarr(nbandavail), $
+     fbplotj      : strarr(nbandavail), $
+     fbplote      : strarr(nbandavail), $
      fjpg_low     : strarr(ncombo), $
      fjpg_high    : strarr(ncombo), $
      fjpg_mlow1   : strarr(ncombo), $
@@ -116,52 +150,20 @@ pro ssoup_inputs, fili, ll, inputstr
      hafuvps0     : '', $
      status       : 0b $
    }
-   plog,ll,prog,'----------------------- starting SSOUP_INPUTS ---------------------------'
-   ;
-   ; first read in the whole file, then just save the keyword lines.
-   plog,ll,prog,'reading input file: '+fili
-   fmt      = '(a120)'
-   readfmt, fili, fmt, line
-   jj       = where(strpos(line, ' = ') GT 0, nkwd)
-   kline    = line[jj]
-   ;
-   ; make arrays to store things
-   keywd    = make_array(nkwd, /string, value=' ')
-   value    = make_array(nkwd, /string, value=' ')
-   ;
-   ; keywd is array of all keywords in header lines
-   ; value is array of the corresponding columns
-   FOR ii = 0, nkwd-1 DO BEGIN 
-      str       = kline[ii]
-      keywd[ii] = strupcase(gettok(str, ' '))
-      dum       = gettok(str, ' ')
-      value[ii] = strtrim(str,2)
-   ENDFOR 
-   ;
-   ; now extract parameters from keyword value pairs
+   ; read stuff in
    inputstr.hname               = pfplt_kwdread('HNAME',keywd,value,'',usetype='STRING')
-   for i=0, nband-1 do begin
-      tmp                       = pfplt_kwdread('FILI_'       + band.(i), keywd,value,'',usetype='STRING')
-      if tmp ne '' then begin ; we have an image for this band
-          inputstr.fimages_in[i]  = tmp
-          bandavail = [bandavail, band.(i)]
-          inputstr.fmasks_in[i]   = pfplt_kwdread('FILM_'       + band.(i), keywd,value,'',usetype='STRING')
-          inputstr.skyord[i]      = pfplt_kwdread('SKYORD_'     + band.(i), keywd,value,'',usetype='INT')
-          inputstr.fimages_out[i] = pfplt_kwdread('FILO_'       + band.(i), keywd,value,'',usetype='STRING')
-          inputstr.fprofs_out[i]  = pfplt_kwdread('FILP_'       + band.(i), keywd,value,'',usetype='STRING')
-          inputstr.fbox[i]        = pfplt_kwdread('FBOX_'       + band.(i), keywd,value,'',usetype='STRING')
-          inputstr.fbplotj[i]     = pfplt_kwdread('FBPLOT_JPG_' + band.(i), keywd,value,'',usetype='STRING')
-          inputstr.fbplote[i]     = pfplt_kwdread('FBPLOT_EPS_' + band.(i), keywd,value,'',usetype='STRING')
-      endif
+   for i=0,nbandavail-1 do begin
+      inputstr.fimages_in[i]   = pfplt_kwdread('FILI_'       + band.(i), keywd,value,'',usetype='STRING')
+      inputstr.fmasks_in[i]    = pfplt_kwdread('FILM_'       + band.(i), keywd,value,'',usetype='STRING')
+      inputstr.skyord[i]       = pfplt_kwdread('SKYORD_'     + band.(i), keywd,value,'',usetype='INT')
+      inputstr.fimages_out[i]  = pfplt_kwdread('FILO_'       + band.(i), keywd,value,'',usetype='STRING')
+      inputstr.fprofs_out[i]   = pfplt_kwdread('FILP_'       + band.(i), keywd,value,'',usetype='STRING')
+      inputstr.fbox[i]         = pfplt_kwdread('FBOX_'       + band.(i), keywd,value,'',usetype='STRING')
+      inputstr.fbplotj[i]      = pfplt_kwdread('FBPLOT_JPG_' + band.(i), keywd,value,'',usetype='STRING')
+      inputstr.fbplote[i]      = pfplt_kwdread('FBPLOT_EPS_' + band.(i), keywd,value,'',usetype='STRING')
    endfor
    inputstr.fmask_out           = pfplt_kwdread('FILM_OUT',keywd,value,'',usetype='STRING')
    inputstr.fmask_sky           = pfplt_kwdread('FILM_SOUT',keywd,value,'',usetype='STRING')
-   ; generate image combos
-   bandavail = bandavail[1:*]
-   nbandavail = n_elements(bandavail)
-   ncombo = factorial(nbandavail)/(6*factorial(nbandavail-3))
-   combo = transpose(combigen(nbandavail, 3))
-   combostr = string(strmid(bandavail[combo], 0, 1), format='(3A)') ; generates RHN, RHF, etc.
    for i=0, ncombo-1 do begin
       inputstr.fjpg_low[i]      = pfplt_kwdread('FJPGL_'       + combostr[i], keywd,value,'',usetype='STRING')
       inputstr.fjpg_high[i]     = pfplt_kwdread('FJPGH_'       + combostr[i], keywd,value,'',usetype='STRING')
@@ -195,7 +197,7 @@ pro ssoup_inputs, fili, ll, inputstr
    ; check status of essential input images
    existi         = make_array(nbandavail, /byte, value=0b)
    existm         = make_array(nbandavail, /byte, value=0b)
-   for ii = 0,nband-1 do begin
+   for ii = 0,nbandavail-1 do begin
       inf         = file_info(inputstr.fimages_in[ii])
       existi[ii]  = inf.exists
       if strlen(inputstr.fmasks_in[ii]) gt 0 then begin 

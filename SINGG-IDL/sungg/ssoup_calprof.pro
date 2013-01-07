@@ -1,12 +1,10 @@
-PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0, ffcalprof0, $
+PRO ssoup_calprof, ll, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0, ffcalprof0, $
                    fecntrat=fecntrat
   ;
   ; calibrate surface brightness profiles and their errors
   ; tabulate results into a single multiband output file.
   ;
   ;  ll         -> logical unit of log file
-  ;  bandparam  -> names of bands to process.  This should include
-  ;                'R', 'HALPHA', 'NUV', 'FUV'
   ;  photplam   -> pivot wavelength of the bands
   ;  ebvg       -> Galactic (foreground) extinction
   ;  fprofs     -> corresponding profile file names
@@ -82,27 +80,27 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
   ;
   ; work out bandparam <-> band correspondence 
   plog,ll,prog,'working out band name correspondence'
-  pb = intarr(nband)
+  pb = intarr(nbandavail)
   for i=0,nband-1 do begin
-      px = where(bandparam EQ band[i], /null)
+      px = where(bandavail EQ band.(i), /null)
       pb[i] = px[0]
   endfor
   ;
   ; get deredden parameters
-  dredf    = make_array(nband, /float, value=1.0)
+  dredf    = make_array(nbandavail, /float, value=1.0)
   IF ebvg GT 0 THEN ccm_unred, photplam, dredf, ebvg[0]
   plog,ll,prog,'will de-redden fluxes for foreground dust using the following band | wl | factor sets'
-  FOR ii = 0, nband-1 DO plog,ll,prog,'   '+ljust(bandparam[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
+  FOR ii = 0, nbandavail-1 DO plog,ll,prog,'   '+ljust(bandavail[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
   ;
   phpl2    = photplam
-  pp       = where(bandparam EQ 'HALPHA',npp)
+  pp       = where(bandavail EQ band.HALPHA,npp)
   IF npp GE 1 THEN phpl2[pp] = 6563.8
-  acalzlaw = make_array(nband, /float, value=1.0)
+  acalzlaw = make_array(nbandavail, /float, value=1.0)
   calz_unred, phpl2, acalzlaw, 1.0
   acalzlaw = 2.5*alog10(acalzlaw)
   IF npp GE 1 THEN acalzlaw[pp] = acalzlaw[pp]/0.45   ; correct for emission lines
   plog,ll,prog,'will de-redden fluxes for internal dust by the following law (Calzetti): band | wl | mag/E(B-V)'
-  FOR ii = 0, nband-1 DO plog,ll,prog,'   '+ljust(bandparam[ii],6)+' | '+numstr(phpl2[ii])+' | '+numstr(acalzlaw[ii])
+  FOR ii = 0, nbandavail-1 DO plog,ll,prog,'   '+ljust(bandparam[ii],6)+' | '+numstr(phpl2[ii])+' | '+numstr(acalzlaw[ii])
   ;
   ; arrays for different galaxies will be concatenated
   ; work out start and stop elements
@@ -122,25 +120,25 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
   ; "fm" - logarithmic flux 
   filnam   = make_array(nband, /string, value='')
   rad      = make_array(nrtot)
-  sbprof   = make_array(nrtot,nband)   ; surface brightnes linear units all bands
-  esbproft = make_array(nrtot,nband)   ; total error in surface brightness linear units all bands
+  sbprof   = make_array(nrtot,nbandavail)   ; surface brightnes linear units all bands
+  esbproft = make_array(nrtot,nbandavail)   ; total error in surface brightness linear units all bands
   esbprofc = make_array(nrtot)      ; Halpha continuum subtraction error linear surf bright
   esbprofs = make_array(nrtot)      ; Halpha sky + photon error linear surf bright
-  fbprof   = make_array(nrtot,nband)   ; flux linear units all bands
-  efbproft = make_array(nrtot,nband)   ; total error in flux linear units 
+  fbprof   = make_array(nrtot,nbandavail)   ; flux linear units all bands
+  efbproft = make_array(nrtot,nbandavail)   ; total error in flux linear units 
   efbprofc = make_array(nrtot)      ; Halpha continuum subtraction error linear flux
   efbprofs = make_array(nrtot)      ; Halpha sky+photon error linear flux
   sbr_raw  = make_array(nrtot, /float, value=0.0) ; for raw surface brightness profiles in R band
   fbr_raw  = make_array(nrtot, /float, value=0.0) ; for raw enclosed aperture fluxes in R band     
-  mag0     = make_array(nband, /float, value=0.0)    ; magnitude scale zeropoint
-  phfl     = make_array(nband, /float, value=0.0)    ; photflam (continuum) or photflux (Halpha)
+  mag0     = make_array(nbandavail, /float, value=0.0)    ; magnitude scale zeropoint
+  phfl     = make_array(nbandavail, /float, value=0.0)    ; photflam (continuum) or photflux (Halpha)
   ;
   ; initialize skylevr
   skylevr  = 0.0
   ;
   ; loop through bands
   ; this requires R band to execute first, otherwise it will break!
-  FOR ii = pb[1], nband-1 DO BEGIN 
+  FOR ii = pb[1], nbandavail-1 DO BEGIN 
      ;
      ; pointer to position in db arrays
      pp     = pb[ii]
@@ -200,7 +198,7 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
      ENDELSE 
      ;
      ; save R band sky level separately
-     if band[ii] eq 'R' then skylevr = skylev
+     if bandavail[ii] eq band.R then skylevr = skylev
      ;
      ; read profiles and store
      FOR jj = 0, ngal-1 DO BEGIN 
@@ -224,7 +222,7 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
         ngoodt   = total(ngood,/cumulative)          ; total good pixels in apertures
         frawan   = ngood*sb                          ; flux from pixels centered in annulus, doesn't include bad pixels
         frawap   = total(frawan,/cumulative)         ; total flux not corrected for partial or bad pixels
-        IF bandparam[ii] NE 'HALPHA' THEN BEGIN 
+        IF bandavail[ii] NE band.HALPHA THEN BEGIN 
            ephotsb = sqrt((sb + skylev)/(exptime*ngood))  ; photon error per pixel
            ephotfb = (fint/frawap)*sqrt((frawap+ngoodt*skylev)/exptime)   ; photon error in ap 
         ENDIF ELSE BEGIN 
@@ -234,14 +232,14 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
         ;
         ; store raw R band surface brightness and enclosed flux 
         ; profiles; they will be needed in the Halpha noise model.
-        if bandparam[ii] eq 'R' then begin
+        if bandavail[ii] eq band.R then begin
            sbr_raw[ptt0:ptt1]  = sb
            fbr_raw[ptt0:ptt1]  = frawap
         endif
         ;
         ; convert to final quantities and store  
         plog,ll,prog,'inclination correct and derive fractional sky errors for galaxy #'+numstr(jj+1)
-        IF bandparam[ii] eq 'R' THEN rad[ptt0:ptt1] = sma*pixsize
+        IF bandavail[ii] eq band.R THEN rad[ptt0:ptt1] = sma*pixsize
         factsb                 = 1.0/(axerat[jj]*pixarea)
         factfb                 = 1.0/axerat[jj]
         sbprof[ptt0:ptt1,ii]   = factsb*sb                ; correct to SB per area, and correct to face-on
@@ -254,9 +252,9 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
      if ii eq pb[0] then ii = pb[1]
   ENDFOR
   ;
-  ; some pointers to be sure
-  ih        = where(band EQ 'HALPHA', nih)
-  ir        = where(band EQ 'R', nir)
+  ; some pointers to be sure fixme?
+  ih        = where(tag_names(band) EQ band.HALPHA, nih)
+  ir        = where(tag_names(band) EQ band.R, nir)
   ih        = ih[0]
   ir        = ir[0]
   ;
@@ -278,7 +276,7 @@ PRO ssoup_calprof, ll, bandparam, photplam, ebvg, fprofs, fscalprof, ffcalprof, 
   ssoup_cp_calcmags, ll, bandparam, mag0, dredf, snlimit, fbprof, efbproft, efbprofc, efbprofs, $
                      fmprof, efmproft, efmprofc, efmprofs, mflag, emflag, lflag, elflag, /flag_trailing
   ;
-  FOR ii = 0, nband-1 DO BEGIN 
+  FOR ii = 0, nbandavail-1 DO BEGIN 
      ;
      ; now calibrate linear surface brightness and enclosed fluxes,
      ; this requires rewriting flux (& sb) arrays which are in
