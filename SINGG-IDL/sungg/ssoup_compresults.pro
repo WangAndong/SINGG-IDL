@@ -98,13 +98,11 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
   r50       = [reha, rer, r50n, r50f]
   er50      = [ereha, erer, 0.0, 0.0]
   ;
-  nb        = n_elements(bandparam)
-  ;
   ; get deredden parameters
   dredf   = make_array(nbandavail, /float, value=1.0)
   IF ebv GT 0 THEN ccm_unred, photplam, dredf, ebv[0]
   plog,ll,prog,'will de-redden fluxes using the following band | wl | factor sets'
-  FOR ii = 0, nb-1 DO plog,ll,prog,'   '+ljust(bandparam[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
+  FOR ii = 0, nbandavail-1 DO plog,ll,prog,'   '+ljust(bandavail[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
   ;
   ; loop through bands
   plog,ll,prog,'opening output comparison file: '+fcomp
@@ -114,10 +112,10 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
   plog,ll,' ',hline1
   plog,ll,' ',hline2
   ;
-  FOR ii = 0,nb-1 DO BEGIN 
+  FOR ii = 0,nbandavail-1 DO BEGIN 
      ;
      ; pointer to position in db arrays
-     pp     = where(band EQ bandparam[ii], npp)
+     pp     = where(tag_names(band) EQ bandavail[ii], npp)
      IF npp NE 1 THEN stop, 'no band with that name'
      ;
      ; read header of file, that's where the info is...
@@ -142,7 +140,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
      ENDELSE 
      ;
      ; print results for this band to log and output file
-     str = ljust(sname,15)+ljust(bandparam[ii],8)+'  '+$
+     str = ljust(sname,15)+ljust(bandavail[ii],8)+'  '+$
            string(r50[pp],format='(f6.2)')+' '+string(flx[pp],format='(f7.3)')+' '+string(eflx[pp],format='(f5.3)')+' | '+$
            string(r50_p,format='(f6.2)')+' '+string(flx_p,format='(f7.3)')+' '+string(eflx_p,format='(f5.3)')
      plog,ll,' ',str
