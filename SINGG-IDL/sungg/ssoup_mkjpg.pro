@@ -35,7 +35,6 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ;
    ; G. Meurer (ICRAR/UWA) 06/2010  based on sample.pro by Ji Hoon Kim
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
-   nrgb    = 4 ; fixme?
    minr_h  = -2.0e-19
    minr_l  = -1.0e-19
    maxr_h  =  2.0e-16
@@ -68,11 +67,6 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ; set up combo names
    cname     = string(bandavail[combo], format='(A,",",A,",",A)')
    nfo       = N_elements(filo)
-   ; fixme?
-   kr      = where(tag_names(band) eq band.R, /NULL)
-   kh      = where(tag_names(band) eq band.HALPHA, /NULL)
-   kn      = where(tag_names(band) eq band.NUV, /NULL)
-   kf      = where(tag_names(band) eq band.FUV, /NULL)
    
    IF nfo NE ncombo THEN BEGIN 
       plog,ll,prog,'Number of output files ('+numstr(nfo)+') does not equal number of combos ('+numstr(ncombo)+')'
@@ -184,18 +178,18 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
       minh = minh_h
       maxh = maxh_h
    ENDELSE 
-   mind     = make_array(nband,/float,value=0.0)
+   mind     = make_array(nbandavail,/float,value=0.0)
    maxd     = mind
-   mind[kr] = minr
-   maxd[kr] = maxr
-   mind[kh] = minh
-   maxd[kh] = maxh
-   mind[kn] = mind[kr]*(photplam[jn]/photplam[jr])^beta
-   maxd[kn] = maxd[kr]*(photplam[jn]/photplam[jr])^beta
-   mind[kf] = mind[kr]*(photplam[jf]/photplam[jr])^beta
-   maxd[kf] = maxd[kr]*(photplam[jf]/photplam[jr])^beta
+   mind[jr] = minr
+   maxd[jr] = maxr
+   mind[jh] = minh
+   maxd[jh] = maxh
+   mind[jn] = mind[jr]*(photplam[jn]/photplam[jr])^beta
+   maxd[jn] = maxd[jr]*(photplam[jn]/photplam[jr])^beta
+   mind[jf] = mind[jr]*(photplam[jf]/photplam[jr])^beta
+   maxd[jf] = maxd[jr]*(photplam[jf]/photplam[jr])^beta
    plog,ll,prog,'will use the following flux calibrated display levels (band   min   max)'
-   FOR ii = 0, 3 DO plog,ll,'  ',ljust(bandavail[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
+   FOR ii = 0, nbandavail-1 DO plog,ll,'  ',ljust(bandavail[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
    ;
    ; empty cube for putting only the planes we want,
    ; and in the order we want
