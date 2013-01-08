@@ -98,8 +98,11 @@ pro ssoup_inputs, fili, ll, inputstr
    ; count how many bands we have
    for i=0, nband-1 do begin
       tmp = pfplt_kwdread('FILI_'       + band.(i), keywd,value,'',usetype='STRING')
-      if tmp ne '' then begin ; we have an image for this band
-          bandavail = [bandavail, band.(i)]
+      if tmp ne '' then begin ; we might have an image for this band
+          inf = file_info(tmp)
+          if inf.read then begin
+              bandavail = [bandavail, band.(i)]
+          endif
       endif
    endfor
    ; now we know how big the arrays in the structure are going to be
@@ -195,31 +198,16 @@ pro ssoup_inputs, fili, ll, inputstr
    ; **** should probably allow badvalues to be read in...
    ;
    ; check status of essential input images
-   existi         = make_array(nbandavail, /byte, value=0b)
-   existm         = make_array(nbandavail, /byte, value=0b)
+   existm = 1b
    for ii = 0,nbandavail-1 do begin
-      inf         = file_info(inputstr.fimages_in[ii])
-      existi[ii]  = inf.exists
-      if strlen(inputstr.fmasks_in[ii]) gt 0 then begin 
-         ;
-         ; only check existence if file name is given
-         inf         = file_info(inputstr.fmasks_in[ii])
-         existm[ii]  = inf.exists
-      endif else begin 
-         ;
-         ; no file name given, pass the existence test nevertheless
-         ; (a default maks will be asumed)
-         existm[ii]  = 1b
-      endelse 
-   endfor 
-   qqi            = where(existi ne 1b, nqqi)
-   qqm            = where(existm ne 1b, nqqm)
-   if nqqi gt 0 or nqqm gt 0 then begin
-      inputstr.status      = 0b
-      plog,ll,prog,'The following input files do not exist: '
-      for ii = 0, nqqi-1 do plog,ll,' ',inputstr.fimages_in[qqi[ii]]
-      for ii = 0, nqqm-1 do plog,ll,' ',inputstr.fmasks_in[qqm[ii]]
-   endif else begin
+      inf         = file_info(inputstr.fmasks_in[ii])
+      if not inf.read then begin
+          plog,ll,prog,'The following input file does not exist: '
+          plog,ll,' ',inputstr.fmasks_in[ii]
+          existm = 0b
+      endif
+   endfor
+   if existm eq 1b
       plog,ll,prog,'all input files have been verified to exist'
       inputstr.status      = 1b
    endelse 
