@@ -71,7 +71,6 @@ pro ssoup_inputs, fili, ll, inputstr
       nband     = n_tags(band)
       bandnam   = ['H&alpha;', 'R', 'NUV', 'FUV']
       bandavail = [''] ; these are the bands we have for this galaxy
-      ncombo = factorial(nband)/(6*factorial(nband-3)) ; we'll trim this later
    ;
    plog,ll,prog,'----------------------- starting SSOUP_INPUTS ---------------------------'
    ;
@@ -207,10 +206,10 @@ pro ssoup_inputs, fili, ll, inputstr
           existm = 0b
       endif
    endfor
-   if existm eq 1b
+   if existm eq 1 then begin
       plog,ll,prog,'all input files have been verified to exist'
       inputstr.status      = 1b
-   endelse 
+   endif
    ;
    ; check that output file names are not empty
    qqo             = where(strtrim(inputstr.fimages_out,2) eq '',nqqo)

@@ -1,4 +1,4 @@
-PRO ssoup_cp_calcmags, ll, band, mag0, dredf, snlimit, $
+PRO ssoup_cp_calcmags, ll, mag0, dredf, snlimit, $
                        flx, eflxt, eflxc, eflxs, $
                        mag, emagt, emagc, emags, $
                        mflag, emflag, lflag, elflag, flag_trailing=flag_trailing
@@ -8,7 +8,6 @@ PRO ssoup_cp_calcmags, ll, band, mag0, dredf, snlimit, $
   ; brightnesses.
   ;
   ;  ll      -> logical unit number for log file
-  ;  band    -> band names (an array of <nb> strings)
   ;  mag0    -> magnitude zeropoints (an array of <nb> strings)
   ;  dredf   -> factor required to remove foreground dust extinction 
   ;             (an array of <nb> strings)
@@ -38,13 +37,14 @@ PRO ssoup_cp_calcmags, ll, band, mag0, dredf, snlimit, $
   prog    = 'SSOUP_CP_CALCMAGS: '
   ;
   plog,ll,prog,'----------------- starting '+prog+'----------------------'
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
   ;
   ; get dimensions of array, find which band is 'HALPHA'
   sz      = size(flx)
   IF sz[0] NE 2 THEN stop, prog+'**** FLX array must be 2d'
   nap     = sz[1]
   nb      = sz[2]
-  ih      = where(band EQ 'HALPHA')
+  ih      = where(bandavail EQ band.HALPHA)
   ;
   ; make output arrays
   mag     = 0.0*flx

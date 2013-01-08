@@ -58,7 +58,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   widthh    = 400
   widths    = 600
   ;
-  COMMON bands, band, nband, ncombo, bandnam
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo
   ;
   ; expand base and source directories
   IF basedir EQ '.' THEN bdir = file_expand_path(basedir) ELSE bdir = expand_path(basedir)
@@ -202,7 +202,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   printf,lu,'<h3>Sky background maps</h3>'
   printf,lu,'<P><TABLE border=1 cellpadding=3>'
   printf,lu,'<th>Band</th><th>Plots (data &nbsp; &nbsp; &nbsp; model &nbsp; &nbsp; &nbsp; residuals)</th>'
-  FOR ii = 0, nband-1 DO BEGIN 
+  FOR ii = 0, nbandavail-1 DO BEGIN 
      printf,lu,'<tr>'
      printf,lu,'<td>'+bandnam[ii]+'</td>'
      ssoup_imcell,ll,lu,inputstr.fbplotj[ii],fjpgo,width=widths,uannot='<a href="'+inputstr.fbplote[ii]+'">EPS</a>',/plot

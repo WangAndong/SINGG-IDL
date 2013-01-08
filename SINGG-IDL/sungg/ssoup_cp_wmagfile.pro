@@ -38,11 +38,11 @@ pro ssoup_cp_wmagfile, ll, outtype, filo, ngal, pt0, pt1, rad, mprof, emproft, e
   ; set header stuff
   
   ; TODO: make this less bad
-  COMMON bands, band
-  iha  = where(band eq 'HALPHA', /null)
-  ir   = where(band eq 'R', /null)
-  inuv = where(band eq 'NUV', /null)
-  ifuv = where(band eq 'FUV', /null)
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
+  iha  = where(bandavail eq band.HALPHA, /null)
+  ir   = where(bandavail eq band.R, /null)
+  inuv = where(bandavail eq band.NUV, /null)
+  ifuv = where(bandavail eq band.FUV, /null)
   
   prog    = 'SSOUP_CP_WMAGFILE: '
   fmto    = '(f7.2,f8.3,f6.3,f9.3,f6.3,f6.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3)'
