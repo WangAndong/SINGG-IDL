@@ -19,8 +19,6 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ;      J0008-59; now tries either hname+'_mask.fits' and
   ;      hname+'_R_mask.fits'
   ;
-  rulen      = '*'+['-nd-int.fits', '_nuv.fits']
-  rulef      = '*'+['-fd-int.fits', '_fuv.fits']
   ; some arrays we will need later
   bandavail = ['']
   fili  = ['']
@@ -57,87 +55,43 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      plog,ll,prog,'will use passed HIPASS target name: '+hname
   ENDELSE 
   ;
-  ; find Halpha image
-  sstr     = '*_?sub_ss.fits'
-  fili_ha  = file_search(hname+sstr,count=count)
-  IF count EQ 0 THEN BEGIN 
-     plog,ll,prog,'could not find Halpha image using search string: "'+sstr+'", exiting'
-     status = 0b
-     return
-  ENDIF ELSE BEGIN 
-     fili  = [fili,  fili_ha[0]]
-     bandavail = [bandavail, band.HALPHA]
-     skyord = [skyord, 2]
-  ENDELSE 
-  ;
-  ; find R image
-  sstr     = hname+'_?_ss.fits'
-  fili_r   = file_search(sstr,count=count)
-  IF count EQ 0 THEN BEGIN 
-     plog,ll,prog,'could not find R band image using search string: "'+sstr+'", exiting'
-     status = 0b
-     return
-  ENDIF ELSE BEGIN 
-     fili  = [fili,  fili_r[0]]
-     bandavail = [bandavail, band.R]
-     skyord = [skyord, 2]
-  ENDELSE 
-  ;
-  ; find NUV image
-  nr       = n_elements(rulen)
-  ii       = 0
-  repeat begin 
-     sstr     = rulen[ii]
-     fili_nuv = file_search(sstr,count=count)
-     IF count EQ 0 THEN BEGIN 
-        plog,ll,prog,'could not find NUV band image using search string: "'+sstr+'" ...'
-     ENDIF ELSE BEGIN 
-        fili  = [fili,  fili_nuv[0]]
-        bandavail = [bandavail, band.NUV]
-        skyord = [skyord, 1]
-     ENDELSE
-     ii    = ii + 1
-  endrep until ((ii eq nr) or (count gt 0))
-  if count eq 0 then begin
-     plog,ll,prog,'could not find NUV band image using any rule, exiting'
-     status = 0b
-  endif
-  ;
-  ; find FUV image
-  nr       = n_elements(rulef)
-  ii       = 0
-  repeat begin 
-     sstr     = rulef[ii]
-     fili_fuv = file_search(sstr,count=count)
-     IF count EQ 0 THEN BEGIN 
-        plog,ll,prog,'could not find FUV band image using search string: "'+sstr+'" ...'
-     ENDIF ELSE BEGIN 
-        fili  = [fili,  fili_fuv[0]]
-        bandavail = [bandavail, band.FUV]
-        skyord = [skyord, 1]
-     ENDELSE
-     ii    = ii + 1
-  endrep until ((ii eq nr) or (count gt 0))
-  if count eq 0 then begin
-     plog,ll,prog,'could not find FUV band image using any rule, exiting'
-     status = 0b
-  endif 
-  ; find Wise images
-  for i=1,4 do begin
-      ; raw filenames coming out of http://irsa.ipac.caltech.edu/applications/wise are really stupid
-      ; please rename your images first
-      si = strtrim(string(i),1) ; WTH, IDL?
-      sstr = hname+'-wisssssse-w'+si+'.fits' 
-      fili_wise = file_search(sstr, count=count)
-      if count eq 0 then begin
-          plog,ll,prog,'could not find Wise W'+si+' band image using search string: "'+sstr+'" ...'
-      endif else begin ; these aren't essential
-          fili = [fili, fili_wise]
-          bandavail = [bandavail, 'W'+si]
-          skyord = [skyord, 1]
-          film = [film, ''] ; we don't have masks yet
-      endelse
-  endfor
+  ; these search strings are in the same order as band
+  ; fixme: this is rather crappy
+   sstr = ptrarr(nband)
+   sstr[0] = ptr_new(hname + '*_?sub_ss.fits')          ; Ha
+   sstr[1] = ptr_new(hname + '_?_ss.fits')              ; R
+   sstr[2] = ptr_new('*'+['-nd-int.fits', '_nuv.fits']) ; NUV
+   sstr[3] = ptr_new('*'+['-fd-int.fits', '_fuv.fits']) ; FUV
+   sstr[4] = ptr_new(hname + '-wise-w1.fits')           ; MIR-W1
+   sstr[5] = ptr_new(hname + '-wise-w2.fits')           ; MIR-W2
+   sstr[6] = ptr_new(hname + '-wise-w3.fits')           ; MIR-W3
+   sstr[7] = ptr_new(hname + '-wise-w4.fits')           ; MIR-W4
+
+   for i=0,nband-1 do begin
+       done = 0b
+       j = 0
+       nr = n_elements(*sstr[i])
+       repeat begin
+           fili_band = file_search((*sstr[i])[j], count=count)
+           IF count EQ 0 THEN BEGIN 
+               plog,ll,prog,'could not find '+band.(i)+' band image using search string: "'+(*sstr[i])[j]+'" ...'
+               if band.(i) eq band.R or band.(i) eq band.HALPHA then begin
+                   status = 0b
+                   return
+               endif
+               j++
+           ENDIF ELSE BEGIN
+               fili  = [fili, fili_band[0]]
+               bandavail = [bandavail, band.(i)]
+               if band.(i) eq band.R or band.(i) eq band.HALPHA then begin
+                   skyord = [skyord, 2]
+               endif else begin
+                   skyord = [skyord, 1]
+               endelse
+               done = 1b
+           endelse
+       endrep until done or j eq nr
+   endfor
   ;
   ; find Halpha mask image
   sstr    = hname+'*_*sub_mask.fits'
@@ -185,6 +139,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ENDIF else begin 
      film = [film, filmuv[0], filmuv[0]]
   endelse 
+  film = [film, '', '', '', ''] ; pad for wise, no masks yet
   ; trim arrays
   bandavail = bandavail[1:*]
   fili = fili[1:*]
