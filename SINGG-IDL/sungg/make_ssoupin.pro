@@ -22,7 +22,6 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ; some arrays we will need later
   bandavail = ['']
   fili  = ['']
-  film  = ['']
   skyord = [0]
   COMMON bands, band, nband, bandnam, aaaa1, aaaa2, aaaa3, aaaa4 ; sigh
   ssoup_initvars
@@ -66,8 +65,19 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
    sstr[5] = ptr_new(hname + '-wise-w2.fits')           ; MIR-W2
    sstr[6] = ptr_new(hname + '-wise-w3.fits')           ; MIR-W3
    sstr[7] = ptr_new(hname + '-wise-w4.fits')           ; MIR-W4
+   ; masks
+   sstrm = ptrarr(nband)
+   sstrm[0] = ptr_new(hname+'*_*sub_mask.fits')             ; Ha
+   sstrm[1] = ptr_new(hname+['_mask.fits', '_R_mask.fits']) ; R
+   sstrm[2] = ptr_new('*_uv_mask.fits')                     ; NUV, FUV
+   sstrm[3] = sstrm[2]           
+   sstrm[4] = ptr_new('sdsdjfsdjkk') ; WISE (placeholder)
+   sstrm[5] = sstrm[4]
+   sstrm[6] = sstrm[4] 
+   sstrm[7] = sstrm[4]
 
    for i=0,nband-1 do begin
+       ; find input image
        done = 0b
        j = 0
        nr = n_elements(*sstr[i])
@@ -92,60 +102,28 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
            endelse
        endrep until done or j eq nr
    endfor
-  ;
-  ; find Halpha mask image
-  sstr    = hname+'*_*sub_mask.fits'
-  film_ha = file_search(sstr,count=count)
-  IF count EQ 0 THEN BEGIN 
-     plog,ll,prog,'**** warning Halpha mask could not be found using search string: "'+sstr+'"'
-     film_ha  = hname+'_Rsub_mask.fits'
-     plog,ll,prog,'continuing using default name: '+film_ha
-  ENDIF ELSE BEGIN 
-     film  = [film, film_ha[0]]
-  ENDELSE
-  ;
-  ; find R mask image
-  film_r   = hname+'_mask.fits'
-  inf      = file_info(film_r)
-  IF NOT inf.exists THEN BEGIN 
-     try1  = film_r
-     try2  = hname+'_R_mask.fits'
-     inf   = file_info(try2)
-     IF inf.exists THEN BEGIN 
-        film = [film, try2]
-     ENDIF ELSE BEGIN 
-        plog,ll,prog,'**** warning could not find either guesses for R mask: '+try1+' , '+try2
-        plog,ll,prog,'continuing, anyway (but you will want to fix this)...'
-        film = [film, try1]
-     ENDELSE 
-  ENDIF else begin
-      film = [film, film_r]
-  endelse
-  ;
-  ; find UV mask image
-  sstr     = '*_uv_mask.fits'
-  filmuv   = file_search(sstr,count=count)
-  IF count eq 0 THEN BEGIN 
-     ;
-     ; that didn't work try another guess
-     plog,ll,prog,'could not find file containing: '+sstr+'  will try another guess.'
-     sstr  = '*mask.fuv.fits'
-     filmuv = file_search(sstr,count=count)
-     if count gt 0 then begin 
-        film = [film, filmuv[0], filmuv[0]]
-     endif else begin 
-        plog,ll,prog,'**** warning could not find a UV mask file using search string : '+sstr+'  continuing, anyway ...'
-     endelse 
-  ENDIF else begin 
-     film = [film, filmuv[0], filmuv[0]]
-  endelse 
-  film = [film, '', '', '', ''] ; pad for wise, no masks yet
-  ; trim arrays
-  bandavail = bandavail[1:*]
-  fili = fili[1:*]
-  film = film[1:*]
-  skyord = skyord[1:*]
-  nbandavail = n_elements(bandavail)
+   ; trim arrays
+   bandavail = bandavail[1:*]
+   fili = fili[1:*]
+   skyord = skyord[1:*]
+   nbandavail = n_elements(bandavail)
+   film = strarr(nbandavail)
+   ; look for mask image
+   for i=0,nband-1 do begin       
+       j = 0
+       done = 0b
+       nr = n_elements(*sstrm[i])
+       repeat begin
+           film_band = file_search((*sstrm[i])[j], count=count)
+           IF count EQ 0 THEN BEGIN 
+               plog,ll,prog,'could not find '+band.(i)+' mask image using search string: "'+(*sstrm[i])[j]+'" ...'
+               j++
+           ENDIF ELSE BEGIN
+               film[i] = film_band[0]
+               done = 1b
+           endelse
+       endrep until done or j eq nr
+   endfor
   ;
   ; derive other names
   filo = strarr(nbandavail)
@@ -309,4 +287,5 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ;
   status = 1b
   plog,ll,prog,'returning with status = '+numstr(fix(status))
+  ptr_free,sstr,sstrm
 END 
