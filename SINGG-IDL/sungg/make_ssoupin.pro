@@ -159,7 +159,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ; combos
   ncombo = factorial(nbandavail)/(6*factorial(nbandavail-3)) ; number of 3 color combos
   combo = transpose(combigen(nbandavail, 3))
-  combostr = strlowcase(string(strmid(bandavail[combo], 0, 1), format='(3A)')) ; generates hrn, hrf, etc.
+  combostr = strlowcase(string(strmid(bandavail[combo], 0, 2), format='(3A)')) ; generates hrn, hrf, etc.
   fjpgl = strarr(ncombo)
   fjpgh = strarr(ncombo)
   fjpgl_msk1 = strarr(ncombo)
