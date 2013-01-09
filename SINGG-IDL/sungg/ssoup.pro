@@ -48,8 +48,9 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
   ; load prerequisites
   astrolib
   resetplot
-  ; These are set in ssoup_inputs but stupid IDL says I must define the block here.
-  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
+  ; These are set in ssoup_initvars but stupid IDL says I must define the block here.
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo
+  ssoup_initvars
   
   ; **** Note bxdef is the sky box size, it is currently hard wired 
   ; into ssoup_askyfit.  It should be an optional input parameter

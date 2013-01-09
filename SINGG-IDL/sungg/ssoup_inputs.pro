@@ -53,23 +53,6 @@ pro ssoup_inputs, fili, ll, inputstr
    ; G. Meurer 8/2012 (ICRAR/UWA) add inputs for box plots
    prog         = 'SSOUP_INPUTS: '
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo
-      ; these are the possible bands (I hate you, IDL, for being case-insensitive)
-      ; think of this as an enumeration
-      band      = { $
-        halpha : 'HALPHA', $
-        r      : 'R', $
-        nuv    : 'NUV', $
-        fuv    : 'FUV', $
-        ps_u   : "u" $
-        ; ps_g : "g", $
-        ; psr : "r", $
-        ; psi : "i", $
-        ; psz : "z", $
-        ; mir  : "MIR", $
-        ; fir  : "FIR" $
-      } 
-      nband     = n_tags(band)
-      bandnam   = ['H&alpha;', 'R', 'NUV', 'FUV']
       bandavail = [''] ; these are the bands we have for this galaxy
    ;
    plog,ll,prog,'----------------------- starting SSOUP_INPUTS ---------------------------'

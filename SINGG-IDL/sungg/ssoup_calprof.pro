@@ -65,7 +65,7 @@ PRO ssoup_calprof, ll, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0,
   emlim   = 2.5*edlim                  ; mag
   ;
   ; read R header just to get number of galaxies
-  ir = where(bandavail eq band.R, /null)
+  ir = where(bandavail eq band.R, nir)
   ir = ir[0]
   pfplt_rdhdr, fprofs[ir], pixsize, filename, funits, fscale, fluxcal, $
                proftype, numgals, galindex, xcenter, ycenter, $
@@ -118,7 +118,7 @@ PRO ssoup_calprof, ll, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0,
   ; "fb" - linear flux (integerated within aperture)
   ; "sm" - logarithmic surface brightness (mag or log per arcsec^2)
   ; "fm" - logarithmic flux 
-  filnam   = make_array(nband, /string, value='')
+  filnam   = make_array(nbandavail, /string, value='')
   rad      = make_array(nrtot)
   sbprof   = make_array(nrtot,nbandavail)   ; surface brightnes linear units all bands
   esbproft = make_array(nrtot,nbandavail)   ; total error in surface brightness linear units all bands
@@ -252,11 +252,9 @@ PRO ssoup_calprof, ll, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0,
      if ii eq ir-1 then ii = ir
   ENDFOR
   ;
-  ; some pointers to be sure fixme?
-  ih        = where(tag_names(band) EQ band.HALPHA, nih)
-  ir        = where(tag_names(band) EQ band.R, nir)
+  ; some pointers to be sure
+  ih        = where(bandavail EQ band.HALPHA, nih)
   ih        = ih[0]
-  ir        = ir[0]
   ;
   ; derive continuum subtraction and total fractional errors for Halpha
   plog,ll,prog,'calculating HALPHA continuum subtraction, sky+photon and total errors '

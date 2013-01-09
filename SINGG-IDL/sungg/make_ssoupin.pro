@@ -22,10 +22,12 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   rulen      = '*'+['-nd-int.fits', '_nuv.fits']
   rulef      = '*'+['-fd-int.fits', '_fuv.fits']
   ; some arrays we will need later
-  bands = ['']
+  bandavail = ['']
   fili  = ['']
   film  = ['']
   skyord = [0]
+  COMMON bands, band, nband, bandnam, aaaa1, aaaa2, aaaa3, aaaa4 ; sigh
+  ssoup_initvars
   ;
   ; set logical unit for log file
   IF NOT keyword_set(ll) THEN ll = -1
@@ -64,7 +66,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      return
   ENDIF ELSE BEGIN 
      fili  = [fili,  fili_ha[0]]
-     bands = [bands, 'HALPHA']
+     bandavail = [bandavail, band.HALPHA]
      skyord = [skyord, 2]
   ENDELSE 
   ;
@@ -77,7 +79,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      return
   ENDIF ELSE BEGIN 
      fili  = [fili,  fili_r[0]]
-     bands = [bands, 'R']
+     bandavail = [bandavail, band.R]
      skyord = [skyord, 2]
   ENDELSE 
   ;
@@ -91,7 +93,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
         plog,ll,prog,'could not find NUV band image using search string: "'+sstr+'" ...'
      ENDIF ELSE BEGIN 
         fili  = [fili,  fili_nuv[0]]
-        bands = [bands, 'NUV']
+        bandavail = [bandavail, band.NUV]
         skyord = [skyord, 1]
      ENDELSE
      ii    = ii + 1
@@ -111,7 +113,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
         plog,ll,prog,'could not find FUV band image using search string: "'+sstr+'" ...'
      ENDIF ELSE BEGIN 
         fili  = [fili,  fili_fuv[0]]
-        bands = [bands, 'FUV']
+        bandavail = [bandavail, band.FUV]
         skyord = [skyord, 1]
      ENDELSE
      ii    = ii + 1
@@ -120,6 +122,22 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      plog,ll,prog,'could not find FUV band image using any rule, exiting'
      status = 0b
   endif 
+  ; find Wise images
+  for i=1,4 do begin
+      ; raw filenames coming out of http://irsa.ipac.caltech.edu/applications/wise are really stupid
+      ; please rename your images first
+      si = strtrim(string(i),1) ; WTH, IDL?
+      sstr = hname+'-wisssssse-w'+si+'.fits' 
+      fili_wise = file_search(sstr, count=count)
+      if count eq 0 then begin
+          plog,ll,prog,'could not find Wise W'+si+' band image using search string: "'+sstr+'" ...'
+      endif else begin ; these aren't essential
+          fili = [fili, fili_wise]
+          bandavail = [bandavail, 'W'+si]
+          skyord = [skyord, 1]
+          film = [film, ''] ; we don't have masks yet
+      endelse
+  endfor
   ;
   ; find Halpha mask image
   sstr    = hname+'*_*sub_mask.fits'
@@ -168,29 +186,29 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
      film = [film, filmuv[0], filmuv[0]]
   endelse 
   ; trim arrays
-  bands = bands[1:*]
+  bandavail = bandavail[1:*]
   fili = fili[1:*]
   film = film[1:*]
   skyord = skyord[1:*]
-  nbands = n_elements(bands)
+  nbandavail = n_elements(bandavail)
   ;
   ; derive other names
-  filo = strarr(nbands)
-  filp = strarr(nbands)
-  fbox = strarr(nbands)
-  fbplot_jpg = strarr(nbands)
-  fbplot_eps = strarr(nbands)
+  filo = strarr(nbandavail)
+  filp = strarr(nbandavail)
+  fbox = strarr(nbandavail)
+  fbplot_jpg = strarr(nbandavail)
+  fbplot_eps = strarr(nbandavail)
   ; silly little hack
-  ih = where(bands eq 'HALPHA', nih)
-  if nih gt 0 then bands[ih[0]] = 'Halpha'
-  for i=0,nbands-1 do begin
-      filo[i] = hname+'_aligned_' + bands[i] + '.fits'
-      filp[i] = hname+'_aligned_' + bands[i] + '.profile'
-      fbox[i] = hname+'_aligned_box_' + bands[i] + '.dat'
-      fbplot_jpg[i] = hname+'_aligned_skyplot_' + bands[i] + '.jpg'
-      fbplot_eps[i] = hname+'_aligned_skyplot_' + bands[i] + '.eps'
+  ih = where(bandavail eq band.HALPHA, nih)
+  if nih gt 0 then bandavail[ih[0]] = 'Halpha'
+  for i=0,nbandavail-1 do begin
+      filo[i] = hname+'_aligned_' + bandavail[i] + '.fits'
+      filp[i] = hname+'_aligned_' + bandavail[i] + '.profile'
+      fbox[i] = hname+'_aligned_box_' + bandavail[i] + '.dat'
+      fbplot_jpg[i] = hname+'_aligned_skyplot_' + bandavail[i] + '.jpg'
+      fbplot_eps[i] = hname+'_aligned_skyplot_' + bandavail[i] + '.eps'
   endfor
-  if nih gt 0 then bands[ih[0]] = 'HALPHA' ; unhack
+  if nih gt 0 then bandavail[ih[0]] = band.HALPHA ; unhack
   film_out        = hname+'_aligned_mask.fits'
   film_sout       = hname+'_aligned_skymask.fits'
   fcompare        = hname+'_compare.dat'
@@ -206,9 +224,9 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   hafuvps0        = hname+'_aligned_hafuv0.ps'
   
   ; combos
-  ncombo = factorial(nbands)/(6*factorial(nbands-3)) ; number of 3 color combos
-  combo = transpose(combigen(nbands, 3))
-  combostr = strlowcase(string(strmid(bands[combo], 0, 1), format='(3A)')) ; generates hrn, hrf, etc.
+  ncombo = factorial(nbandavail)/(6*factorial(nbandavail-3)) ; number of 3 color combos
+  combo = transpose(combigen(nbandavail, 3))
+  combostr = strlowcase(string(strmid(bandavail[combo], 0, 1), format='(3A)')) ; generates hrn, hrf, etc.
   fjpgl = strarr(ncombo)
   fjpgh = strarr(ncombo)
   fjpgl_msk1 = strarr(ncombo)
@@ -248,23 +266,23 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ; write output file, copy to log file
   printf,lu, 'HNAME           = '+hname
   plog,ll,'','HNAME           = '+hname
-  for i=0,nbands-1 do begin
-      printf,lu, 'FILI_'       + bands[i] + ' = ' + fili[i]
-      plog,ll,'','FILI_'       + bands[i] + ' = ' + fili[i]
-      printf,lu, 'FILM_'       + bands[i] + ' = ' + film[i]
-      plog,ll,'','FILM_'       + bands[i] + ' = ' + film[i]
-      printf,lu, 'FILO_'       + bands[i] + ' = ' + filo[i]
-      plog,ll,'','FILO_'       + bands[i] + ' = ' + filo[i]
-      printf,lu, 'SKYORD_'     + bands[i] + ' = ' + strtrim(string(skyord[i]),2)
-      plog,ll,'','SKYORD_'     + bands[i] + ' = ' + strtrim(string(skyord[i]),2)
-      printf,lu, 'FILP_'       + bands[i] + ' = ' +filp[i]
-      plog,ll,'','FILP_'       + bands[i] + ' = ' +filp[i]
-      printf,lu, 'FBOX_'       + bands[i] + ' = ' +fbox[i]
-      plog,ll,'','FBOX_'       + bands[i] + ' = ' +fbox[i]
-      printf,lu, 'FBPLOT_JPG_' + bands[i] + ' = ' +fbplot_jpg[i]
-      plog,ll,'','FBPLOT_JPG_' + bands[i] + ' = ' +fbplot_jpg[i]
-      printf,lu, 'FBPLOT_EPS_' + bands[i] + ' = ' +fbplot_eps[i]
-      plog,ll,'','FBPLOT_EPS_' + bands[i] + ' = ' +fbplot_eps[i]
+  for i=0,nbandavail-1 do begin
+      printf,lu, 'FILI_'       + bandavail[i] + ' = ' + fili[i]
+      plog,ll,'','FILI_'       + bandavail[i] + ' = ' + fili[i]
+      printf,lu, 'FILM_'       + bandavail[i] + ' = ' + film[i]
+      plog,ll,'','FILM_'       + bandavail[i] + ' = ' + film[i]
+      printf,lu, 'FILO_'       + bandavail[i] + ' = ' + filo[i]
+      plog,ll,'','FILO_'       + bandavail[i] + ' = ' + filo[i]
+      printf,lu, 'SKYORD_'     + bandavail[i] + ' = ' + strtrim(string(skyord[i]),2)
+      plog,ll,'','SKYORD_'     + bandavail[i] + ' = ' + strtrim(string(skyord[i]),2)
+      printf,lu, 'FILP_'       + bandavail[i] + ' = ' +filp[i]
+      plog,ll,'','FILP_'       + bandavail[i] + ' = ' +filp[i]
+      printf,lu, 'FBOX_'       + bandavail[i] + ' = ' +fbox[i]
+      plog,ll,'','FBOX_'       + bandavail[i] + ' = ' +fbox[i]
+      printf,lu, 'FBPLOT_JPG_' + bandavail[i] + ' = ' +fbplot_jpg[i]
+      plog,ll,'','FBPLOT_JPG_' + bandavail[i] + ' = ' +fbplot_jpg[i]
+      printf,lu, 'FBPLOT_EPS_' + bandavail[i] + ' = ' +fbplot_eps[i]
+      plog,ll,'','FBPLOT_EPS_' + bandavail[i] + ' = ' +fbplot_eps[i]
   endfor
   printf,lu, 'FILM_OUT        = '+film_out
   plog,ll,'','FILM_OUT        = '+film_out
