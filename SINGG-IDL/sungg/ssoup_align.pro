@@ -86,11 +86,24 @@ pro ssoup_align, ll, inputstr, goslow=goslow
           photflux     = SXPAR(hdr,'PHOTFLUX')
       endif
       ; default seeing (Morrissey et al. 2007)
-      if (bandavail[i] eq band.NUV) then begin
-          fwhm[i]      = 5.3
+      if (bandavail[i] eq band.NUV) then fwhm[i] = 5.3
+      if (bandavail[i] eq band.FUV) then fwhm[i] = 4.2
+      ; Wright et al. 2010, AJ, 140, 1868
+      if (bandavail[i] eq band.mir_W1) then begin
+          fwhm[i] = 6.1
+          texp[i] = 7.7 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
       endif
-      if (bandavail[i] eq band.FUV) then begin
-          fwhm[i]      = 4.2
+      if (bandavail[i] eq band.mir_W2) then begin
+          fwhm[i] = 6.4
+          texp[i] = 7.7 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
+      endif
+      if (bandavail[i] eq band.mir_W3) then begin
+          fwhm[i] = 6.5
+          texp[i] = 8.8 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
+      endif
+      if (bandavail[i] eq band.mir_W4) then begin
+          fwhm[i] = 12.0
+          texp[i] = 8.8 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
       endif
       img           = img*texp[i]
       getrot, hdr, dum, cdelt

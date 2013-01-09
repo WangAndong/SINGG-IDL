@@ -51,18 +51,19 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    slow    = keyword_set(goslow)
    ;
    ; pointers to bands
+   kk = intarr(nbandavail)
+   for i=0,nbandavail-1 do begin
+       kk[i] = where(bandavail eq band.(i), blah)
+       if blah ne 0 and blah ne 1 then begin
+           plog,ll,'image cube must have 0 or 1 '+band.(i)+' plane; found = '+numstr(blah)
+           plog,ll,prog,'stopping, could not proceed'
+           return
+       endif
+   endfor
    jr      = where(bandavail EQ band.R, njr)
    jh      = where(bandavail EQ band.HALPHA, njh)
    jn      = where(bandavail EQ band.NUV, njn)
    jf      = where(bandavail EQ band.FUV, njf)
-   IF njr NE 1 THEN plog,ll,'image cube must have only one R plane; found = '+numstr(njr)
-   IF njh NE 1 THEN plog,ll,'image cube must have only one HALPHA plane; found = '+numstr(njh)
-   IF njn NE 1 THEN plog,ll,'image cube must have only one NUV plane; found = '+numstr(njn)
-   IF njf NE 1 THEN plog,ll,'image cube must have only one FUV plane; found = '+numstr(njf)
-   IF (njr NE 1) OR (njh NE 1) OR (njn NE 1) OR (njf NE 1) THEN BEGIN 
-      plog,ll,prog,'stopping, could not proceed'
-      return
-   ENDIF 
    ;
    ; set up combo names
    cname     = string(bandavail[combo], format='(A,",",A,",",A)')
@@ -194,7 +195,6 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ; empty cube for putting only the planes we want,
    ; and in the order we want
    imcal    = make_array(nx, ny, nbandavail, /float, value=0.0)
-   kk       = [jh, jr, jn, jf] ;FIXME - hardcoded limitation
    ;
    ; assemble cube of signed-sqrt calibrated fluxes
    FOR ii = 0, nz-1 DO imcal[*,*,ii] = ssqrt(photfl[kk[ii]]*dredf[ii]*imcube[*,*,kk[ii]])  ; calibrate 

@@ -61,20 +61,20 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
    sstr[1] = ptr_new(hname + '_?_ss.fits')              ; R
    sstr[2] = ptr_new('*'+['-nd-int.fits', '_nuv.fits']) ; NUV
    sstr[3] = ptr_new('*'+['-fd-int.fits', '_fuv.fits']) ; FUV
-   sstr[4] = ptr_new(hname + '-wise-w1.fits')           ; MIR-W1
-   sstr[5] = ptr_new(hname + '-wise-w2.fits')           ; MIR-W2
-   sstr[6] = ptr_new(hname + '-wise-w3.fits')           ; MIR-W3
-   sstr[7] = ptr_new(hname + '-wise-w4.fits')           ; MIR-W4
+   ;sstr[4] = ptr_new(hname + '-wise-w1.fits')           ; MIR-W1
+   ;sstr[5] = ptr_new(hname + '-wise-w2.fits')           ; MIR-W2
+   ;sstr[6] = ptr_new(hname + '-wise-w3.fits')           ; MIR-W3
+   ;sstr[7] = ptr_new(hname + '-wise-w4.fits')           ; MIR-W4
    ; masks
    sstrm = ptrarr(nband)
    sstrm[0] = ptr_new(hname+'*_*sub_mask.fits')             ; Ha
    sstrm[1] = ptr_new(hname+['_mask.fits', '_R_mask.fits']) ; R
    sstrm[2] = ptr_new('*_uv_mask.fits')                     ; NUV, FUV
    sstrm[3] = sstrm[2]           
-   sstrm[4] = ptr_new('sdsdjfsdjkk') ; WISE (placeholder)
-   sstrm[5] = sstrm[4]
-   sstrm[6] = sstrm[4] 
-   sstrm[7] = sstrm[4]
+   ;sstrm[4] = ptr_new('sdsdjfsdjkk') ; WISE (placeholder)
+   ;sstrm[5] = sstrm[4]
+   ;sstrm[6] = sstrm[4] 
+   ;sstrm[7] = sstrm[4]
 
    for i=0,nband-1 do begin
        ; find input image

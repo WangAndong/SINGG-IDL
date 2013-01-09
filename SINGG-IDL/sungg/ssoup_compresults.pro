@@ -91,7 +91,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
   ENDELSE
   dbclose
   plog,ll,prog,'number of matching entries in optical database: '+numstr(noo)
-  ; FIXME: these are hardcoded number of wavelengths
+  ; FIXME: these are hardcoded number of wavelengths. I think we can ignore this for now?
   flx       = [lfha, mr, mnuv, mfuv]
   ;flx       = [lfha, mr, mnuv0, mfuv0]
   eflx      = [elfha, emr, emnuv, emfuv]
