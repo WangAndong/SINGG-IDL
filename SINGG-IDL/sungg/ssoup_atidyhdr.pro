@@ -19,7 +19,7 @@ PRO ssoup_atidyhdr, ll, bname, fnami, fnamo, kfwhm, im, hdin, hdout, astr
   findpro,"ssoup_atidyhdr",/noprint,dirlist=temp123 ; directory containing template headers 
   prog      = 'SSOUP_ATIDYHDR: '
   ddir = temp123[0]
-  htempl    = ddir+['r', 'ha', 'uv', 'uv', "wx", "wx", "wx", "wx"]+'_templ_hdr.dat'  ; template headers FIXME
+  htempl    = ddir+['ha', 'r', 'uv', 'uv', "wx", "wx", "wx", "wx"]+'_templ_hdr.dat'  ; template headers FIXME
   pname     = 'SSOUP.PRO'         ; name of main program
   ;
   ; find pointer to apropriate band
@@ -132,6 +132,12 @@ PRO ssoup_atidyhdr, ll, bname, fnami, fnamo, kfwhm, im, hdin, hdout, astr
      fxaddpar, hdwk, 'WAT1_001', 'wtype=tan axtype=ra'
      fxaddpar, hdwk, 'WAT2_001', 'wtype=tan axtype=dec'
   endif 
+  ; wise specific stuff
+  if bname eq band.mir_W1 or bname eq band.mir_W2 or bname eq band.mir_W3 or bname eq band.mir_W4 then begin
+     ; change zero point
+     fxaddpar, hdwk, "MAGZPT1", sxpar(hdwk, 'MAGZP', count=n1), "Magnitude zero point"
+     fxaddpar, hdwk, "ERRZPT1", sxpar(hdwk, 'MAGZPUNC', count=n2), "Uncertainty in magzpt1"
+  endif
   ;
   ; apply template header
   plog,ll,prog,'applying template header'

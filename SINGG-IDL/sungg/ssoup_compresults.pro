@@ -113,6 +113,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
   plog,ll,' ',hline2
   ;
   FOR ii = 0,nbandavail-1 DO BEGIN 
+     if ii ge 3 then continue ; nothing to compare...
      ;
      ; pointer to position in db arrays
      pp     = where(tag_names(band) EQ bandavail[ii], npp)

@@ -68,6 +68,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   photplam = 0
   photflam = 0
   photfluxha = 0
+  photwise = fltarr(4)
   fwhm = fltarr(nbandavail)
   nhd0 = intarr(nbandavail)
   imgs = ptrarr(nbandavail) ; pointers! YAY!
@@ -92,18 +93,22 @@ pro ssoup_align, ll, inputstr, goslow=goslow
       if (bandavail[i] eq band.mir_W1) then begin
           fwhm[i] = 6.1
           texp[i] = 7.7 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
+          photwise[0] = 0.08e-26
       endif
       if (bandavail[i] eq band.mir_W2) then begin
           fwhm[i] = 6.4
           texp[i] = 7.7 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
+          photwise[1] = 0.11e-26
       endif
       if (bandavail[i] eq band.mir_W3) then begin
           fwhm[i] = 6.5
           texp[i] = 8.8 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
+          photwise[2] = 1e-26
       endif
       if (bandavail[i] eq band.mir_W4) then begin
           fwhm[i] = 12.0
           texp[i] = 8.8 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
+          photwise[3] = 6e-26
       endif
       img           = img*texp[i]
       getrot, hdr, dum, cdelt
@@ -395,6 +400,11 @@ pro ssoup_align, ll, inputstr, goslow=goslow
         sxaddpar, hdi, 'ESKYPAR'+nstr[kk], eskypar[kk], epdescr[kk]
      endfor 
      ;
+     ; shove in exptime and photflam for wise
+     if bandavail[ii] eq band.mir_W1 or bandavail[ii] eq band.mir_W2 or bandavail[ii] eq band.mir_W3 or bandavail[ii] eq band.mir_W4 then begin
+         sxaddpar, hdi, 'EXPTIME', texp[ii], ' Median exposure time in seconds'
+         sxaddpar, hdi, 'PHOTFLAM', photwise[ii-4] ; fixme: remove this temporary hack
+     endif
      ; Tidy the headers
      plog,ll,prog,'tidying header'
      ssoup_atidyhdr, ll, bandavail[ii], inputstr.fimages_in[ii], inputstr.fimages_out[ii], kfwhm[ii], img, hdi, hdo 
