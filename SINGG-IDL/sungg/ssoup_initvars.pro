@@ -25,6 +25,8 @@ pro ssoup_initvars
     } 
     nband     = n_tags(band)
     ; HTML friendly
-    bandnam   = ['H&alpha;', 'R', 'NUV', 'FUV', "g", "r", "i", "z", "y", "W1", "W2", "W3", "W4", "FIR"]
+    bandnam   = ['H&alpha;', 'R', 'NUV', 'FUV', $
+      $ ; "g", "r", "i", "z", "y", 
+      "W1", "W2", "W3", "W4"];, "FIR"]
     ; the rest of this stuff is defined in ssoup_inputs.pro
 end
