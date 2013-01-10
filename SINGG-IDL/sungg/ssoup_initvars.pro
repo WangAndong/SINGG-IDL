@@ -11,16 +11,16 @@ pro ssoup_initvars
       halpha : 'HALPHA', $
       r      : 'R', $
       nuv    : 'NUV', $
-      fuv    : 'FUV' $
+      fuv    : 'FUV', $
       ;ps_g   : "g", $
       ;ps_r   : "r", $
       ;ps_i   : "i", $
       ;ps_z   : "z", $
       ;ps_y   : "y", $
-      ;mir_w1 : "W1", $
-      ;mir_w2 : "W2", $
-      ;mir_w3 : "W3", $
-      ;mir_w4 : "W4" $
+      mir_w1 : "W1", $
+      mir_w2 : "W2", $
+      mir_w3 : "W3", $
+      mir_w4 : "W4" $
       ; fir    : "FIR" $
     } 
     nband     = n_tags(band)

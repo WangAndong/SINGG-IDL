@@ -1,13 +1,9 @@
-PRO ssoup_atidyhdr, ll, band, fnami, fnamo, kfwhm, im, hdin, hdout, astr
+PRO ssoup_atidyhdr, ll, bname, fnami, fnamo, kfwhm, im, hdin, hdout, astr
   ;
   ; Tidy headers for output from ssoup_align
   ;
   ; ll     -> logical unit of log file
-  ; band   -> name of band (string).  Should be one of
-  ;           R - R band
-  ;           HALPHA - H-alpha
-  ;           NUV - near UV
-  ;           FUV - far UV
+  ; band   -> name of band (string).
   ; fnami  -> input filename (to be stored in hdout) 
   ; fnamo  -> output filename (also stored in header)
   ; kfwhm  -> FWHM of convolution kernel
@@ -20,22 +16,21 @@ PRO ssoup_atidyhdr, ll, band, fnami, fnamo, kfwhm, im, hdin, hdout, astr
   ;
   ; G. Meurer 5/2010 ICRAR/UWA
   ddir      = '~/IDL/Pro/Work/sungg/'         ; directory containing template headers
-  bname     = ['R', 'HALPHA', 'NUV', 'FUV']   ; band  names
-  htempl    = ddir+['r', 'ha', 'uv', 'uv']+'_templ_hdr.dat'  ; template headers
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail
+  htempl    = ddir+['r', 'ha', 'uv', 'uv']+'_templ_hdr.dat'  ; template headers FIXME
   prog      = 'SSOUP_ATIDYHDR: '
   pname     = 'SSOUP.PRO'         ; name of main program
-  nb        = n_elements(bname)
   ;
   ; find pointer to apropriate band
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
-  jj        = where(bname EQ strupcase(strtrim(band,2)), njj)
+  jj        = where(bandavail EQ bname, njj)
   IF njj NE 1 THEN BEGIN 
-     IF njj EQ 0 THEN plog,ll,prog,'**** ERROR BAND'+band+' does not match any of BNAME'
-     IF njj GT 1 THEN plog,ll,prog,'**** ERROR BAND'+band+' matches more than one of BNAME (must be a bug...)'
+     IF njj EQ 0 THEN plog,ll,prog,'**** ERROR BAND '+bname+' does not match any of BNAME'
+     IF njj GT 1 THEN plog,ll,prog,'**** ERROR BAND '+bname+' matches more than one of BNAME (must be a bug...)'
      stop
   ENDIF ELSE BEGIN 
      ptr    = jj[0]
-     plog,ll,prog,'Working with band = '+bname[ptr]
+     plog,ll,prog,'Working with band = '+bandavail[ptr]
   ENDELSE 
   ;
   ; make working copy of header to do initial changes in
@@ -103,10 +98,10 @@ PRO ssoup_atidyhdr, ll, band, fnami, fnamo, kfwhm, im, hdin, hdout, astr
   ;
   ; add photometric keywords
   plog,ll,prog,'adding photometric keywords '
-  ssoup_addphotkwds, band, hdwk
+  ssoup_addphotkwds, bname, hdwk
   ;
   ; UV specific stuff
-  if band eq 'FUV' or band eq 'NUV' then begin 
+  if bname eq band.FUV or bname eq band.NUV then begin 
      plog,ll,prog,'updating UV specific keywords '
      ;
      ; concatenate date and time of observation

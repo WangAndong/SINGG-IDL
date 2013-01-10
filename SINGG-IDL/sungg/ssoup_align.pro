@@ -200,18 +200,22 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   plog,ll,prog,'transforming uv and optical images'
   hdcompile1 = ptrarr(nbandavail)
   nhd1       = intarr(nbandavail)
-  ; we're kind of expecting FUV to be the canonical image and to be in the last slot
-  for i=nbandavail-1,0,-1 do begin
+  ifuv = where(bandavail eq band.FUV, /null)
+  ifuv = ifuv[0]
+  ; need to ensure FUV executes first
+  for i=ifuv,nbandavail-1 do begin
       if (bandavail[i] eq band.NUV or bandavail[i] eq band.FUV) then begin        
           HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxu,trmaxxu,trminyu,trmaxyu
           imgtmp[*,*,i] = img
           hdcompile1[i] = ptr_new(newhd)
       endif else begin
-          HASTROM,*imgs[i],*hdcompile0[i],img,newhd,*hdcompile1[nbandavail-1],MISSING=0
+          HASTROM,*imgs[i],*hdcompile0[i],img,newhd,*hdcompile1[ifuv],MISSING=0
           imgtmp[*,*,i]  = img*(scale[ufid]/scale[i])^2
           hdcompile1[i] = ptr_new(newhd)
      endelse
      nhd1[i] = n_elements(*hdcompile1[i])
+     if i eq ifuv then i = -1
+     if i eq ifuv-1 then i = ifuv
   endfor
   ;
   ; make data cube for input masks in output coord sys
