@@ -14,11 +14,12 @@ PRO ssoup_atidyhdr, ll, bname, fnami, fnamo, kfwhm, im, hdin, hdout, astr
   ;           structure then this is copied into the new header
   ;           otherwise it is taken from the current header
   ;
-  ; G. Meurer 5/2010 ICRAR/UWA
-  ddir      = '~/IDL/Pro/Work/sungg/'         ; directory containing template headers
+  ; G. Meurer 5/2010 ICRAR/UWA      
   COMMON bands, band, nband, bandnam, bandavail, nbandavail
-  htempl    = ddir+['r', 'ha', 'uv', 'uv']+'_templ_hdr.dat'  ; template headers FIXME
+  findpro,"ssoup_atidyhdr",/noprint,dirlist=temp123 ; directory containing template headers 
   prog      = 'SSOUP_ATIDYHDR: '
+  ddir = temp123[0]
+  htempl    = ddir+['r', 'ha', 'uv', 'uv', "wx", "wx", "wx", "wx"]+'_templ_hdr.dat'  ; template headers FIXME
   pname     = 'SSOUP.PRO'         ; name of main program
   ;
   ; find pointer to apropriate band
