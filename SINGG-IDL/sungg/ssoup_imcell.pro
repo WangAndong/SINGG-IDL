@@ -22,21 +22,22 @@ PRO ssoup_imcell, ll, lu, fjpgi, fjpgo, width=width, uannot=uannot, plot=plot
   ; G. Meurer (UWA/ICRAR) 08/2012: fix bug with quotes and <font color=>
   ;
   prog      = 'SSOUP_IMCELL: '
-  bandlet   = ['ha', 'r', 'nu', 'fu', "w1", "w2", "w3", "w4"] ; fixme
-  COMMON bands, band, nband, bandnam
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo
+  bandlet   =  strlowcase(strmid(bandavail, 0, 2))
   fc        = '<font color="'+['#FF0000', '#00FF00', '#0000FF']+'">'
   ;
   ; find last suffix delimited by "_"
   pp        = strpos(fjpgi, '_', /reverse_search)+1
-  suf       = strmid(fjpgi,pp,3)
+  suf       = strmid(fjpgi,pp,6)
   rgbstr    = '<font color="#FF0000">R</font>,<font color="#00FF00">G</font>,<font color="#0000FF">B</font> = '
-  FOR ii = 0, 2 DO BEGIN 
-     IF ii GT 0 THEN rgbstr = rgbstr+','
-     ch     = strmid(suf,ii,2)
-     kk     = strpos(bandlet,ch)
-     jj     = where(kk EQ 0,njj)
-     IF njj EQ 1 THEN rgbstr = rgbstr+fc[ii]+bandnam[jj]+'</font>' ELSE rgbstr = rgbstr+fc[ii]+'?</font>'
-  ENDFOR 
+  blah      = bytarr(nbandavail)
+  ; yawn
+  for kk = 0,nbandavail-1 do blah[kk] = strmatch(suf, '*'+bandlet[kk]+'*')
+  jj = where(blah, njj)
+  for ii=0, 2 do begin
+     if njj eq 3 then rgbstr = rgbstr+fc[ii]+bandnam[jj[ii]]+'</font>' else rgbstr = rgbstr+fc[ii]+'?</font>'
+     if ii ne 2 then rgbstr = rgbstr + ','
+  endfor
   ;
   ; set annotation for under the image
   undannot  = ''

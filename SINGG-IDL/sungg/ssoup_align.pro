@@ -254,8 +254,8 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   kfwhm      = sqrt(kfwhm)
   ;
   ; loop through image sets and convolve if needed
-  str        = '  '
-  for ii = 0, nbandavail-1 do str = str+numstr(kfwhm[ii])+'  '
+  str        = ' '
+  for ii = 0, nbandavail-1 do str = str+numstr(kfwhm[ii])+' '
   plog,ll,prog,'will convolve images and grow masks with kernel widths [pixels] (Ha, R, NUV, FUV): '+str ; FIXME
   for ii = 0, nbandavail-1 do begin 
      hdi            = *hdcompile1[ii] ; input header after alignment

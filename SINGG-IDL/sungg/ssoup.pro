@@ -115,40 +115,40 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; make preview images
      IF slow THEN keywait, 'type any key to continue: '
-     plog,ll,prog,'making low cut jpg images'
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_low,ebv=ebv,goslow=slow
-     plog,ll,prog,'making high cut jpg images'
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_high,ebv=ebv,/highcut,goslow=slow
-     ;
-     plog,ll,prog,'making low cut jpg images with bad objects masked out'
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mlow1,ebv=ebv,maskcmd=1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
-     plog,ll,prog,'making high cut jpg images with bad objects masked out'
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mhigh1,ebv=ebv,maskcmd=1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
-     ;
-     plog,ll,prog,'making low cut jpg images with only bad objects shown '
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imlow1,ebv=ebv,maskcmd=-1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
-     plog,ll,prog,'making high cut jpg images with only bad objects shown '
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imhigh1,ebv=ebv,maskcmd=-1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
-     ;
-     plog,ll,prog,'making low cut jpg images showing only sky pixels'
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mlow2,ebv=ebv,maskcmd=2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
-     plog,ll,prog,'making high cut jpg images showing only sky pixelst'
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mhigh2,ebv=ebv,maskcmd=2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
-     ;
-     plog,ll,prog,'making low cut jpg images showing only pixels excluded from sky'
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imlow2,ebv=ebv,maskcmd=-2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
-     plog,ll,prog,'making high cut jpg images showing only pixels excluded from sky'
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imhigh2,ebv=ebv,maskcmd=-2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
-     ;
-     plog,ll,prog,'making low cut jpg images showing pixels used in source  measurements '
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mlow3,ebv=ebv,maskcmd=3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
-     plog,ll,prog,'making high cut jpg images showing pixels used in source  measurements '
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mhigh3,ebv=ebv,maskcmd=3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
-     ;
-     plog,ll,prog,'making low cut jpg images showing pixels not used in source  measurements'
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imlow3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
-     plog,ll,prog,'making high cut jpg images showing pixels not used in source  measurements'
-     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imhigh3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+;     plog,ll,prog,'making low cut jpg images'
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_low,ebv=ebv,goslow=slow
+;     plog,ll,prog,'making high cut jpg images'
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_high,ebv=ebv,/highcut,goslow=slow
+;     ;
+;     plog,ll,prog,'making low cut jpg images with bad objects masked out'
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mlow1,ebv=ebv,maskcmd=1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+;     plog,ll,prog,'making high cut jpg images with bad objects masked out'
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mhigh1,ebv=ebv,maskcmd=1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+;     ;
+;     plog,ll,prog,'making low cut jpg images with only bad objects shown '
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imlow1,ebv=ebv,maskcmd=-1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+;     plog,ll,prog,'making high cut jpg images with only bad objects shown '
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imhigh1,ebv=ebv,maskcmd=-1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+;     ;
+;     plog,ll,prog,'making low cut jpg images showing only sky pixels'
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mlow2,ebv=ebv,maskcmd=2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+;     plog,ll,prog,'making high cut jpg images showing only sky pixelst'
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mhigh2,ebv=ebv,maskcmd=2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+;     ;
+;     plog,ll,prog,'making low cut jpg images showing only pixels excluded from sky'
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imlow2,ebv=ebv,maskcmd=-2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+;     plog,ll,prog,'making high cut jpg images showing only pixels excluded from sky'
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imhigh2,ebv=ebv,maskcmd=-2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+;     ;
+;     plog,ll,prog,'making low cut jpg images showing pixels used in source  measurements '
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mlow3,ebv=ebv,maskcmd=3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+;     plog,ll,prog,'making high cut jpg images showing pixels used in source  measurements '
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mhigh3,ebv=ebv,maskcmd=3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+;     ;
+;     plog,ll,prog,'making low cut jpg images showing pixels not used in source  measurements'
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imlow3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+;     plog,ll,prog,'making high cut jpg images showing pixels not used in source  measurements'
+;     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imhigh3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      ; Compare results to database values
      plog,ll,prog,'comparing db vs ssoup results'
