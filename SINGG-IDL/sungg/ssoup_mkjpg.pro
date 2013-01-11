@@ -10,12 +10,7 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ;  photfl   -> the PHOTFLAM or PHOTFLUX (Halpha) for each plane
    ;              of the cube
    ;  photplam -> Pivot wavelength of each of the planes.
-   ;  filo     -> Output filenames.  This should be a 4 element arrays
-   ;              for element ; R,G,B pairs:
-   ;              0 ; HALPHA,NUV,FUV
-   ;              1 ; HALPHA,R,FUV
-   ;              2 ; HALPHA,R,NUV
-   ;              3 ; R,NUV,FUV
+   ;  filo     -> Output filenames. 
    ;  ebv      -> galactic foreground extinction
    ;  highcut  -> if set the maximum levels will be at the "high" level
    ;              otherwise the "low" levels will be used
@@ -35,6 +30,7 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ;
    ; G. Meurer (ICRAR/UWA) 06/2010  based on sample.pro by Ji Hoon Kim
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
+   ; FIXME: limits only work for Halpha, R, NUV, FUV. These are flux densities = DN*photflam/exptime (doesn't explain -ves)
    minr_h  = -2.0e-19
    minr_l  = -1.0e-19
    maxr_h  =  2.0e-16
@@ -189,6 +185,11 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    maxd[jn] = maxd[jr]*(photplam[jn]/photplam[jr])^beta
    mind[jf] = mind[jr]*(photplam[jf]/photplam[jr])^beta
    maxd[jf] = maxd[jr]*(photplam[jf]/photplam[jr])^beta
+   ; temp hack
+   for i=4,7 do begin
+       mind[i] = 1*photfl[i]
+       maxd[i] = 5*photfl[i]
+   endfor
    plog,ll,prog,'will use the following flux calibrated display levels (band   min   max)'
    FOR ii = 0, nbandavail-1 DO plog,ll,'  ',ljust(bandavail[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
    ;

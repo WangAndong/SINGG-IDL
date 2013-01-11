@@ -93,22 +93,22 @@ pro ssoup_align, ll, inputstr, goslow=goslow
       if (bandavail[i] eq band.mir_W1) then begin
           fwhm[i] = 6.1
           texp[i] = 7.7 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
-          photwise[0] = 1.935e-6 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
+          photwise[0] = 1.935e-3 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
       endif
       if (bandavail[i] eq band.mir_W2) then begin
           fwhm[i] = 6.4
           texp[i] = 7.7 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
-          photwise[1] = 2.7048e-6 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
+          photwise[1] = 2.7048e-3 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
       endif
       if (bandavail[i] eq band.mir_W3) then begin
           fwhm[i] = 6.5
           texp[i] = 8.8 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
-          photwise[2] = 1.8326e-6 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
+          photwise[2] = 1.8326e-3 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
       endif
       if (bandavail[i] eq band.mir_W4) then begin
           fwhm[i] = 12.0
           texp[i] = 8.8 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
-          photwise[3] = 5.2269e-5 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
+          photwise[3] = 5.2269e-2 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
       endif
       img           = img*texp[i]
       getrot, hdr, dum, cdelt
@@ -369,19 +369,16 @@ pro ssoup_align, ll, inputstr, goslow=goslow
      ;
      ; renormalize by exposure time
      plog,ll,prog,'renormalizing image and box data by exposure time : '+numstr(texp[ii])
-     ; wise already calibrated for exposure time...
-     if bandavail[ii] eq band.R or bandavail[ii] eq band.HALPHA or bandavail[ii] eq band.NUV or bandavail[ii] eq band.FUV then begin
-         img          = img/texp[ii]
-         skylev       = skylev/texp[ii]
-         skysig       = skysig/texp[ii]
-         skysigbox    = skysigbox/texp[ii]
-         boxdata[0,*] = boxdata[0,*]/texp[ii]
-         boxdata[3,*] = boxdata[3,*]/texp[ii]
-         boxdata[4,*] = boxdata[4,*]/texp[ii]
-         boxdata[5,*] = boxdata[5,*]/texp[ii]
-         skypar       = skypar/texp[ii]
-         eskypar      = eskypar/texp[ii]
-     endif
+     img          = img/texp[ii]
+     skylev       = skylev/texp[ii]
+     skysig       = skysig/texp[ii]
+     skysigbox    = skysigbox/texp[ii]
+     boxdata[0,*] = boxdata[0,*]/texp[ii]
+     boxdata[3,*] = boxdata[3,*]/texp[ii]
+     boxdata[4,*] = boxdata[4,*]/texp[ii]
+     boxdata[5,*] = boxdata[5,*]/texp[ii]
+     skypar       = skypar/texp[ii]
+     eskypar      = eskypar/texp[ii]
      ;
      ; get description string for parameters and enclose in comments
      npar         = n_elements(skypar)

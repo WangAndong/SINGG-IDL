@@ -137,6 +137,7 @@ PRO ssoup_atidyhdr, ll, bname, fnami, fnamo, kfwhm, im, hdin, hdout, astr
      ; change zero point
      fxaddpar, hdwk, "MAGZPT1", sxpar(hdwk, 'MAGZP', count=n1), "Magnitude zero point"
      fxaddpar, hdwk, "ERRZPT1", sxpar(hdwk, 'MAGZPUNC', count=n2), "Uncertainty in magzpt1"
+     fxaddpar, hdwk, "PHOTPLAM", sxpar(hdwk, "WAVELEN", count=n3)*10000, "Filter pivot wavelength
   endif
   ;
   ; apply template header
