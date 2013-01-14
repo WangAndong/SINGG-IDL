@@ -185,7 +185,7 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    maxd[jn] = maxd[jr]*(photplam[jn]/photplam[jr])^beta
    mind[jf] = mind[jr]*(photplam[jf]/photplam[jr])^beta
    maxd[jf] = maxd[jr]*(photplam[jf]/photplam[jr])^beta
-   ; fixme: these are random numbers I just made up
+   ; temp hack
    mind[4] = 0.01
    maxd[4] = 0.018
    mind[5] = 0.015

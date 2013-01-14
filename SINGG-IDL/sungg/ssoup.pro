@@ -102,7 +102,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; read in the output fits images so as to create 3 color 
      ; preview images.  First just read a header to get image size
-     fits_read, inputstr.fimages_out[0], img, hd, /header_only
+     fits_read, inputstr.fimages_out[4], img, hd, /header_only
      nx   = sxpar(hd,'NAXIS1')
      ny   = sxpar(hd,'NAXIS2')
      imgc = make_array(nx,ny,nbandavail,/float,value=0.0)
