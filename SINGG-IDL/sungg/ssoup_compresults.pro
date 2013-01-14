@@ -113,11 +113,11 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
   plog,ll,' ',hline2
   ;
   FOR ii = 0,nbandavail-1 DO BEGIN 
-     if ii ge 3 then continue ; nothing to compare...
+     if bandavail[ii] eq band.mir_W1 or bandavail[ii] eq band.mir_W2 or bandavail[ii] eq band.mir_W3 $
+          or bandavail[ii] eq band.mir_W4 then continue ; fixme: nothing to compare...
      ;
-     ; pointer to position in db arrays
-     pp     = where(tag_names(band) EQ bandavail[ii], npp)
-     IF npp NE 1 THEN stop, 'no band with that name'
+     ; pointer to position in db arrays. No count because this will never be less than 0.
+     pp     = where(tag_names(band) EQ bandavail[ii], /null)
      ;
      ; read header of file, that's where the info is...
      pixsize = 0.0

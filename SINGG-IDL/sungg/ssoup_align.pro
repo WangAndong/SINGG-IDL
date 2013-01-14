@@ -119,7 +119,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; fiducial bands
   ; P.S. these extra parentheses... another sign of a poorly designed programming language
   ofid = (where(bandavail eq band.HALPHA, /null))[0] ; what if these are not there
-  ufid = (where(bandavail eq band.FUV, /null))[0]
+  ufid = (where(bandavail eq band.NUV, /null))[0]
   mirfid = (where(bandavail eq band.mir_W1, /null))[0]
   ;
   ; convert fwhm values to pixels in the fiducial image
@@ -213,8 +213,8 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   IF slow THEN keywait, 'type any key to continue: '
   ;
   ; make data cube for easy storage of intermediate products...
-  nxx        = trmaxxmir - trminxmir + 1
-  nyy        = trmaxymir - trminymir + 1
+  nxx        = trmaxxu - trminxu + 1
+  nyy        = trmaxyu - trminyu + 1
   imgtmp     = make_array(nxx, nyy, nbandavail, /float, value=0.0)
   ;
   ; trim UV images based on the above coords
@@ -222,13 +222,12 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   plog,ll,prog,'transforming uv and optical images'
   hdcompile1 = ptrarr(nbandavail)
   nhd1       = intarr(nbandavail)
-  ;ifuv = where(bandavail eq band.FUV, /null)
-  ;ifuv = ifuv[0]
-  ifuv = 4
+  ifuv = (where(bandavail eq band.FUV, /null))[0]
   ; need to ensure FUV executes first
   for i=ifuv,nbandavail-1 do begin
-      if (i ge 4) then begin        
-          HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxmir,trmaxxmir,trminymir,trmaxymir
+      ;if (i ge 4) then begin   
+      if (i eq ifuv or bandavail[i] eq band.NUV) then begin  
+          HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxu,trmaxxu,trminyu,trmaxyu
           imgtmp[*,*,i] = img
           hdcompile1[i] = ptr_new(newhd)
       endif else begin
