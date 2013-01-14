@@ -40,6 +40,8 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   nthresh    = 1024l            ; used to determine where to trim input optical images
   rota       = fltarr(nbandavail)  ; initialize rotations
   scale      = fltarr(nbandavail)  ; inititalize scale
+  ; FIXME: magic numbers
+  mirfid     = 4                ; points to fiducial mir image
   ufid       = 2                ; points to fiducial uv image
   ofid       = 0                ; points to fiducial optical image
   kbox       = 25               ; convolution kernel size in pixels
@@ -138,6 +140,14 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   siz        = size(uimg)
   nxu        = long(siz[1])
   nyu        = long(siz[2])
+  
+  ;
+  mirimg     = *imgs[mirfid]
+  mirhd      = *hdcompile0[mirfid]
+  mirhdp     = mirfid
+  siz        = size(nirimg)
+  nxmir      = long(siz[1])
+  nymir      = long(siz[2])
   ;
   ; determine limits of pixels to transform using H-alpha image.
   ; do this by collapsing image in each dimension, and finding first
@@ -184,20 +194,27 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   xyad,ohd,cornx,corny,corna,cornd
   ;
   ; convert these to pixel position in fiducial UV image
+  adxy,mirhd,corna,cornd,cornxmir,cornymir
   adxy,uhd,corna,cornd,cornxu,cornyu
   ;
   ; find pixel range to extract
+  trminxmir    = round(min(cornxmir))
+  trmaxxmir    = round(max(cornxmir))
+  trminymir    = round(min(cornymir))
+  trmaxymir    = round(max(cornymir))
   trminxu    = round(min(cornxu))
   trmaxxu    = round(max(cornxu))
   trminyu    = round(min(cornyu))
   trmaxyu    = round(max(cornyu))
+  ; fixme
   plog,ll,prog,'Limits of optical image (xmin, xmax, ymin, ymax):  '+numstr(trminxo)+'  '+numstr(trmaxxo)+'  '+numstr(trminyo)+'  '+numstr(trmaxyo)
   plog,ll,prog,'Limits of UV image (xmin, xmax, ymin, ymax)     :  '+numstr(trminxu)+'  '+numstr(trmaxxu)+'  '+numstr(trminyu)+'  '+numstr(trmaxyu)
+  plog,ll,prog,'Limits of MIR image (xmin, xmax, ymin, ymax)     :  '+numstr(trminxmir)+'  '+numstr(trmaxxmir)+'  '+numstr(trminymir)+'  '+numstr(trmaxymir)
   IF slow THEN keywait, 'type any key to continue: '
   ;
   ; make data cube for easy storage of intermediate products...
-  nxx        = trmaxxu - trminxu + 1
-  nyy        = trmaxyu - trminyu + 1
+  nxx        = trmaxxmir - trminxmir + 1
+  nyy        = trmaxymir - trminymir + 1
   imgtmp     = make_array(nxx, nyy, nbandavail, /float, value=0.0)
   ;
   ; trim UV images based on the above coords
@@ -205,12 +222,13 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   plog,ll,prog,'transforming uv and optical images'
   hdcompile1 = ptrarr(nbandavail)
   nhd1       = intarr(nbandavail)
-  ifuv = where(bandavail eq band.FUV, /null)
-  ifuv = ifuv[0]
+  ;ifuv = where(bandavail eq band.FUV, /null)
+  ;ifuv = ifuv[0]
+  ifuv = 4
   ; need to ensure FUV executes first
   for i=ifuv,nbandavail-1 do begin
-      if (bandavail[i] eq band.NUV or bandavail[i] eq band.FUV) then begin        
-          HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxu,trmaxxu,trminyu,trmaxyu
+      if (i ge 4) then begin        
+          HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxmir,trmaxxmir,trminymir,trmaxymir
           imgtmp[*,*,i] = img
           hdcompile1[i] = ptr_new(newhd)
       endif else begin

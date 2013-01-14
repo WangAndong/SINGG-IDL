@@ -186,10 +186,14 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    mind[jf] = mind[jr]*(photplam[jf]/photplam[jr])^beta
    maxd[jf] = maxd[jr]*(photplam[jf]/photplam[jr])^beta
    ; temp hack
-   for i=4,7 do begin
-       mind[i] = 1*photfl[i]
-       maxd[i] = 5*photfl[i]
-   endfor
+   mind[4] = 0.01
+   maxd[4] = 0.018
+   mind[5] = 0.015
+   maxd[5] = 0.025
+   mind[6] = 0.01
+   maxd[6] = 0.017
+   mind[7] = 0.3
+   maxd[7] = 0.5
    plog,ll,prog,'will use the following flux calibrated display levels (band   min   max)'
    FOR ii = 0, nbandavail-1 DO plog,ll,'  ',ljust(bandavail[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
    ;
