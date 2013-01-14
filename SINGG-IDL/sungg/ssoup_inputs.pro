@@ -93,7 +93,7 @@ pro ssoup_inputs, fili, ll, inputstr
    nbandavail = n_elements(bandavail)
    ncombo = factorial(nbandavail)/(6*factorial(nbandavail-3))
    combo = transpose(combigen(nbandavail, 3))
-   combostr = string(strmid(bandavail[combo], 0, 2), format='(3A)') ; generates RHN, RHF, etc.
+   combostr = strjoin(strmid(bandavail[combo], 0, 2)) ; generates RHN, RHF, etc.
    inputstr = { $
      hname        : '', $
      fimages_in   : strarr(nbandavail), $

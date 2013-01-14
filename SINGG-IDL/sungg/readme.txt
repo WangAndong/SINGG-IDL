@@ -6,3 +6,4 @@ How to add more bands:
 4) Tell make_ssoupin where to find the images and masks.
 5) Edit ssoup_align.
 6) Put your band-specific FITS header parsing/renaming in ssoup_atidyhdr.pro.
+7) Create a template header in soup (same directory as ssoup_atidyhdr.pro) called XX_templ_hdr.dat and tell ssoup_atidyhdr.pro where to find it.

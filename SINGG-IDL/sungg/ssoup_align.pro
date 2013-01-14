@@ -211,8 +211,10 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   IF slow THEN keywait, 'type any key to continue: '
   ;
   ; make data cube for easy storage of intermediate products...
-  nxx        = trmaxxu - trminxu + 1
-  nyy        = trmaxyu - trminyu + 1
+  ;nxx        = trmaxxu - trminxu + 1
+  ;nyy        = trmaxyu - trminyu + 1
+  nxx = trmaxxmir - trminxmir + 1
+  nyy = trmaxymir - trminymir + 1
   imgtmp     = make_array(nxx, nyy, nbandavail, /float, value=0.0)
   ;
   ; trim UV images based on the above coords
@@ -220,11 +222,14 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   plog,ll,prog,'transforming uv and optical images'
   hdcompile1 = ptrarr(nbandavail)
   nhd1       = intarr(nbandavail)
-  ifuv = (where(bandavail eq band.FUV, /null))[0]
+  ; ifuv = (where(bandavail eq band.FUV, /null))[0]
+  ifuv = 4
   ; need to ensure FUV executes first
   for i=ifuv,nbandavail-1 do begin
-      if (bandavail[i] eq band.NUV or bandavail[i] eq band.FUV) then begin             
-          HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxu,trmaxxu,trminyu,trmaxyu
+      ;if (bandavail[i] eq band.NUV or bandavail[i] eq band.FUV) then begin
+      if i ge 4 then begin   
+          ; HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxu,trmaxxu,trminyu,trmaxyu
+          hextract,*imgs[i],*hdcompile0[i],img,newhd,trminxmir,trmaxxmir,trminymir,trmaxymir
           imgtmp[*,*,i] = img
           hdcompile1[i] = ptr_new(newhd)
       endif else begin
@@ -270,7 +275,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; loop through image sets and convolve if needed
   str        = ' '
   for ii = 0, nbandavail-1 do str = str+numstr(kfwhm[ii])+' '
-  plog,ll,prog,'will convolve images and grow masks with kernel widths [pixels] (Ha, R, NUV, FUV): '+str ; FIXME
+  plog,ll,prog,'will convolve images and grow masks with kernel widths [pixels] ('+strjoin(bandavail, ",") + ") "+str
   for ii = 0, nbandavail-1 do begin 
      hdi            = *hdcompile1[ii] ; input header after alignment
      img            = imgtmp[*,*,ii]
