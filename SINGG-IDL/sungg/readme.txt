@@ -5,3 +5,4 @@ How to add more bands:
 3) Add your new bands to ssoup_initvars
 4) Tell make_ssoupin where to find the images and masks.
 5) Edit ssoup_align.
+6) Put your band-specific FITS header parsing/renaming in ssoup_atidyhdr.pro.

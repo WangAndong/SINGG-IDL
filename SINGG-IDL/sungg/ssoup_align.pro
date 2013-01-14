@@ -40,10 +40,6 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   nthresh    = 1024l            ; used to determine where to trim input optical images
   rota       = fltarr(nbandavail)  ; initialize rotations
   scale      = fltarr(nbandavail)  ; inititalize scale
-  ; FIXME: magic numbers
-  mirfid     = 4                ; points to fiducial mir image
-  ufid       = 2                ; points to fiducial uv image
-  ofid       = 0                ; points to fiducial optical image
   kbox       = 25               ; convolution kernel size in pixels
   prog       = 'SSOUP_ALIGN: '  ; string for messages
   ;
@@ -120,6 +116,11 @@ pro ssoup_align, ll, inputstr, goslow=goslow
       hdcompile0[i] = ptr_new(hdr)
       nhd0[i]       = n_elements(hdr)
   endfor
+  ; fiducial bands
+  ; P.S. these extra parentheses... another sign of a poorly designed programming language
+  ofid = (where(bandavail eq band.HALPHA, /null))[0] ; what if these are not there
+  ufid = (where(bandavail eq band.FUV, /null))[0]
+  mirfid = (where(bandavail eq band.mir_W1, /null))[0]
   ;
   ; convert fwhm values to pixels in the fiducial image
   fwhm       = fwhm / scale[ufid]
@@ -140,8 +141,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   siz        = size(uimg)
   nxu        = long(siz[1])
   nyu        = long(siz[2])
-  
-  ;
+  ; do the same for MIR (fixme: get rid of this copy/paste)
   mirimg     = *imgs[mirfid]
   mirhd      = *hdcompile0[mirfid]
   mirhdp     = mirfid
@@ -154,8 +154,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; and last row/column that are masked in less than some 
   ; threshold number of columns/rows
   plog,ll,prog,'determining pixel limits of optical images to transform'
-  ih = where(bandavail eq band.HALPHA, /null)
-  ih = ih[0] ; fixme? should do something intelligent here if HALPHA is not present
+  ih = (where(bandavail eq band.HALPHA, /null))[0]
   fits_read, inputstr.fmasks_in[ih], imgm, hd             ; read Halpha mask
   pp         = where(imgm EQ inputstr.mbadval_in[ih], npp)  ; index of bad pixels
   imgm       = 0l*long(imgm) + 1l                ; convert to long array
@@ -193,9 +192,9 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; convert corner coords into RA and Dec within fiducial optical image
   xyad,ohd,cornx,corny,corna,cornd
   ;
-  ; convert these to pixel position in fiducial UV image
-  adxy,mirhd,corna,cornd,cornxmir,cornymir
+  ; convert these to pixel position in fiducial... other images
   adxy,uhd,corna,cornd,cornxu,cornyu
+  adxy,mirhd,corna,cornd,cornxmir,cornymir
   ;
   ; find pixel range to extract
   trminxmir    = round(min(cornxmir))
@@ -206,15 +205,14 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   trmaxxu    = round(max(cornxu))
   trminyu    = round(min(cornyu))
   trmaxyu    = round(max(cornyu))
-  ; fixme
   plog,ll,prog,'Limits of optical image (xmin, xmax, ymin, ymax):  '+numstr(trminxo)+'  '+numstr(trmaxxo)+'  '+numstr(trminyo)+'  '+numstr(trmaxyo)
   plog,ll,prog,'Limits of UV image (xmin, xmax, ymin, ymax)     :  '+numstr(trminxu)+'  '+numstr(trmaxxu)+'  '+numstr(trminyu)+'  '+numstr(trmaxyu)
   plog,ll,prog,'Limits of MIR image (xmin, xmax, ymin, ymax)     :  '+numstr(trminxmir)+'  '+numstr(trmaxxmir)+'  '+numstr(trminymir)+'  '+numstr(trmaxymir)
   IF slow THEN keywait, 'type any key to continue: '
   ;
   ; make data cube for easy storage of intermediate products...
-  nxx        = trmaxxmir - trminxmir + 1
-  nyy        = trmaxymir - trminymir + 1
+  nxx        = trmaxxu - trminxu + 1
+  nyy        = trmaxyu - trminyu + 1
   imgtmp     = make_array(nxx, nyy, nbandavail, /float, value=0.0)
   ;
   ; trim UV images based on the above coords
@@ -222,13 +220,11 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   plog,ll,prog,'transforming uv and optical images'
   hdcompile1 = ptrarr(nbandavail)
   nhd1       = intarr(nbandavail)
-  ;ifuv = where(bandavail eq band.FUV, /null)
-  ;ifuv = ifuv[0]
-  ifuv = 4
+  ifuv = (where(bandavail eq band.FUV, /null))[0]
   ; need to ensure FUV executes first
   for i=ifuv,nbandavail-1 do begin
-      if (i ge 4) then begin        
-          HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxmir,trmaxxmir,trminymir,trmaxymir
+      if (bandavail[i] eq band.NUV or bandavail[i] eq band.FUV) then begin             
+          HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxu,trmaxxu,trminyu,trmaxyu
           imgtmp[*,*,i] = img
           hdcompile1[i] = ptr_new(newhd)
       endif else begin
