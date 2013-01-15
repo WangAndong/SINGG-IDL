@@ -19,10 +19,10 @@ pro ssoup_plot_finish, fjpg, feps, xs, ys, xoff, yoff, wxsize, wysize, epilepsy=
     ; write EPS
     set_plot,'ps',/copy, /interpolate
     erase
-    IF strpos(strlowcase(feps), '.eps') GT 0 THEN $
-        device,/inches,file=feps,xs=xs,ys=ys,yo=yoff,xo=xoff,/color,/encapsulated $
-        ELSE $
-        device,/inches,file=feps,xs=xs,ys=ys,yo=yoff,xo=xoff,/color
+    ;IF strpos(strlowcase(feps), '.eps') GT 0 THEN $
+       ; device,/inches,file=feps,xs=xs,ys=ys,yo=yoff,xo=xoff,/color,/encapsulated $
+        ;ELSE $
+        ;device,/inches,file=feps,xs=xs,ys=ys,yo=yoff,xo=xoff,/color
     tv,im,true=3
     device,/close
     
@@ -53,4 +53,6 @@ pro ssoup_plot_init, wxsize, wysize
     set_plot,'Z',/copy, /interpolate
     erase
     device,set_resolution=[wxsize,wysize],set_pixel_depth=24,decomposed=1
+    setplotcolors
+    setbgfg,!white,!black
 end

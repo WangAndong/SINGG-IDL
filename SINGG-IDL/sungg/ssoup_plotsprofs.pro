@@ -1,4 +1,4 @@
-PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fplot
+PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps
   ;
   ; plot surface brightness and surface colour profiles
   ;
@@ -8,7 +8,8 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fplot
   ;               internal dust correction
   ;   fsprof0  -> file containing internal dust corrected surface 
   ;               brightness profiles
-  ;   fplot    -> output plot file name
+  ;   fjpg    -> output plot file name (JPG)
+  ;   feps     -> optput plot file name (EPS)
   ;
   ; G. Meurer (ICRAR/UWA) 6/2010
   ; G. Meurer (ICRAR/UWA) 5/2011: 
@@ -107,10 +108,6 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fplot
   plog,ll,prog,'maximum FUV band radius:    '+numstr(rmax_f)
   plog,ll,prog,'maximum radius in plots:    '+numstr(rmax)
   ;
-  ; determine file type
-  pp        = strpos(fplot,'.')+1
-  ftype     = strlowcase(strmid(fplot,pp))
-  ;
   ; set plot limits
   rrange    = [0.0,rmax]
   hfrange   = [-1.0,3.2]
@@ -127,32 +124,15 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fplot
   ;
   ; plot set up
   !p.multi = [0, 1, 3]          ; Three panel plot
-  IF ftype NE 'jpg' THEN BEGIN 
-     plog,ll,prog,'will write a postscript file'
-     xs       = 6.5
-     ys       = 1.25*xs
-     yoff     = 3.
-     xoff     = 1.2
-     thick    = 3
-     set_plot,'ps',/copy, /interpolate
-     IF strpos(strlowcase(fplot), '.eps') GT 0 THEN $
-           device,/portrait,/inches,xs=xs,ys=ys,yo=yoff,xo=xoff,/color,/encapsulated ELSE $
-           device,/portrait,/inches,xs=xs,ys=ys,yo=yoff,xo=xoff,/color
-     ansize   = 0.6
-  ENDIF  ELSE BEGIN 
-     plog,ll,prog,'will plot to screen and write a jpg file'
-     ;set_plot,'X',/copy, /interpolate
-     ;device, decomposed=0, retain=2
-     ;device, true_color=24
-     ;device, get_visual_depth=depth
-     wxsize   = 600
-     wysize   = fix(1.25*float(wxsize))
-     window, 0, xsize=wxsize, ysize=wysize
-     ansize   = 1.0
-     thick    = 1
-  ENDELSE 
-  setplotcolors
-  setbgfg,!white,!black
+   xs       = 6.5
+   ys       = 1.25*xs
+   yoff     = 3.
+   xoff     = 1.2
+   thick    = 2
+   wxsize   = 600
+   wysize   = fix(1.25*float(wxsize))
+   ansize   = 1.0
+  ssoup_plot_init,wxsize,wysize
   ;
   ; ------------------------------------------------------------------
   ; panel 1
@@ -298,9 +278,5 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fplot
   ; finish plot
   !p.multi   = 0
   !p.noerase = 0
-  IF ftype NE 'jpg' THEN BEGIN 
-     psend, fplot, /noprint, /clobber
-  ENDIF ELSE BEGIN 
-     snap_jpg, fplot
-  ENDELSE 
+  ssoup_plot_finish,fjpg,feps,xs,ys,xoff,yoff,wxsize,wysize,/epilepsy
 END 
