@@ -1,4 +1,4 @@
-PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
+PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
                  highcut=highcut, maskcmd=maskcmd, omask=omask, smask=smask, $
                  goslow=goslow
    ;
@@ -7,18 +7,10 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
    ;  ll       -> logical unit of log file (should be open)
    ;  imcube   -> image cube storing the multi-wavelength data
    ;              in individual planes
-   ;  band     -> name of the photometric band for each plane
-   ;              of the cube.  This should have entries 
-   ;              'R', 'HALPHA', 'NUV', 'FUV' (at least).
    ;  photfl   -> the PHOTFLAM or PHOTFLUX (Halpha) for each plane
    ;              of the cube
    ;  photplam -> Pivot wavelength of each of the planes.
-   ;  filo     -> Output filenames.  This should be a 4 element arrays
-   ;              for element ; R,G,B pairs:
-   ;              0 ; HALPHA,NUV,FUV
-   ;              1 ; HALPHA,R,FUV
-   ;              2 ; HALPHA,R,NUV
-   ;              3 ; R,NUV,FUV
+   ;  filo     -> Output filenames. 
    ;  ebv      -> galactic foreground extinction
    ;  highcut  -> if set the maximum levels will be at the "high" level
    ;              otherwise the "low" levels will be used
@@ -37,7 +29,7 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
    ;              to a speed a user can monitor.
    ;
    ; G. Meurer (ICRAR/UWA) 06/2010  based on sample.pro by Ji Hoon Kim
-   nrgb    = 4
+   COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
    minr_h  = -2.0e-19
    minr_l  = -1.0e-19
    maxr_h  =  2.0e-16
@@ -54,33 +46,24 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
    slow    = keyword_set(goslow)
    ;
    ; pointers to bands
-   jr      = where(band EQ 'R', njr)
-   jh      = where(band EQ 'HALPHA', njh)
-   jn      = where(band EQ 'NUV', njn)
-   jf      = where(band EQ 'FUV', njf)
-   IF njr NE 1 THEN plog,ll,'image cube must have only one R plane; found = '+numstr(njr)
-   IF njh NE 1 THEN plog,ll,'image cube must have only one HALPHA plane; found = '+numstr(njh)
-   IF njn NE 1 THEN plog,ll,'image cube must have only one NUV plane; found = '+numstr(njn)
-   IF njf NE 1 THEN plog,ll,'image cube must have only one FUV plane; found = '+numstr(njf)
-   IF (njr NE 1) OR (njh NE 1) OR (njn NE 1) OR (njf NE 1) THEN BEGIN 
-      plog,ll,prog,'stopping, could not proceed'
-      return
-   ENDIF 
+   kk = intarr(nbandavail)
+   for i=0,nbandavail-1 do begin
+       kk[i] = where(bandavail eq band.(i), blah)
+       if blah ne 0 and blah ne 1 then begin
+           plog,ll,'image cube must have 0 or 1 '+band.(i)+' plane; found = '+numstr(blah)
+           plog,ll,prog,'stopping, could not proceed'
+           return
+       endif
+   endfor
+   jr      = where(bandavail EQ band.R, njr)
+   jh      = where(bandavail EQ band.HALPHA, njh)
+   jn      = where(bandavail EQ band.NUV, njn)
+   jf      = where(bandavail EQ band.FUV, njf)
    ;
    ; set up combo names
-   bname     = make_array(4, /string, value='')
-   kr        = 0
-   kh        = 1
-   kn        = 2
-   kf        = 3
-   bname[kr] = 'R'
-   bname[kh] = 'HALPHA'
-   bname[kn] = 'NUV'
-   bname[kf] = 'FUV'
-   cname     = ['HALPHA,NUV,FUV','HALPHA,R,FUV','HALPHA,R,NUV','R,NUV,FUV']
-   combo     = [[kh,kn,kf], [kh,kr,kf], [kh,kr,kn], [kr,kn,kf]]
-   ncombo    = n_elements(cname)
+   cname     = strjoin(bandavail[combo], ",")
    nfo       = N_elements(filo)
+   
    IF nfo NE ncombo THEN BEGIN 
       plog,ll,prog,'Number of output files ('+numstr(nfo)+') does not equal number of combos ('+numstr(ncombo)+')'
       plog,ll,prog,'stopping, could not proceed'
@@ -166,12 +149,11 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
    ENDIF 
    ;
    ; get deredden parameters
-   dredf   = make_array(4, /float, value=1.0)
+   dredf   = make_array(nband, /float, value=1.0)
    IF keyword_set(ebv) THEN BEGIN
-      wl   = [photplam[kr],photplam[kh],photplam[kn],photplam[kf]]
-      ccm_unred, wl, dredf, ebv[0]
+         ccm_unred, photplam, dredf, ebv[0]
       plog,ll,prog,'will de-redden fluxes using the following band | wl | factor sets'
-      FOR ii = 0, 3 DO plog,ll,prog,'   '+ljust(bname[ii],6)+' | '+numstr(wl[ii])+' | '+numstr(dredf[ii])
+      FOR ii = 0, nbandavail-1 DO plog,ll,prog,'   '+ljust(bandavail[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
    ENDIF 
    ;
    ; set levels
@@ -192,23 +174,44 @@ PRO ssoup_mkjpg, ll, imcube, band, photfl, photplam, filo, ebv=ebv, $
       minh = minh_h
       maxh = maxh_h
    ENDELSE 
-   mind     = make_array(4,/float,value=0.0)
+   mind     = make_array(nbandavail,/float,value=0.0)
    maxd     = mind
-   mind[kr] = minr
-   maxd[kr] = maxr
-   mind[kh] = minh
-   maxd[kh] = maxh
-   mind[kn] = mind[kr]*(photplam[jn]/photplam[jr])^beta
-   maxd[kn] = maxd[kr]*(photplam[jn]/photplam[jr])^beta
-   mind[kf] = mind[kr]*(photplam[jf]/photplam[jr])^beta
-   maxd[kf] = maxd[kr]*(photplam[jf]/photplam[jr])^beta
+   mind[jr] = minr
+   maxd[jr] = maxr
+   mind[jh] = minh
+   maxd[jh] = maxh
+   mind[jn] = mind[jr]*(photplam[jn]/photplam[jr])^beta
+   maxd[jn] = maxd[jr]*(photplam[jn]/photplam[jr])^beta
+   mind[jf] = mind[jr]*(photplam[jf]/photplam[jr])^beta
+   maxd[jf] = maxd[jr]*(photplam[jf]/photplam[jr])^beta
+   ; WISE minimum/maximum values
+   ; TODO: come up with less retarded values
+   blahindex = (where(bandavail eq band.mir_W1, blahcount))[0]
+   if blahcount ge 1 then begin 
+       mind[blahindex] = 1e-20
+       maxd[blahindex] = 100e-20
+   endif
+   blahindex = (where(bandavail eq band.mir_W2, blahcount))[0]
+   if blahcount ge 1 then begin 
+       mind[blahindex] = 1e-20
+       maxd[blahindex] = 100e-20
+   endif
+   blahindex = (where(bandavail eq band.mir_W3, blahcount))[0]
+   if blahcount ge 1 then begin 
+       mind[blahindex] = 1e-20
+       maxd[blahindex] = 100e-20
+   endif
+   blahindex = (where(bandavail eq band.mir_W4, blahcount))[0]
+   if blahcount ge 1 then begin 
+       mind[blahindex] = 1e-20
+       maxd[blahindex] = 100e-20
+   endif
    plog,ll,prog,'will use the following flux calibrated display levels (band   min   max)'
-   FOR ii = 0, 3 DO plog,ll,'  ',ljust(bname[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
+   FOR ii = 0, nbandavail-1 DO plog,ll,'  ',ljust(bandavail[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
    ;
    ; empty cube for putting only the planes we want,
    ; and in the order we want
-   imcal    = make_array(nx, ny, 4, /float, value=0.0)
-   kk       = [jr, jh, jn, jf]
+   imcal    = make_array(nx, ny, nbandavail, /float, value=0.0)
    ;
    ; assemble cube of signed-sqrt calibrated fluxes
    FOR ii = 0, nz-1 DO imcal[*,*,ii] = ssqrt(photfl[kk[ii]]*dredf[ii]*imcube[*,*,kk[ii]])  ; calibrate 

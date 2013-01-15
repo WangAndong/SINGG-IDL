@@ -1,12 +1,10 @@
-PRO ssoup_cp_ccolours, ll, bname, mag0, phfl, mg, emg, colfn, ecolfn, colnr, ecolnr, $
+PRO ssoup_cp_ccolours, ll, mag0, phfl, mg, emg, colfn, ecolfn, colnr, ecolnr, $
                        lgewr, elgewr, lgewf, elgewf, mflag, emflag, lflag, elflag, clflag, cuflag
   ;
   ; Calculate some defined colours from magnitudes or log(fluxes).
   ; This routine is called by ssoup_calprof(_new)
   ;
   ;  ll     -> logical unit for log file
-  ;  bname  -> array of band names, should contain at least 'R', 
-  ;            'HALPHA', 'NUV', 'FUV'
   ;  mag0   -> ABmagnitude zeropoints for the above bands (except for
   ;            HALPHA
   ;  phfl   -> PHOTFLAM (continuum) and PHOTFLUX (HALPHA) for the bands
@@ -36,15 +34,15 @@ PRO ssoup_cp_ccolours, ll, bname, mag0, phfl, mg, emg, colfn, ecolfn, colnr, eco
   ;elflag  =   9.999  ; error log flag
   prog    = 'SSOUP_CP_CCOLOURS: '
   ;
-  nb      = n_elements(bname)
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
   ;
   plog,ll,prog,'----------------- starting '+prog+'----------------------'
   ;
   plog,ll,prog,'working out band name correspondence'
-  p0      = where(bname EQ 'R', np0)
-  p1      = where(bname EQ 'HALPHA', np1)
-  p2      = where(bname EQ 'NUV', np2)
-  p3      = where(bname EQ 'FUV', np3)
+  p0      = where(bandavail EQ band.R, np0)
+  p1      = where(bandavail EQ band.HALPHA, np1)
+  p2      = where(bandavail EQ band.NUV, np2)
+  p3      = where(bandavail EQ band.FUV, np3)
   IF (np0 NE 1 OR np1 NE 1 OR np2 NE 1 OR np3 NE 1) THEN stop,prog+'band names not correct: ',bname
   p0      = p0[0]
   p1      = p1[0]
@@ -54,7 +52,7 @@ PRO ssoup_cp_ccolours, ll, bname, mag0, phfl, mg, emg, colfn, ecolfn, colnr, eco
   ; get dimensions of magnitude array so that the output 
   ; arrays can be made
   sz       = size(mg)
-  IF (sz[0] NE 2 AND sz[2] NE nb) THEN stop,prog+'input error array does not have the right dimensions'
+  IF (sz[0] NE 2 AND sz[2] NE nbandavail) THEN stop,prog+'input error array does not have the right dimensions'
   nn       = sz[1]  ; number of elements for each band
   colfn    = make_array(nn, /float, value=0.0) ; empty array
   ecolfn   = colfn                             ; copy that empty array...

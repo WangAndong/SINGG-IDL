@@ -31,11 +31,10 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   proftype = 'aligned'
   headline = '# profiles from aligned images convolved to common seeing and pixel grid'
   prog     = 'SSOUP_PROFILES: '
-  COMMON bands, band
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail
   ;
   plog,ll,prog,'------------------------- starting '+prog+'---------------------------------'
   ;
-  nim      = n_elements(fimages)
   vb       = keyword_set(verbose)
   ;
   ; decide on shape parameter
@@ -47,8 +46,9 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   endif 
   ;
   ; get a fiducial header
-  plog,ll,prog,'reading fiducial header from '+fimages[0]
-  fits_read, fimages[0], img, hdr, /header_only
+  fid = where(bandavail eq band.R, /null)
+  plog,ll,prog,'reading fiducial header from '+fimages[fid]
+  fits_read, fimages[fid], img, hdr, /header_only
   ;
   ; get some quantities from header: seeing, pixel scale
   seeing  = sxpar(hdr, 'seeing')
@@ -152,14 +152,14 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   fits_read, fmask, mask, hdm
   ;
   ; Loop through images
-  FOR jj = 0, nim-1 DO BEGIN 
+  FOR jj = 0, nbandavail-1 DO BEGIN 
      plog,ll,prog,'Working on image: '+fimages[jj]
      ;
      ; read in image
      fits_read, fimages[jj], img, hdr
      ;
      ; get some stuff from header
-     IF band[jj] EQ 'HALPHA' THEN BEGIN 
+     IF bandavail[jj] EQ band.HALPHA THEN BEGIN 
         fscale = sxpar(hdr, 'photflux', count=nmtch) 
         units = 'erg/cm^2/s'
      ENDIF ELSE BEGIN 
@@ -176,6 +176,8 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
      openw, lu, fprof[jj], /get_lun
      ;
      ; write header for output file
+     ; TODO: write profiles out for other bands. At the moment, we don't care about MIR profiles
+     ; (looking at the images, they would be... useless).
      write_profile_header, lu, fimages[jj], as_pix, units, fscale, proftype, headline, nelg
      FOR ii = 0, nelg-1 DO BEGIN 
         plog,ll,prog,'measuring source number: '+strtrim(ii,2)

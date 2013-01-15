@@ -17,7 +17,7 @@ pro ssoup_cp_wmagfile, ll, outtype, filo, ngal, pt0, pt1, rad, mprof, emproft, e
   ;  pt1     -> last element for each galaxy
   ;  rad     -> radius
   ;  mprof   -> magnitude profile this is 2D array [4,nn]
-  ;             for now assume 0 = R, 1 = Halpha, 2 = NUV, 3 = FUV
+  ;             for now assume 1 = R, 0 = Halpha, 2 = NUV, 3 = FUV
   ;  emproft -> total mag error
   ;  emprofs -> sky error for Halpha
   ;  emprofc -> continuum subtraction for Halpha
@@ -36,10 +36,18 @@ pro ssoup_cp_wmagfile, ll, outtype, filo, ngal, pt0, pt1, rad, mprof, emproft, e
   ;      * pass nsigma (detection limit threshold) and write to file
   ;
   ; set header stuff
+  
+  ; TODO: make this less bad
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
+  iha  = where(bandavail eq band.HALPHA, /null)
+  ir   = where(bandavail eq band.R, /null)
+  inuv = where(bandavail eq band.NUV, /null)
+  ifuv = where(bandavail eq band.FUV, /null)
+  
   prog    = 'SSOUP_CP_WMAGFILE: '
   fmto    = '(f7.2,f8.3,f6.3,f9.3,f6.3,f6.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3)'
   case outtype of 
-     0: begin 
+     0: begin ;
            hlines1 = '# Surface quantities (in annuli)'
            hlines2 = '#  sma   mu_R   err     lSHa   etot  esky  ecnt   mu_nuv err    mu_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
            typ     = 'annular surface quantities '
@@ -84,13 +92,13 @@ pro ssoup_cp_wmagfile, ll, outtype, filo, ngal, pt0, pt1, rad, mprof, emproft, e
         printf,lu,'# galaxy index #'+numstr(jj+1)
      ENDIF 
      FOR ii = ptt0, ptt1 DO BEGIN 
-        printf,-1,rad[ii],mprof[ii,0],emproft[ii,0],mprof[ii,1],emproft[ii,1],$
-               emprofs[ii],emprofc[ii],mprof[ii,2],emproft[ii,2],mprof[ii,3],$
-               emproft[ii,3],mcfn[ii],emcfn[ii],mcnr[ii],emcnr[ii],$
+        printf,-1,rad[ii],mprof[ii,ir],emproft[ii,ir],mprof[ii,iha],emproft[ii,iha],$
+               emprofs[ii],emprofc[ii],mprof[ii,inuv],emproft[ii,inuv],mprof[ii,ifuv],$
+               emproft[ii,ifuv],mcfn[ii],emcfn[ii],mcnr[ii],emcnr[ii],$
                lewr[ii],elewr[ii],lewf[ii],elewf[ii],format=fmto
-        printf,lu,rad[ii],mprof[ii,0],emproft[ii,0],mprof[ii,1],emproft[ii,1],$
-               emprofs[ii],emprofc[ii],mprof[ii,2],emproft[ii,2],mprof[ii,3],$
-               emproft[ii,3],mcfn[ii],emcfn[ii],mcnr[ii],emcnr[ii],$
+        printf,lu,rad[ii],mprof[ii,ir],emproft[ii,ir],mprof[ii,iha],emproft[ii,iha],$
+               emprofs[ii],emprofc[ii],mprof[ii,inuv],emproft[ii,inuv],mprof[ii,ifuv],$
+               emproft[ii,ifuv],mcfn[ii],emcfn[ii],mcnr[ii],emcnr[ii],$
                lewr[ii],elewr[ii],lewf[ii],elewf[ii],format=fmto
      ENDFOR 
   ENDFOR 

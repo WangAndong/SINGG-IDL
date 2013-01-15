@@ -1,10 +1,9 @@
-PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
+PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
   ;
   ; Compare magnitudes and radii from SSOUP and what's in
   ; various databases
   ;
   ; sname  -> SINGG/HIPASS name
-  ; band   -> name of the bands
   ; fprofs -> profile file names
   ; fcomp  -> name of output comparison
   ;
@@ -16,15 +15,13 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
   hline1  = '#                         <---- Database ----> <------ SSOUP ------>'
   hline2  = '#SName         Band        R_50   mag    err      R_50   mag    err '
   wlv     = 5500.0
-  COMMON bands, band
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
   plog,ll,prog,'------------------- starting '+prog+'-------------------------'
   ;
   ; need pivot wavelength of NUV & FUV.  Should
   ; be passed, but have defaults, just in case
-  pn    = where(bandparam EQ 'NUV',npn)
-  pf    = where(bandparam EQ 'FUV',npf)
-  pr    = where(bandparam EQ 'R',npr)
-  ph    = where(bandparam EQ 'HALPHA',nph)
+  pn    = where(bandavail EQ band.NUV,npn)
+  pf    = where(bandavail EQ band.FUV,npf)
   IF npn EQ 1 THEN wlnuv = photplam[pn] ELSE wlnuv = 2300.8
   IF npf EQ 1 THEN wlfuv = photplam[pf] ELSE wlfuv = 1535.1
   ;
@@ -93,20 +90,18 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
   ENDELSE
   dbclose
   plog,ll,prog,'number of matching entries in optical database: '+numstr(noo)
-  ;
-  flx       = [mr, lfha, mnuv, mfuv]
-  ;flx       = [mr, lfha, mnuv0, mfuv0]
-  eflx      = [emr, elfha, emnuv, emfuv]
-  r50       = [rer, reha, r50n, r50f]
-  er50      = [erer, ereha, 0.0, 0.0]
-  ;
-  nb        = n_elements(bandparam)
+  ; TODO: these are hardcoded number of wavelengths. We can ignore these until we get MIR results...
+  flx       = [lfha, mr, mnuv, mfuv]
+  ;flx       = [lfha, mr, mnuv0, mfuv0]
+  eflx      = [elfha, emr, emnuv, emfuv]
+  r50       = [reha, rer, r50n, r50f]
+  er50      = [ereha, erer, 0.0, 0.0]
   ;
   ; get deredden parameters
-  dredf   = make_array(4, /float, value=1.0)
+  dredf   = make_array(nbandavail, /float, value=1.0)
   IF ebv GT 0 THEN ccm_unred, photplam, dredf, ebv[0]
   plog,ll,prog,'will de-redden fluxes using the following band | wl | factor sets'
-  FOR ii = 0, 3 DO plog,ll,prog,'   '+ljust(bandparam[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
+  FOR ii = 0, nbandavail-1 DO plog,ll,prog,'   '+ljust(bandavail[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
   ;
   ; loop through bands
   plog,ll,prog,'opening output comparison file: '+fcomp
@@ -116,11 +111,12 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
   plog,ll,' ',hline1
   plog,ll,' ',hline2
   ;
-  FOR ii = 0,nb-1 DO BEGIN 
+  FOR ii = 0,nbandavail-1 DO BEGIN 
+     if bandavail[ii] eq band.mir_W1 or bandavail[ii] eq band.mir_W2 or bandavail[ii] eq band.mir_W3 $
+          or bandavail[ii] eq band.mir_W4 then continue ; TODO: get database results for comparison
      ;
-     ; pointer to position in db arrays
-     pp     = where(band EQ bandparam[ii], npp)
-     IF npp NE 1 THEN stop, 'no band with that name'
+     ; pointer to position in db arrays. No count because this will never be less than 0.
+     pp     = where(tag_names(band) EQ bandavail[ii], /null)
      ;
      ; read header of file, that's where the info is...
      pixsize = 0.0
@@ -131,7 +127,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
                   flsigcnts, flsigcntf, flsigcntt, ref, ret, $
                   resigskyf, resigskyt, resigcntf, resigcntt, sef, set, $
                   lstart, lend, isoflag, netflag, /silent
-     IF strupcase(bandparam[ii]) NE 'HALPHA' THEN BEGIN 
+     IF bandavail[ii] NE band.HALPHA THEN BEGIN 
         fits_read, filename, im, hd, /header_only
         m0      = sxpar(hd, 'magzpt1')
         flx_p   = m0 - 2.5*alog10(dredf[ii]*fluxf/fscale)
@@ -144,7 +140,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, bandparam, fprofs, fcomp
      ENDELSE 
      ;
      ; print results for this band to log and output file
-     str = ljust(sname,15)+ljust(bandparam[ii],8)+'  '+$
+     str = ljust(sname,15)+ljust(bandavail[ii],8)+'  '+$
            string(r50[pp],format='(f6.2)')+' '+string(flx[pp],format='(f7.3)')+' '+string(eflx[pp],format='(f5.3)')+' | '+$
            string(r50_p,format='(f6.2)')+' '+string(flx_p,format='(f7.3)')+' '+string(eflx_p,format='(f5.3)')
      plog,ll,' ',str

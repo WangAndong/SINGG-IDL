@@ -48,7 +48,9 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
   ; load prerequisites
   astrolib
   resetplot
-  COMMON bands, band, nband, bandnam
+  ; These are set in ssoup_initvars but stupid IDL says I must define the block here.
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo
+  ssoup_initvars
   
   ; **** Note bxdef is the sky box size, it is currently hard wired 
   ; into ssoup_askyfit.  It should be an optional input parameter
@@ -74,9 +76,9 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; make sky box plots
      plog,ll,prog,'making plots of sky boxes'
-     FOR ii = 0, nband-1 DO BEGIN 
-        ssoup_plotboxes, ll, bxdef, inputstr.hname, band[ii], inputstr.fbox[ii], inputstr.fbplotj[ii] 
-        ssoup_plotboxes, ll, bxdef, inputstr.hname, band[ii], inputstr.fbox[ii], inputstr.fbplote[ii] 
+     FOR ii = 0, nbandavail-1 DO BEGIN 
+        ssoup_plotboxes, ll, bxdef, inputstr.hname, bandavail[ii], inputstr.fbox[ii], inputstr.fbplotj[ii] 
+        ssoup_plotboxes, ll, bxdef, inputstr.hname, bandavail[ii], inputstr.fbox[ii], inputstr.fbplote[ii] 
      ENDFOR 
      ;
      ; extract radial profiles
@@ -87,7 +89,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; get foreground dust absorption
      dbopen,sdb
-     list = dbmatch('name', inputstr.hname[0])
+     list = dbmatch('name', inputstr.hname)
      ebv  = 0.0
      IF list[0] NE -1 THEN dbext,list,'ebv',ebv
      dbclose
@@ -95,67 +97,67 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      IF slow THEN keywait, 'type any key to continue: '
      plog,ll,prog,'preparing to make colour images'
-     phpl = make_array(4,/float,value=0.0)
+     phpl = make_array(nbandavail,/float,value=0.0)
      phfl = phpl
      ;
      ; read in the output fits images so as to create 3 color 
      ; preview images.  First just read a header to get image size
-     fits_read, inputstr.fimages_out[0], img, hd, /header_only
+     fits_read, inputstr.fimages_out[4], img, hd, /header_only
      nx   = sxpar(hd,'NAXIS1')
      ny   = sxpar(hd,'NAXIS2')
-     imgc = make_array(nx,ny,4,/float,value=0.0)
-     FOR ii = 0, nband-1 DO BEGIN
+     imgc = make_array(nx,ny,nbandavail,/float,value=0.0)
+     FOR ii = 0, nbandavail-1 DO BEGIN
         fits_read, inputstr.fimages_out[ii], img, hd
         imgc[*,*,ii] = img
-        IF band[ii] EQ 'HALPHA' THEN phfl[ii] = sxpar(hd,'photflux') ELSE phfl[ii] = sxpar(hd,'photflam')
+        IF bandavail[ii] EQ band.HALPHA THEN phfl[ii] = sxpar(hd,'photflux') ELSE phfl[ii] = sxpar(hd,'photflam')
         phpl[ii] = sxpar(hd, 'photplam')
      ENDFOR
      ;
      ; make preview images
      IF slow THEN keywait, 'type any key to continue: '
      plog,ll,prog,'making low cut jpg images'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_low,ebv=ebv,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_low,ebv=ebv,goslow=slow
      plog,ll,prog,'making high cut jpg images'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_high,ebv=ebv,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_high,ebv=ebv,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images with bad objects masked out'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mlow1,ebv=ebv,maskcmd=1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mlow1,ebv=ebv,maskcmd=1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images with bad objects masked out'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mhigh1,ebv=ebv,maskcmd=1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mhigh1,ebv=ebv,maskcmd=1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images with only bad objects shown '
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imlow1,ebv=ebv,maskcmd=-1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imlow1,ebv=ebv,maskcmd=-1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images with only bad objects shown '
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imhigh1,ebv=ebv,maskcmd=-1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imhigh1,ebv=ebv,maskcmd=-1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images showing only sky pixels'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mlow2,ebv=ebv,maskcmd=2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mlow2,ebv=ebv,maskcmd=2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images showing only sky pixelst'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mhigh2,ebv=ebv,maskcmd=2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mhigh2,ebv=ebv,maskcmd=2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images showing only pixels excluded from sky'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imlow2,ebv=ebv,maskcmd=-2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imlow2,ebv=ebv,maskcmd=-2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images showing only pixels excluded from sky'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imhigh2,ebv=ebv,maskcmd=-2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imhigh2,ebv=ebv,maskcmd=-2,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images showing pixels used in source  measurements '
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mlow3,ebv=ebv,maskcmd=3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mlow3,ebv=ebv,maskcmd=3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images showing pixels used in source  measurements '
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_mhigh3,ebv=ebv,maskcmd=3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mhigh3,ebv=ebv,maskcmd=3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      plog,ll,prog,'making low cut jpg images showing pixels not used in source  measurements'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imlow3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imlow3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow
      plog,ll,prog,'making high cut jpg images showing pixels not used in source  measurements'
-     ssoup_mkjpg,ll,imgc,band,phfl,phpl,inputstr.fjpg_imhigh3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_imhigh3,ebv=ebv,maskcmd=-3,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,/highcut,goslow=slow
      ;
      ; Compare results to database values
      plog,ll,prog,'comparing db vs ssoup results'
-     ssoup_compresults, ll, inputstr.hname, phpl, ebv, band, inputstr.fprofs_out, inputstr.fcompare
+     ssoup_compresults, ll, inputstr.hname, phpl, ebv, inputstr.fprofs_out, inputstr.fcompare
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; calibrate surface brightness profiles
      plog,ll,prog,'making calibrated profiles'
-     ssoup_calprof, ll, band, phpl, ebv, inputstr.fprofs_out, inputstr.scalprof, inputstr.fcalprof, $
+     ssoup_calprof, ll, phpl, ebv, (inputstr.fprofs_out), inputstr.scalprof, inputstr.fcalprof, $
                     (inputstr.scalprof0), inputstr.fcalprof0, fecntrat=fecntrat
      IF slow THEN keywait, 'type any key to continue: '
      ;

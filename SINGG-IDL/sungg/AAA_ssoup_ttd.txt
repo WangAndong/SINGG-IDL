@@ -1,17 +1,43 @@
 SSOUP Programming Things To Do
-------------------------------
+==============================
 
-* Reintegrate dust corrected surface brightness profiles to get dust
-  corrected aperture fluxes.  [SSOUP_CALPROF.PRO]
-  # Done 5/2011
+* Save results for each galaxy as an IDL saveset?
+  - stores at machine accuracy...
+
+* Improve handling of multiple galaxies
+  + consistent masking when calculating sky
+  + separate plots for each galaxy
+
+* Generalize to add other bands
+  + most likely add-ons
+    - WISE mid-IR four bands (done 01/13 - Stephen)
+    - Pan-STARRS1, grizy 5 bands
+    - POGS stellar mass maps, SF maps
+  + Needs to work whether or not bands are there (at the moment, WISE is optional while Ha, R, NUV, FUV are mandatory)
+
+* Improve the error models in the Halpha profiles.
+  + need to account for error in the continuum subtraction
 
 * Calculate flux/surface brightness upper limits. 
   + ideally the Halpha error model will be fixed ...
 
+* Make QA plots for the sky fitting
+  + overlay apertures
+  + overlay masks
+  + show rejected boxes
+
+* Model fits to surface brightness profiles
+  + kron radius, aperture, fluxes
+  + exponential fit
+  + sersic profile fit
+
+* Allow new sky models
+  + skymod_<band> = poly (current default)
+  + skymod_<band> = radial (polynomial in radius, will need im center)
+  + skymod_<band> = mixed (polynomials in both radius and cartesian,
+                           careful of degenericies...)
+
 * Halpha/FUV plot improvements
-  + indicate upper limits 
-    [SSOUP_CALPROF.PRO, SSOUP_PLOTHAFUV.PRO, SSOUP_MULTI_PLOTHAFUV.PRO]
-    # Done 5/2011
   + indicate integrated fluxes 
   + have a set minimum delta-r, and/or delta-L(FUV)
     - minimum delta-r set by seeing currently
@@ -19,6 +45,15 @@ SSOUP Programming Things To Do
       regions. 
     - Also want to avoid case where there is likely to be less than 1 O
       star in ring (this can be set by having a minimum delta-L_FUV).
+
+* Write out model FIR surface brightness and enclosed flux profile
+  [SSOUP_CALPROF.PRO] 
+  + calculate modeled FIR flux.
+
+* Make plots of enclosed quantities (with and without dust correction)
+  + fluxes/mag (FUV, NUV, R, Halpha)
+  + color (FUV-NUV, NUV-R, EW(Halpha), Halpha/FUV)
+  + calculate and show R_20, R_80: radii containing 20% and 80% of fluxes
 
 * Stand alone or initial SExtractor pipeline
   + SE input file band dependent
@@ -38,32 +73,21 @@ SSOUP Programming Things To Do
     - show effect on radial profiles, 3 color images
     - autoimated minimisation of sky order
 
-* Allow new sky models
-  + skymod_<band> = poly (current default)
-  + skymod_<band> = radial (polynomial in radius, will need im center)
-  + skymod_<band> = mixed (polynomials in both radius and cartesian,
-                           careful of degenericies...)
+* Compile results to a database (IDL, or SQL?)
 
-* Improve handling of multiple galaxies
-  + consistent masking when calculating sky
-  + separate plots for each galaxy
+* Stand-alone (probably) pipeline for 2D modelling (Galfit) 
 
-* Write out model FIR surface brightness and enclosed flux profile
-  [SSOUP_CALPROF.PRO] 
-  + calculate modeled FIR flux.
+Finished
+--------
 
-* Make plots of enclosed quantities (with and without dust correction)
-  + fluxes/mag (FUV, NUV, R, Halpha)
-  + color (FUV-NUV, NUV-R, EW(Halpha), Halpha/FUV)
-  + calculate and show R_20, R_80: radii containing 20% and 80% of fluxes
+* Reintegrate dust corrected surface brightness profiles to get dust
+  corrected aperture fluxes.  [SSOUP_CALPROF.PRO]
+  # Done 5/2011
 
-* Improve the error models in the Halpha profiles.
-  + need to account for error in the continuum subtraction
-
-* Model fits to surface brightness profiles
-  + kron radius, aperture, fluxes
-  + exponential fit
-  + sersic profile fit
+* Halpha/FUV plot improvements
+  + indicate upper limits 
+    [SSOUP_CALPROF.PRO, SSOUP_PLOTHAFUV.PRO, SSOUP_MULTI_PLOTHAFUV.PRO]
+    # Done 5/2011
 
 * Make QA plots for the sky fitting
   + show measurements in boxes
@@ -72,26 +96,16 @@ SSOUP Programming Things To Do
     # Done 8/2012
   + show residuals in boxes
     # Done 8/2012
-  + overlay apertures
-  + overlay masks
-  + show rejected boxes
+
+* Put it in to SVN or GitHub
+  # Done 12/2012
 
 * Put input parameters in a structure
   - this will make it easier to add parameters
+  # Done 12/2012 - Stephen
 
-* Save results for each galaxy as an IDL saveset?
-  - stores at machine accuracy...
+Notes
+-----
 
-* Compile results to a database (IDL, or SQL?)
-
-* Generalize to add other bands
-  + most likely add-ons
-    - WISE mid-IR four bands
-    - Pan-STARRS1, grizy 5 bands
-    - POGS stellar mass maps, SF maps
-  + Needs to work whether or not bands are there
-
-* Put it in to SVN or GitHub
-
-* Stand-alone (probably) pipeline for 2D modelling (Galfit) 
-
+- re-ordered to be closer to priority order (highest priority first) on
+  4 Jan, 2013.

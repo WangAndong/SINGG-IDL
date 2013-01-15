@@ -1,13 +1,9 @@
-PRO ssoup_atidyhdr, ll, band, fnami, fnamo, kfwhm, im, hdin, hdout, astr
+PRO ssoup_atidyhdr, ll, bname, fnami, fnamo, kfwhm, im, hdin, hdout, astr
   ;
   ; Tidy headers for output from ssoup_align
   ;
   ; ll     -> logical unit of log file
-  ; band   -> name of band (string).  Should be one of
-  ;           R - R band
-  ;           HALPHA - H-alpha
-  ;           NUV - near UV
-  ;           FUV - far UV
+  ; band   -> name of band (string).
   ; fnami  -> input filename (to be stored in hdout) 
   ; fnamo  -> output filename (also stored in header)
   ; kfwhm  -> FWHM of convolution kernel
@@ -18,24 +14,24 @@ PRO ssoup_atidyhdr, ll, band, fnami, fnamo, kfwhm, im, hdin, hdout, astr
   ;           structure then this is copied into the new header
   ;           otherwise it is taken from the current header
   ;
-  ; G. Meurer 5/2010 ICRAR/UWA
-  ddir      = '~/IDL/Pro/Work/sungg/'         ; directory containing template headers
-  bname     = ['R', 'HALPHA', 'NUV', 'FUV']   ; band  names
-  htempl    = ddir+['r', 'ha', 'uv', 'uv']+'_templ_hdr.dat'  ; template headers
+  ; G. Meurer 5/2010 ICRAR/UWA      
+  COMMON bands, band, nband, bandnam, bandavail, nbandavail
+  findpro,"ssoup_atidyhdr",/noprint,dirlist=temp123 ; directory containing template headers 
   prog      = 'SSOUP_ATIDYHDR: '
+  ddir = temp123[0]
+  htempl    = ddir+['ha', 'r', 'uv', 'uv', "wx", "wx", "wx", "wx"]+'_templ_hdr.dat'
   pname     = 'SSOUP.PRO'         ; name of main program
-  nb        = n_elements(bname)
   ;
   ; find pointer to apropriate band
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
-  jj        = where(bname EQ strupcase(strtrim(band,2)), njj)
+  jj        = where(bandavail EQ bname, njj)
   IF njj NE 1 THEN BEGIN 
-     IF njj EQ 0 THEN plog,ll,prog,'**** ERROR BAND'+band+' does not match any of BNAME'
-     IF njj GT 1 THEN plog,ll,prog,'**** ERROR BAND'+band+' matches more than one of BNAME (must be a bug...)'
+     IF njj EQ 0 THEN plog,ll,prog,'**** ERROR BAND '+bname+' does not match any of BNAME'
+     IF njj GT 1 THEN plog,ll,prog,'**** ERROR BAND '+bname+' matches more than one of BNAME (must be a bug...)'
      stop
   ENDIF ELSE BEGIN 
      ptr    = jj[0]
-     plog,ll,prog,'Working with band = '+bname[ptr]
+     plog,ll,prog,'Working with band = '+bandavail[ptr]
   ENDELSE 
   ;
   ; make working copy of header to do initial changes in
@@ -103,10 +99,10 @@ PRO ssoup_atidyhdr, ll, band, fnami, fnamo, kfwhm, im, hdin, hdout, astr
   ;
   ; add photometric keywords
   plog,ll,prog,'adding photometric keywords '
-  ssoup_addphotkwds, band, hdwk
+  ssoup_addphotkwds, bname, hdwk
   ;
   ; UV specific stuff
-  if band eq 'FUV' or band eq 'NUV' then begin 
+  if bname eq band.FUV or bname eq band.NUV then begin 
      plog,ll,prog,'updating UV specific keywords '
      ;
      ; concatenate date and time of observation
@@ -136,6 +132,13 @@ PRO ssoup_atidyhdr, ll, band, fnami, fnamo, kfwhm, im, hdin, hdout, astr
      fxaddpar, hdwk, 'WAT1_001', 'wtype=tan axtype=ra'
      fxaddpar, hdwk, 'WAT2_001', 'wtype=tan axtype=dec'
   endif 
+  ; wise specific stuff
+  if bname eq band.mir_W1 or bname eq band.mir_W2 or bname eq band.mir_W3 or bname eq band.mir_W4 then begin
+     ; change zero point
+     fxaddpar, hdwk, "MAGZPT1", sxpar(hdwk, 'MAGZP', count=n1), "Magnitude zero point"
+     fxaddpar, hdwk, "ERRZPT1", sxpar(hdwk, 'MAGZPUNC', count=n2), "Uncertainty in magzpt1"
+     fxaddpar, hdwk, "PHOTPLAM", sxpar(hdwk, "WAVELEN", count=n3)*10000, "Filter pivot wavelength
+  endif
   ;
   ; apply template header
   plog,ll,prog,'applying template header'
