@@ -110,7 +110,7 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fplot, dcorr=dcorr, kline=kline
   ENDELSE 
   ;
   ; read files
-  ; fixme: this is practically a hard-coded 4 bands
+  ; TODO: this is a place that needs work if profile dats are changed (see comment in ssoup_profiles)
   plog,ll,prog,'reading in surface brightness profile file: '+fsprof
   readcol, fsprof, sma, sr, esr, sha, eshat, eshas, eshac, snuv, esnuv, sfuv, esfuv, $
            scfn, escfn, scnr, escnr, slewr, eslewr, slewf, eslewf, format=fmti

@@ -4,7 +4,6 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
   ; various databases
   ;
   ; sname  -> SINGG/HIPASS name
-  ; band   -> name of the bands
   ; fprofs -> profile file names
   ; fcomp  -> name of output comparison
   ;
@@ -91,7 +90,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
   ENDELSE
   dbclose
   plog,ll,prog,'number of matching entries in optical database: '+numstr(noo)
-  ; FIXME: these are hardcoded number of wavelengths. I think we can ignore this for now?
+  ; TODO: these are hardcoded number of wavelengths. We can ignore these until we get MIR results...
   flx       = [lfha, mr, mnuv, mfuv]
   ;flx       = [lfha, mr, mnuv0, mfuv0]
   eflx      = [elfha, emr, emnuv, emfuv]
@@ -114,7 +113,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
   ;
   FOR ii = 0,nbandavail-1 DO BEGIN 
      if bandavail[ii] eq band.mir_W1 or bandavail[ii] eq band.mir_W2 or bandavail[ii] eq band.mir_W3 $
-          or bandavail[ii] eq band.mir_W4 then continue ; fixme: nothing to compare...
+          or bandavail[ii] eq band.mir_W4 then continue ; TODO: get database results for comparison
      ;
      ; pointer to position in db arrays. No count because this will never be less than 0.
      pp     = where(tag_names(band) EQ bandavail[ii], /null)

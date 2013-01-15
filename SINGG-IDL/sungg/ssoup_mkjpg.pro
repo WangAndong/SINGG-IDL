@@ -30,7 +30,6 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ;
    ; G. Meurer (ICRAR/UWA) 06/2010  based on sample.pro by Ji Hoon Kim
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
-   ; FIXME: limits only work for Halpha, R, NUV, FUV. These are flux densities = DN*photflam/exptime (doesn't explain -ves)
    minr_h  = -2.0e-19
    minr_l  = -1.0e-19
    maxr_h  =  2.0e-16
@@ -62,7 +61,7 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    jf      = where(bandavail EQ band.FUV, njf)
    ;
    ; set up combo names
-   cname     = string(bandavail[combo], format='(A,",",A,",",A)')
+   cname     = strjoin(bandavail[combo], ",")
    nfo       = N_elements(filo)
    
    IF nfo NE ncombo THEN BEGIN 
@@ -185,15 +184,28 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    maxd[jn] = maxd[jr]*(photplam[jn]/photplam[jr])^beta
    mind[jf] = mind[jr]*(photplam[jf]/photplam[jr])^beta
    maxd[jf] = maxd[jr]*(photplam[jf]/photplam[jr])^beta
-   ; temp hack
-   mind[4] = 0.01
-   maxd[4] = 0.018
-   mind[5] = 0.015
-   maxd[5] = 0.025
-   mind[6] = 0.01
-   maxd[6] = 0.017
-   mind[7] = 0.3
-   maxd[7] = 0.5
+   ; WISE minimum/maximum values
+   ; TODO: come up with less retarded values
+   blahindex = (where(bandavail eq band.mir_W1, blahcount))[0]
+   if blahcount ge 1 then begin 
+       mind[blahindex] = 1e-20
+       maxd[blahindex] = 100e-20
+   endif
+   blahindex = (where(bandavail eq band.mir_W2, blahcount))[0]
+   if blahcount ge 1 then begin 
+       mind[blahindex] = 1e-20
+       maxd[blahindex] = 100e-20
+   endif
+   blahindex = (where(bandavail eq band.mir_W3, blahcount))[0]
+   if blahcount ge 1 then begin 
+       mind[blahindex] = 1e-20
+       maxd[blahindex] = 100e-20
+   endif
+   blahindex = (where(bandavail eq band.mir_W4, blahcount))[0]
+   if blahcount ge 1 then begin 
+       mind[blahindex] = 1e-20
+       maxd[blahindex] = 100e-20
+   endif
    plog,ll,prog,'will use the following flux calibrated display levels (band   min   max)'
    FOR ii = 0, nbandavail-1 DO plog,ll,'  ',ljust(bandavail[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
    ;

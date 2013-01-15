@@ -55,7 +55,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ENDELSE 
   ;
   ; these search strings are in the same order as band
-  ; fixme: this is rather crappy
+  ; add a new one by x = ptr_arr(array of search strings)
    sstr = ptrarr(nband)
    sstr[0] = ptr_new(hname + '*_?sub_ss.fits')          ; Ha
    sstr[1] = ptr_new(hname + '_?_ss.fits')              ; R
@@ -109,7 +109,10 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
    nbandavail = n_elements(bandavail)
    film = strarr(nbandavail)
    ; look for mask image
-   for i=0,nband-1 do begin       
+   for i=0,nband-1 do begin
+       ; don't look for mask images if the band is not present
+       jj = where(bandavail eq band.(i), njj)
+       if njj eq 0 then continue
        j = 0
        done = 0b
        nr = n_elements(*sstrm[i])

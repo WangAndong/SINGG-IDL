@@ -10,10 +10,10 @@ SSOUP Programming Things To Do
 
 * Generalize to add other bands
   + most likely add-ons
-    - WISE mid-IR four bands
+    - WISE mid-IR four bands (done 01/13 - Stephen)
     - Pan-STARRS1, grizy 5 bands
     - POGS stellar mass maps, SF maps
-  + Needs to work whether or not bands are there
+  + Needs to work whether or not bands are there (at the moment, WISE is optional while Ha, R, NUV, FUV are mandatory)
 
 * Improve the error models in the Halpha profiles.
   + need to account for error in the continuum subtraction

@@ -46,7 +46,7 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   endif 
   ;
   ; get a fiducial header
-  fid = where(bandavail eq band.R, /null) ; fixme: what if R is not present?
+  fid = where(bandavail eq band.R, /null)
   plog,ll,prog,'reading fiducial header from '+fimages[fid]
   fits_read, fimages[fid], img, hdr, /header_only
   ;
@@ -176,6 +176,8 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
      openw, lu, fprof[jj], /get_lun
      ;
      ; write header for output file
+     ; TODO: write profiles out for other bands. At the moment, we don't care about MIR profiles
+     ; (looking at the images, they would be... useless).
      write_profile_header, lu, fimages[jj], as_pix, units, fscale, proftype, headline, nelg
      FOR ii = 0, nelg-1 DO BEGIN 
         plog,ll,prog,'measuring source number: '+strtrim(ii,2)

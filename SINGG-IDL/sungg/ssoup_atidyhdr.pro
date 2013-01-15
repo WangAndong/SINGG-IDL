@@ -19,7 +19,7 @@ PRO ssoup_atidyhdr, ll, bname, fnami, fnamo, kfwhm, im, hdin, hdout, astr
   findpro,"ssoup_atidyhdr",/noprint,dirlist=temp123 ; directory containing template headers 
   prog      = 'SSOUP_ATIDYHDR: '
   ddir = temp123[0]
-  htempl    = ddir+['ha', 'r', 'uv', 'uv', "wx", "wx", "wx", "wx"]+'_templ_hdr.dat'  ; template headers FIXME
+  htempl    = ddir+['ha', 'r', 'uv', 'uv', "wx", "wx", "wx", "wx"]+'_templ_hdr.dat'
   pname     = 'SSOUP.PRO'         ; name of main program
   ;
   ; find pointer to apropriate band

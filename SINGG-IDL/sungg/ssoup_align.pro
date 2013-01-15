@@ -5,18 +5,12 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ;                   should be open before calling this program
   ;    inputstr    -> a structure which contains:
   ;    hname       -> name of hipass objects in the image
-  ;    fimages_in  -> input fits image files.  This is a 4 element
-  ;                   string array with elements giving the file 
-  ;                   names for the images in the following bands
-  ;                   0 : R (or continuum)
-  ;                   1 : H-alpha
-  ;                   2 : NUV
-  ;                   3 : FUV
+  ;    fimages_in  -> input fits image files arranged in order of bandavail. 
   ;    fmasks_in   -> input fits mask file names, same arrangemnt 
   ;                   as fimages_in.  These should refer to fits images
   ;                   containing integer or byte arrays.
-  ;    mbadval_in  -> value of bad pixels in fmasks_in.  This is a 
-  ;                   4 element array arranged as fimages_in.
+  ;    mbadval_in  -> value of bad pixels in fmasks_in.  This is an 
+  ;                   array arranged as fimages_in.
   ;    skyord      -> Sky order (order of polynomial for sky fitting).
   ;    fimages_out -> output file names, same arrangement as 
   ;                   fimages_in.
@@ -43,6 +37,9 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   kbox       = 25               ; convolution kernel size in pixels
   prog       = 'SSOUP_ALIGN: '  ; string for messages
   ;
+  ; TODO: this (and other things) assume that all of { HALPHA, R, FUV, NUV } exist. We're not at the
+  ; stage where we have data without at least one of these bands, but we need to consider this possibility.
+  ;
   ; do some error checking
   plog,ll,prog,'-------------------------- starting '+prog+'----------------------------'
   slow       = keyword_set(goslow)
@@ -66,7 +63,6 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   photplam = 0
   photflam = 0
   photfluxha = 0
-  photwise = fltarr(4)
   fwhm = fltarr(nbandavail)
   nhd0 = intarr(nbandavail)
   imgs = ptrarr(nbandavail) ; pointers! YAY!
@@ -90,23 +86,20 @@ pro ssoup_align, ll, inputstr, goslow=goslow
       ; Wright et al. 2010, AJ, 140, 1868
       if (bandavail[i] eq band.mir_W1) then begin
           fwhm[i] = 6.1
-          texp[i] = 7.7 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
-          photwise[0] = 1.935e-3 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
+          ; TODO: check if these are correct. I think they are...
+          texp[i] = 7.7 * sxpar(hdr,"MEDCOV")
       endif
       if (bandavail[i] eq band.mir_W2) then begin
           fwhm[i] = 6.4
-          texp[i] = 7.7 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
-          photwise[1] = 2.7048e-3 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
+          texp[i] = 7.7 * sxpar(hdr,"MEDCOV")
       endif
       if (bandavail[i] eq band.mir_W3) then begin
           fwhm[i] = 6.5
-          texp[i] = 8.8 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
-          photwise[2] = 1.8326e-3 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
+          texp[i] = 8.8 * sxpar(hdr,"MEDCOV")
       endif
       if (bandavail[i] eq band.mir_W4) then begin
           fwhm[i] = 12.0
-          texp[i] = 8.8 * sxpar(hdr,"MEDCOV") ; fixme? is this correct?
-          photwise[3] = 5.2269e-2 ; http://wise2.ipac.caltech.edu/docs/release/allsky/expsup/sec2_3f.html
+          texp[i] = 8.8 * sxpar(hdr,"MEDCOV")
       endif
       img           = img*texp[i]
       getrot, hdr, dum, cdelt
@@ -118,7 +111,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   endfor
   ; fiducial bands
   ; P.S. these extra parentheses... another sign of a poorly designed programming language
-  ofid = (where(bandavail eq band.HALPHA, /null))[0] ; what if these are not there
+  ofid = (where(bandavail eq band.HALPHA, /null))[0]
   ufid = (where(bandavail eq band.NUV, /null))[0]
   mirfid = (where(bandavail eq band.mir_W1, /null))[0]
   ;
@@ -141,7 +134,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   siz        = size(uimg)
   nxu        = long(siz[1])
   nyu        = long(siz[2])
-  ; do the same for MIR (fixme: get rid of this copy/paste)
+  ; do the same for MIR
   mirimg     = *imgs[mirfid]
   mirhd      = *hdcompile0[mirfid]
   mirhdp     = mirfid
@@ -154,8 +147,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; and last row/column that are masked in less than some 
   ; threshold number of columns/rows
   plog,ll,prog,'determining pixel limits of optical images to transform'
-  ih = where(bandavail eq band.HALPHA, /null)
-  ih = ih[0] ; fixme? should do something intelligent here if HALPHA is not present
+  ih = (where(bandavail eq band.HALPHA, /null))[0]
   fits_read, inputstr.fmasks_in[ih], imgm, hd             ; read Halpha mask
   pp         = where(imgm EQ inputstr.mbadval_in[ih], npp)  ; index of bad pixels
   imgm       = 0l*long(imgm) + 1l                ; convert to long array
@@ -193,7 +185,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; convert corner coords into RA and Dec within fiducial optical image
   xyad,ohd,cornx,corny,corna,cornd
   ;
-  ; convert these to pixel position in fiducial UV image
+  ; convert these to pixel position in fiducial ... other band images
   adxy,mirhd,corna,cornd,cornxmir,cornymir
   adxy,uhd,corna,cornd,cornxu,cornyu
   ;
@@ -206,7 +198,6 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   trmaxxu    = round(max(cornxu))
   trminyu    = round(min(cornyu))
   trmaxyu    = round(max(cornyu))
-  ; fixme
   plog,ll,prog,'Limits of optical image (xmin, xmax, ymin, ymax):  '+numstr(trminxo)+'  '+numstr(trmaxxo)+'  '+numstr(trminyo)+'  '+numstr(trmaxyo)
   plog,ll,prog,'Limits of UV image (xmin, xmax, ymin, ymax)     :  '+numstr(trminxu)+'  '+numstr(trmaxxu)+'  '+numstr(trminyu)+'  '+numstr(trmaxyu)
   plog,ll,prog,'Limits of MIR image (xmin, xmax, ymin, ymax)     :  '+numstr(trminxmir)+'  '+numstr(trmaxxmir)+'  '+numstr(trminymir)+'  '+numstr(trmaxymir)
@@ -224,8 +215,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   nhd1       = intarr(nbandavail)
   ifuv = (where(bandavail eq band.FUV, /null))[0]
   ; need to ensure FUV executes first
-  for i=ifuv,nbandavail-1 do begin
-      ;if (i ge 4) then begin   
+  for i=ifuv,nbandavail-1 do begin  
       if (i eq ifuv or bandavail[i] eq band.NUV) then begin  
           HEXTRACT,*imgs[i],*hdcompile0[i],img,newhd,trminxu,trmaxxu,trminyu,trmaxyu
           imgtmp[*,*,i] = img
@@ -417,10 +407,9 @@ pro ssoup_align, ll, inputstr, goslow=goslow
         sxaddpar, hdi, 'ESKYPAR'+nstr[kk], eskypar[kk], epdescr[kk]
      endfor 
      ;
-     ; shove in exptime and photflam for wise
+     ; shove in exptime for wise
      if bandavail[ii] eq band.mir_W1 or bandavail[ii] eq band.mir_W2 or bandavail[ii] eq band.mir_W3 or bandavail[ii] eq band.mir_W4 then begin
          sxaddpar, hdi, 'EXPTIME', texp[ii], ' Median exposure time in seconds'
-         sxaddpar, hdi, 'PHOTFLAM', photwise[ii-4] ; fixme: remove this temporary hack
      endif
      ; Tidy the headers
      plog,ll,prog,'tidying header'
