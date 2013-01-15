@@ -234,18 +234,24 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
          plog,ll,prog,'applying the mask'
          FOR jj = 0,2 DO rgbim[*,*,jj] = byte(fmsk*float(rgbim[*,*,jj]))
       ENDIF 
-      ;window,0,/pixmap,xsize=nx,ysize=ny
+      
+      ; write jpeg to screen
       if keyword_set(epilepsy) then begin
+          ;window,0,/pixmap,xsize=nx,ysize=ny
           window,0,xsize=nx,ysize=ny
           ;keywait,'type anything to display next image: '
           ;window,0,xsize=nx,ysize=ny
           tv,rgbim,true=3
-      endif
-      im=tvrd(true=3)
-      ;
-      ; write jpg
+      ; or the Z buffer
+      endif else begin
+          thisdevice = !D.name
+          set_plot, 'Z', /copy, /interpolate
+          erase
+          device, set_resolution=[nx,ny],set_pixel_depth=24, decomposed=1
+      endelse
       plog,ll,prog,'writing file = '+filo[ii]
-      write_jpeg,filo[ii],im,TRUE=3,quality=100
+      write_jpeg,filo[ii],rgbim,TRUE=3,quality=100
+      if not keyword_set(epilepsy) then set_plot, thisdevice
       IF slow THEN keywait, 'type any key to continue: '
    ENDFOR 
 END 

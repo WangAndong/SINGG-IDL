@@ -1,15 +1,18 @@
-  ; fjpg     -> jpg file name
-  ; feps     -> eps file name
-  ; xs       -> eps plot parameter
-  ; ys       -> eps plot parameter
-  ; xoff     -> eps plot parameter
-  ; yoff     -> eps plot parameter
-  ; wxsize   -> horizontal size of jpg
-  ; wysize   -> vertical size of jpg
-  ; epilepsy -> display plot on screen
-  
 pro ssoup_plot_finish, fjpg, feps, xs, ys, xoff, yoff, wxsize, wysize, epilepsy=epilepsy
-    
+  ; Finishes a plot, outputting it to PS, JPEG and possibly the screen.
+  ; 
+  ; fjpg -> jpg file name
+  ; feps -> eps file name
+  ; xs -> eps plot parameter
+  ; ys -> eps plot parameter
+  ; xoff -> eps plot parameter
+  ; yoff -> eps plot parameter
+  ; wxsize -> horizontal size of jpg
+  ; wysize -> vertical size of jpg
+  ; epilepsy -> display plot on screen
+  ; 
+  ; S. Andrews (ICRAR/UWA) 01/2013
+
     ; grab Z buffer
     im = tvrd(true=3)
     
@@ -26,23 +29,23 @@ pro ssoup_plot_finish, fjpg, feps, xs, ys, xoff, yoff, wxsize, wysize, epilepsy=
     ; write JPG
     write_jpeg,fjpg,im,TRUE=3,QUALITY=100
 
+    ; reset plot device
+    COMMON deviceprevious, thisdevice
+    set_plot,thisdevice
+    
     ; display Z buffer on screen
-    ; P.S. only works on REAL operating systems
-    set_plot, "X", /copy, /interpolate
     if keyword_set(epilepsy) then begin
         window,0,xsize=wxsize,ysize=wysize
         tv,im,true=3
     endif
-    
-    ; reset plot device
-    COMMON deviceprevious, thisdevice
-    set_plot,thisdevice
-        
 end
 
-  ; wxsize   -> horizontal size of jpg
-  ; wysize   -> vertical size of jpg
 pro ssoup_plot_init, wxsize, wysize
+  ; Starts a plot.
+  ;
+  ; wxsize -> horizontal size of jpg
+  ; wysize -> vertical size of jpg 
+ 
     ; restore this on end
     COMMON deviceprevious, thisdevice
     thisDevice = !D.Name
