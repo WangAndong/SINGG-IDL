@@ -85,7 +85,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      IF slow THEN keywait, 'type any key to continue: '
      plog,ll,prog,'extracting profiles'
      ssoup_profiles, ll, inputstr.fimages_out, inputstr.fmask_out, inputstr.hname, $ 
-                     (inputstr.fprofs_out),  /verbose, shapepar='OPT'
+                     (inputstr.fprofs_out), shapepar='OPT'
      ;
      ; get foreground dust absorption
      dbopen,sdb
