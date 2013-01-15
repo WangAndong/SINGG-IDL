@@ -1,6 +1,6 @@
 PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
                  highcut=highcut, maskcmd=maskcmd, omask=omask, smask=smask, $
-                 goslow=goslow
+                 goslow=goslow, epilepsy=epilepsy
    ;
    ; make 3 color images.
    ; 
@@ -27,6 +27,9 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ;  goslow   -> if set then stragetically placed calls to 
    ;              keywait.pro are used to slow down the processing
    ;              to a speed a user can monitor.
+   ;  epilepsy -> display 3 color images on the screen. We accept no
+   ;              responsibility for any epileptic fits that occur
+   ;              as a result of doing this.
    ;
    ; G. Meurer (ICRAR/UWA) 06/2010  based on sample.pro by Ji Hoon Kim
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
@@ -232,10 +235,12 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
          FOR jj = 0,2 DO rgbim[*,*,jj] = byte(fmsk*float(rgbim[*,*,jj]))
       ENDIF 
       ;window,0,/pixmap,xsize=nx,ysize=ny
-      window,0,xsize=nx,ysize=ny
-      ;keywait,'type anything to display next image: '
-      ;window,0,xsize=nx,ysize=ny
-      tv,rgbim,true=3
+      if keyword_set(epilepsy) then begin
+          window,0,xsize=nx,ysize=ny
+          ;keywait,'type anything to display next image: '
+          ;window,0,xsize=nx,ysize=ny
+          tv,rgbim,true=3
+      endif
       im=tvrd(true=3)
       ;
       ; write jpg
