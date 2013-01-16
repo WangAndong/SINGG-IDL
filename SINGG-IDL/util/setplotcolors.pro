@@ -144,8 +144,8 @@ print
 endif
 
 IF keyword_set(test) THEN BEGIN
-window,6,xsize=100.*ceil(n_elements(c_name)/10.),ysize=170,$
-       title='Plot Colors Added'
+;window,6,xsize=100.*ceil(n_elements(c_name)/10.),ysize=170,$
+;       title='Plot Colors Added'
 FOR ii = 0,n_elements(c_name)-1 DO BEGIN
  x = 10 + 10*(ii - (ii MOD 10))
  y = 10+((ii MOD 10)*15.)

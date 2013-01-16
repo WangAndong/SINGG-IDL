@@ -132,7 +132,7 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps
    wxsize   = 600
    wysize   = fix(1.25*float(wxsize))
    ansize   = 1.0
-  ssoup_plot_init,wxsize,wysize
+  ssoup_plot_init,feps,xs,ys,xoff,yoff
   ;
   ; ------------------------------------------------------------------
   ; panel 1
@@ -278,5 +278,5 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps
   ; finish plot
   !p.multi   = 0
   !p.noerase = 0
-  ssoup_plot_finish,fjpg,feps,xs,ys,xoff,yoff,wxsize,wysize,/epilepsy
+  ssoup_plot_finish,fjpg,feps,wxsize,wysize,/epilepsy
 END 

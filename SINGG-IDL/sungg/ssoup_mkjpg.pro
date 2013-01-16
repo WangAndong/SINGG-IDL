@@ -236,6 +236,7 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
       ENDIF 
       
       ; write jpeg to screen
+      thisdevice = !D.name
       if keyword_set(epilepsy) then begin
           ;window,0,/pixmap,xsize=nx,ysize=ny
           window,0,xsize=nx,ysize=ny
@@ -244,8 +245,7 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
           tv,rgbim,true=3
       ; or the Z buffer
       endif else begin
-          thisdevice = !D.name
-          set_plot, 'Z', /copy, /interpolate
+          set_plot, 'Z'
           erase
           device, set_resolution=[nx,ny],set_pixel_depth=24, decomposed=1
       endelse

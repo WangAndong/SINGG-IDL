@@ -1,58 +1,49 @@
-pro ssoup_plot_finish, fjpg, feps, xs, ys, xoff, yoff, wxsize, wysize, epilepsy=epilepsy
+pro ssoup_plot_finish, fjpg, feps, wxsize, wysize, epilepsy=epilepsy
+  ;
   ; Finishes a plot, outputting it to PS, JPEG and possibly the screen.
   ; 
   ; fjpg -> jpg file name
   ; feps -> eps file name
-  ; xs -> eps plot parameter
-  ; ys -> eps plot parameter
-  ; xoff -> eps plot parameter
-  ; yoff -> eps plot parameter
   ; wxsize -> horizontal size of jpg
   ; wysize -> vertical size of jpg
   ; epilepsy -> display plot on screen
   ; 
   ; S. Andrews (ICRAR/UWA) 01/2013
 
-    ; grab Z buffer
-    im = tvrd(true=3)
-    
-    ; write EPS
-    set_plot,'ps',/copy, /interpolate
-    erase
-    ;IF strpos(strlowcase(feps), '.eps') GT 0 THEN $
-       ; device,/inches,file=feps,xs=xs,ys=ys,yo=yoff,xo=xoff,/color,/encapsulated $
-        ;ELSE $
-        ;device,/inches,file=feps,xs=xs,ys=ys,yo=yoff,xo=xoff,/color
-    tv,im,true=3
+    ; finish PS
     device,/close
+    set_plot,'X',/copy
+    setplotcolors
+    setbgfg,!white,!black
     
-    ; write JPG
-    write_jpeg,fjpg,im,TRUE=3,QUALITY=100
-
-    ; reset plot device
-    COMMON deviceprevious, thisdevice
-    set_plot,thisdevice
+    ; write JPG (requires ghostscript)
+    ; I hate you, IDL, for making it near impossible to use the Z buffer
+    spawn,"gs -sDEVICE=jpeg -o " + fjpg + " -dJPEGQ=100 -g" + numstr(wxsize) + "x" + numstr(wysize) + " " + feps
     
-    ; display Z buffer on screen
+    ; display JPG on screen
     if keyword_set(epilepsy) then begin
+        read_jpeg,fjpg,im,true=1 
         window,0,xsize=wxsize,ysize=wysize
-        tv,im,true=3
+        tv,im,true=1
     endif
 end
 
-pro ssoup_plot_init, wxsize, wysize
+pro ssoup_plot_init, feps, xs, ys, xoff, yoff
+  ;
   ; Starts a plot.
   ;
-  ; wxsize -> horizontal size of jpg
-  ; wysize -> vertical size of jpg 
+  ; feps -> eps file name
+  ; xs -> eps plot parameter
+  ; ys -> eps plot parameter
+  ; xoff -> eps plot parameter
+  ; yoff -> eps plot parameter
  
-    ; restore this on end
-    COMMON deviceprevious, thisdevice
-    thisDevice = !D.Name
-    ; swap to Z buffer
-    set_plot,'Z',/copy, /interpolate
-    erase
-    device,set_resolution=[wxsize,wysize],set_pixel_depth=24,decomposed=1
+    ; write to PS
+    set_plot,'ps',/copy, /interpolate
+    IF strpos(strlowcase(feps), '.eps') GT 0 THEN $
+       device,/inches,file=feps,xs=xs,ys=ys,yo=yoff,xo=xoff,/color,/encapsulated $
+    ELSE $
+       device,/inches,file=feps,xs=xs,ys=ys,yo=yoff,xo=xoff,/color
     setplotcolors
     setbgfg,!white,!black
 end
