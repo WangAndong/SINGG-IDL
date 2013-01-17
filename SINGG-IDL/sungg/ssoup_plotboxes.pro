@@ -54,7 +54,7 @@ PRO ssoup_plotboxes, ll, bxsiz, sname, band, fbox, fjpg, feps, outline=outline, 
   thick = 1
   charsize = 0.6*charsize
   wxsize   = 1200
-  ssoup_plot_init,xs,ys,xoff,yoff
+  ssoup_plot_init,feps,xs,ys,xoff,yoff
   ;
   ; set grayscale and background, foreground
   loadct, 0

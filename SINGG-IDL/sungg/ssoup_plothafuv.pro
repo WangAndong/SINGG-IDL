@@ -169,7 +169,7 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fjpg, feps, dcorr=dcorr, kline=kline, ep
   symsize  = 0.6*symsize
   wxsize   = 1200
   thick    = 1
-  ssoup_plot_init,xs,ys,xoff,yoff
+  ssoup_plot_init,feps,xs,ys,xoff,yoff
   ;
   ; left panel Halpha/FUV versus Halpha surface brightness
   !p.noerase = 0
