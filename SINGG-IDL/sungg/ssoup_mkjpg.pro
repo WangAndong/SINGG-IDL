@@ -28,8 +28,7 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ;              keywait.pro are used to slow down the processing
    ;              to a speed a user can monitor.
    ;  epilepsy -> display 3 color images on the screen. We accept no
-   ;              responsibility for any epileptic fits that occur
-   ;              as a result of doing this.
+   ;              responsibility for any epileptic seizures that occur.
    ;
    ; G. Meurer (ICRAR/UWA) 06/2010  based on sample.pro by Ji Hoon Kim
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 

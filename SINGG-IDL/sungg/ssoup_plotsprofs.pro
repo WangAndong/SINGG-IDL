@@ -1,4 +1,4 @@
-PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps
+PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
   ;
   ; plot surface brightness and surface colour profiles
   ;
@@ -8,8 +8,9 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps
   ;               internal dust correction
   ;   fsprof0  -> file containing internal dust corrected surface 
   ;               brightness profiles
-  ;   fjpg    -> output plot file name (JPG)
+  ;   fjpg     -> output plot file name (JPG)
   ;   feps     -> optput plot file name (EPS)
+  ;   epilepsy -> whether we should display images on the screen
   ;
   ; G. Meurer (ICRAR/UWA) 6/2010
   ; G. Meurer (ICRAR/UWA) 5/2011: 
@@ -36,7 +37,7 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps
   abctitle  = '!3 surface colour'
   charsize  = 2.5
   symsize   = 1.3
-  thick     = 2
+  thick     = 1
   ;
   ; read in profile files
   plog,ll,prog,'reading in (not dust corrected) surface brightness profile file: '+fsprof
@@ -130,7 +131,6 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps
    xoff     = 1.2
    thick    = 2
    wxsize   = 600
-   wysize   = fix(1.25*float(wxsize))
    ansize   = 1.0
   ssoup_plot_init,feps,xs,ys,xoff,yoff
   ;
@@ -276,7 +276,8 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps
   ;
   ; ------------------------------------------------------------------
   ; finish plot
+  plog,ll,prog,'finishing. Will write plotfile: '+feps
   !p.multi   = 0
   !p.noerase = 0
-  ssoup_plot_finish,fjpg,feps,wxsize,wysize,/epilepsy
+  ssoup_plot_finish,fjpg,feps,wxsize,epilepsy=epilepsy
 END 

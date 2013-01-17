@@ -1,4 +1,4 @@
-PRO ssoup_plotboxes, ll, bxsiz, sname, band, fbox, fbplot, outline=outline
+PRO ssoup_plotboxes, ll, bxsiz, sname, band, fbox, fjpg, feps, outline=outline, epilepsy=epilepsy
   ;
   ;  ll     -> logical unit of log file
   ;  bxsiz  -> size of boxes
@@ -6,10 +6,8 @@ PRO ssoup_plotboxes, ll, bxsiz, sname, band, fbox, fbplot, outline=outline
   ;  band   -> name of band
   ;  fimage -> Name of image
   ;  fbox   -> name of file containing box data. 
-  ;  fbplot -> name of output file.  If it ends in ".jpg" it will 
-  ;            write a jpeg profile, otherwise it will write a 
-  ;            postscript or encapsulated ps file (if fbplot ends 
-  ;            in ".eps")
+  ;  fjpg   -> name of output file (JPG)
+  ;  feps   -> name of output file (EPS)
   ;  outline -> if set outline each box otherwise just the grayscale
   ;             in each box is shown with no outline.
   ;
@@ -35,10 +33,6 @@ PRO ssoup_plotboxes, ll, bxsiz, sname, band, fbox, fbplot, outline=outline
   ; get rms of residuals
   rms       = sqrt(total(bresid^2)/float(nb))
   ;
-  ; determine output file type
-  pp        = strpos(fbplot,'.')+1
-  ftype     = strlowcase(strmid(fbplot,pp))
-  ;
   ; determine limits
   xrange    = [min(bx), max(bx)] + [-1.0,1.0]*bxsiz
   yrange    = [min(by), max(by)] + [-1.0,1.0]*bxsiz
@@ -53,26 +47,14 @@ PRO ssoup_plotboxes, ll, bxsiz, sname, band, fbox, fbplot, outline=outline
   plog,ll,prog,'brange2 = '+numstr(brange2[0])+' , '+numstr(brange2[1])
   ;
   ; set window parameters
-  IF ftype NE 'jpg' THEN BEGIN 
-     plog,ll,prog,'will write a postscript file'
-     xs    = 8.0
-     ys    = xs/(3.0*aspect)
-     yoff  = 6.0
-     xoff  = 0.0
-     thick = 3
-     set_plot,'ps',/copy, /interpolate
-     IF strpos(strlowcase(fbplot), '.eps') GT 0 THEN $
-      device,/inches,xs=xs,ys=ys,yo=yoff,xo=xoff,/color,/encapsulated ELSE $
-      device,/inches,xs=xs,ys=ys,yo=yoff,xo=xoff,/color
-     charsize = 0.6*charsize
-  ENDIF  ELSE BEGIN 
-     plog,ll,prog,'will plot to screen and write a jpg file'
-     wxsize   = 1200
-     wysize   = fix(float(wxsize/(3.0*aspect)))
-     charsize = charsize*wxsize/800.0
-     thick    = 2
-     window, 0, xsize=wxsize, ysize=wysize
-  ENDELSE 
+  xs    = 8.0
+  ys    = xs/(3.0*aspect)
+  yoff  = 6.0
+  xoff  = 0.0
+  thick = 1
+  charsize = 0.6*charsize
+  wxsize   = 1200
+  ssoup_plot_init,xs,ys,xoff,yoff
   ;
   ; set grayscale and background, foreground
   loadct, 0
@@ -143,12 +125,8 @@ PRO ssoup_plotboxes, ll, bxsiz, sname, band, fbox, fbplot, outline=outline
   ;
   ; ------------------------------------------------------------------
   ; finish plot
-  plog,ll,prog,'finishing. Will write plotfile: '+fbplot
+  plog,ll,prog,'finishing. Will write plotfile: '+feps
   !p.multi   = 0
   !p.noerase = 0
-  IF ftype NE 'jpg' THEN BEGIN 
-     psend, fbplot, /noprint, /clobber
-  ENDIF ELSE BEGIN 
-     snap_jpg, fbplot
-  ENDELSE 
+  ssoup_plot_finish,fjpg,feps,wxsize,epilepsy=epilepsy
 END 

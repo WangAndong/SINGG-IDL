@@ -1,16 +1,15 @@
-PRO ssoup_plothafuv, ll, sname, fsprof, fplot, dcorr=dcorr, kline=kline
+PRO ssoup_plothafuv, ll, sname, fsprof, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=epilepsy
   ;
   ; plot Halpha/FUV vs Halpha and R surface brightnesses
   ;
-  ;  ll     -> logical unit of log file
-  ;  sname  -> name of singg/hipass source
-  ;  fsprof -> name of calibrated surface brightness profile file
-  ;  fplot  -> name of output file.  If it ends in ".jpg" it will 
-  ;            write a jpeg profile, otherwise it will write a 
-  ;            postscript or encapsulated ps file (if fplot ends 
-  ;            in ".eps")
-  ;  dcorr  -> if set then the plot is set for dust corrected
-  ;            values.
+  ;  ll       -> logical unit of log file
+  ;  sname    -> name of singg/hipass source
+  ;  fsprof   -> name of calibrated surface brightness profile file
+  ;  fjpg     -> name of output file (JPG)
+  ;  feps     -> name of output file (EPS)
+  ;  dcorr    -> if set then the plot is set for dust corrected
+  ;              values.
+  ;  epilepsy -> if set, displays plots on screen
   ;
   ; G. Meurer (ICRAR/UWA) 6/2010
   ; G. Meurer (ICRAR/UWA) 9/2010 add points from databases
@@ -136,10 +135,6 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fplot, dcorr=dcorr, kline=kline
   lewf      = slewf          ; Ha/FUV
   elewf     = eslewf         ; its error
   ;
-  ; determine output file type
-  pp        = strpos(fplot,'.')+1
-  ftype     = strlowcase(strmid(fplot,pp))
-  ;
   ; get quantities from databases
   ssoup_dbhafuvsb, ll, sname, nfound1, lsha1, elsha1, lsr1, elsr1, lhafuv1, elhafuv1, odb=odb, udb=udb1, raw=raw
   ssoup_dbhafuvsb, ll, sname, nfound2, lsha2, elsha2, lsr2, elsr2, lhafuv2, elhafuv2, odb=odb, udb=udb2, raw=raw
@@ -166,30 +161,15 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fplot, dcorr=dcorr, kline=kline
   plog,ll,prog,'Number of (nominal) H-alpha non-detection matches: '+strtrim(string(npu),2)
   ;
   ; set window parameters
-  IF ftype NE 'jpg' THEN BEGIN 
-     plog,ll,prog,'will write a postscript file'
-     xs    = 8.0
-     ys    = xs/(2.*aspect)
-     yoff  = 6.0
-     xoff  = 0.0
-     thick = 3
-     set_plot,'ps',/copy, /interpolate
-     IF strpos(strlowcase(fplot), '.eps') GT 0 THEN $
-      device,/inches,xs=xs,ys=ys,yo=yoff,xo=xoff,/color,/encapsulated ELSE $
-      device,/inches,xs=xs,ys=ys,yo=yoff,xo=xoff,/color
-     charsize = 0.6*charsize
-     symsize  = 0.6*symsize
-  ENDIF  ELSE BEGIN 
-     plog,ll,prog,'will plot to screen and write a jpg file'
-     wxsize   = 1200
-     wysize   = fix(float(wxsize/(2.0*aspect)))
-     charsize = charsize*wxsize/800.0
-     symsize  = symsize*wxsize/800.0
-     thick    = 2
-     window, 0, xsize=wxsize, ysize=wysize
-  ENDELSE 
-  setplotcolors
-  setbgfg, !white, !black
+  xs    = 8.0
+  ys    = xs/(2.*aspect)
+  yoff  = 6.0
+  xoff  = 0.0
+  charsize = 0.6*charsize
+  symsize  = 0.6*symsize
+  wxsize   = 1200
+  thick    = 1
+  ssoup_plot_init,xs,ys,xoff,yoff
   ;
   ; left panel Halpha/FUV versus Halpha surface brightness
   !p.noerase = 0
@@ -290,12 +270,8 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fplot, dcorr=dcorr, kline=kline
   ;
   ; ------------------------------------------------------------------
   ; finish plot
-  plog,ll,prog,'finishing. Will write plotfile: '+fplot
+  plog,ll,prog,'finishing. Will write plotfile: '+feps
   !p.multi   = 0
   !p.noerase = 0
-  IF ftype NE 'jpg' THEN BEGIN 
-     psend, fplot, /noprint, /clobber
-  ENDIF ELSE BEGIN 
-     snap_jpg, fplot
-  ENDELSE 
+  ssoup_plot_finish,fjpg,feps,wxsize,epilepsy=epilepsy 
 END

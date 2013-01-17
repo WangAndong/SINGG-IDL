@@ -1,4 +1,4 @@
-pro ssoup_plot_finish, fjpg, feps, wxsize, wysize, epilepsy=epilepsy
+pro ssoup_plot_finish, fjpg, feps, wxsize, epilepsy=epilepsy
   ;
   ; Finishes a plot, outputting it to PS, JPEG and possibly the screen.
   ; 
@@ -29,7 +29,10 @@ pro ssoup_plot_finish, fjpg, feps, wxsize, wysize, epilepsy=epilepsy
     reads,strtemp,crap,x1,y1,x2,y2,format='(A14, 4(x, I0))'
     x2 = fix(x2)
     wysize = 1L*fix(y2)*wxsize/x2
-    res = 72L*wxsize/x2 ; short ints? Who uses those any more?
+    res = 72L*wxsize/x2 ; Short ints? Who uses those any more?
+    ; We need to increase right/top margins a little.
+    wxsize = fix(wxsize*1.05)
+    wysize = fix(wysize*1.05)
     spawn,"gs -sDEVICE=jpeg -o " + fjpg + " -dJPEGQ=100 -r" + numstr(res) + " -g" + numstr(wxsize) $
         + "x" + numstr(wysize) + " -c '<</Install {0 0 translate}>> setpagedevice' -dLastPage=1 -f " + feps
     free_lun,52
