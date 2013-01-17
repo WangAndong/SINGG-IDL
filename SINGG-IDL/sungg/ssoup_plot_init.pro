@@ -4,8 +4,8 @@ pro ssoup_plot_finish, fjpg, feps, wxsize, wysize, epilepsy=epilepsy
   ; 
   ; fjpg -> jpg file name
   ; feps -> eps file name
-  ; wxsize -> horizontal size of jpg
-  ; wysize -> vertical size of jpg
+  ; wxsize -> horizontal size of jpg. The vertical size of the JPG is determined by the 
+  ; postscript bounding box.
   ; epilepsy -> display plot on screen
   ; 
   ; S. Andrews (ICRAR/UWA) 01/2013
@@ -18,7 +18,21 @@ pro ssoup_plot_finish, fjpg, feps, wxsize, wysize, epilepsy=epilepsy
     
     ; write JPG (requires ghostscript)
     ; I hate you, IDL, for making it near impossible to use the Z buffer
-    spawn,"gs -sDEVICE=jpeg -o " + fjpg + " -dJPEGQ=100 -g" + numstr(wxsize) + "x" + numstr(wysize) + " " + feps
+    ; This magic incantation crops the PS such that it doesn't have much white space around it
+    ; http://stackoverflow.com/questions/12484353/how-to-crop-a-section-of-a-pdf-file-to-png-using-ghostscript/12485020
+    spawn,"gs -q -sDEVICE=bbox -dBATCH -dNOPAUSE -dLastPage=1 " + feps + " 2>&1 | grep %%BoundingBox > temp.txt"
+    openr,52,"temp.txt",error=err
+    if err ne 0 then plog,-1,"SSOUP_PLOT_FINISH:","Failed to create JPG"
+    strtemp=""
+    while not eof(52) do readf,52,strtemp
+    crap = ""
+    reads,strtemp,crap,x1,y1,x2,y2,format='(A14, 4(x, I0))'
+    x2 = fix(x2)
+    wysize = 1L*fix(y2)*wxsize/x2
+    res = 72L*wxsize/x2 ; short ints? Who uses those any more?
+    spawn,"gs -sDEVICE=jpeg -o " + fjpg + " -dJPEGQ=100 -r" + numstr(res) + " -g" + numstr(wxsize) $
+        + "x" + numstr(wysize) + " -c '<</Install {0 0 translate}>> setpagedevice' -dLastPage=1 -f " + feps
+    free_lun,52
     
     ; display JPG on screen
     if keyword_set(epilepsy) then begin
