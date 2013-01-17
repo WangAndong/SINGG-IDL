@@ -2,7 +2,7 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   ;
   ;  ll       -> logical unit of log file
   ;  fimages  -> array list of input fits images.
-  ;              These should be aligned, and presumabley are at
+  ;              These should be aligned, and presumably are at
   ;              different wavelengths.
   ;  fmask    -> name of fits image of mask to apply to all images.
   ;  hname    -> hipass name of object to analyze, 
@@ -32,6 +32,13 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   headline = '# profiles from aligned images convolved to common seeing and pixel grid'
   prog     = 'SSOUP_PROFILES: '
   COMMON bands, band, nband, bandnam, bandavail, nbandavail
+  ;
+  ; somewhere where we can dump things into for saving
+  profilestr = { hello, $
+      bname : '' ,$ ; the band
+      flux_good : ptr_new(1) $
+  }
+  allprofiles = replicate(profilestr, nbandavail)
   ;
   plog,ll,prog,'------------------------- starting '+prog+'---------------------------------'
   ;
@@ -202,8 +209,13 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
         plog,ll,prog,'calling growth_profile'
         growth_profile, lu, ii, xc[ii], yc[ii], arat[ii], pa[ii], del_pa, sky, aa, aa, aa, $
                         abin, flux, ngood, nbad, flux_good, sb, sbsig, fout
+        ; save profile
+        allprofiles[jj].bname = bandavail[jj]
+        allprofiles[jj].flux_good = ptr_new(flux_good)
      ENDFOR 
      plog,ll,prog,'closing output ASCII file'
      free_lun, lu
   ENDFOR
+  plog,ll,prog,"Saving profile as IDL saveset"
+  save,filename=hname + ".save",allprofiles
 END 
