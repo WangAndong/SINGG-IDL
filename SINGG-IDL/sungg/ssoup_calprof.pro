@@ -1,10 +1,11 @@
-PRO ssoup_calprof, ll, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0, ffcalprof0, $
+PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0, ffcalprof0, $
                    fecntrat=fecntrat
   ;
   ; calibrate surface brightness profiles and their errors
   ; tabulate results into a single multiband output file.
   ;
   ;  ll         -> logical unit of log file
+  ;  hname      -> HIPASS name of target
   ;  photplam   -> pivot wavelength of the bands
   ;  ebvg       -> Galactic (foreground) extinction
   ;  fprofs     -> corresponding profile file names
@@ -40,6 +41,7 @@ PRO ssoup_calprof, ll, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0,
   ;
   ; setup stuff
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
+   compile_opt idl2
   fmto    = '(f7.2,f8.3,f6.3,f9.3,f6.3,f6.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3)'
   hlines1 = '# Surface quantities (in annuli)'
   hlines2 = '#  sma   mu_R   err     lSHa   esky  ecnt  etot   mu_nuv err    mu_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
@@ -65,8 +67,7 @@ PRO ssoup_calprof, ll, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0,
   emlim   = 2.5*edlim                  ; mag
   ;
   ; read R header just to get number of galaxies
-  ir = where(bandavail eq band.R, nir)
-  ir = ir[0]
+  ir = (where(bandavail eq band.R, nir))[0]
   pfplt_rdhdr, fprofs[ir], pixsize, filename, funits, fscale, fluxcal, $
                proftype, numgals, galindex, xcenter, ycenter, $
                axerat, posang, posangwc, skylev, skysigpx, skysigbx, $
@@ -128,13 +129,13 @@ PRO ssoup_calprof, ll, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0,
   efbproft = make_array(nrtot,nbandavail)   ; total error in flux linear units 
   efbprofc = make_array(nrtot)      ; Halpha continuum subtraction error linear flux
   efbprofs = make_array(nrtot)      ; Halpha sky+photon error linear flux
-  sbr_raw  = make_array(nrtot, /float, value=0.0) ; for raw surface brightness profiles in R band
-  fbr_raw  = make_array(nrtot, /float, value=0.0) ; for raw enclosed aperture fluxes in R band     
-  mag0     = make_array(nbandavail, /float, value=0.0)    ; magnitude scale zeropoint
-  phfl     = make_array(nbandavail, /float, value=0.0)    ; photflam (continuum) or photflux (Halpha)
+  sbr_raw  = make_array(nrtot, /double, value=0.0) ; for raw surface brightness profiles in R band
+  fbr_raw  = make_array(nrtot, /double, value=0.0) ; for raw enclosed aperture fluxes in R band     
+  mag0     = make_array(nbandavail, /double, value=0.0)    ; magnitude scale zeropoint
+  phfl     = make_array(nbandavail, /double, value=0.0)    ; photflam (continuum) or photflux (Halpha)
   ;
   ; initialize skylevr
-  skylevr  = 0.0
+  skylevr  = 0.0d
   ;
   ; loop through bands
   ; this requires R band to execute first, otherwise it will break!
@@ -253,8 +254,7 @@ PRO ssoup_calprof, ll, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0,
   ENDFOR
   ;
   ; some pointers to be sure
-  ih        = where(bandavail EQ band.HALPHA, nih)
-  ih        = ih[0]
+  ih        = (where(bandavail EQ band.HALPHA, nih))[0]
   ;
   ; derive continuum subtraction and total fractional errors for Halpha
   plog,ll,prog,'calculating HALPHA continuum subtraction, sky+photon and total errors '
@@ -540,4 +540,37 @@ PRO ssoup_calprof, ll, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0,
   plog,ll,prog,'writing calibrated dust corrected integrated magnitudes and colors'
   ssoup_cp_wmagfile, ll, 3, ffcalprof0, ngal, pt0, ptf3, rad, fmprof0, efmproft0, efmprofs0, efmprofc0, $
                      fmcfn0, efmcfn0, fmcnr0, efmcnr0, flewr0, eflewr0, flewf0, eflewf0
-END 
+                     
+  ; somewhere where we can dump things into for saving
+  profilestr = { $
+      radius                : ptr_new(!null),     $ ; ?
+      radius_int            : ptr_new(!null),     $ ; like radius, but for integrated quantities
+      mprof                 : ptrarr(nbandavail), $ ; surface brightness profile, corresponds (like everything below) 1-1 with bname
+      err_mprof             : ptrarr(nbandavail), $ ; total error in mprof
+      mprof_int             : ptrarr(nbandavail), $ ; integrated (enclosed) surface brightness profile
+      err_mprof_int         : ptrarr(nbandavail), $ ; total error in mprof_int
+      mprof_dustcor         : ptrarr(nbandavail), $ ; surface brightness profile corrected for dust
+      err_mprof_dustcor     : ptrarr(nbandavail), $ ; total error in mprof_dustcor
+      mprof_dustcor_int     : ptrarr(nbandavail), $ ; integrated surface (enclosed) brightness profile corrected for dust
+      err_mprof_dustcor_int : ptrarr(nbandavail)  $ ; total error in mprof_dustcor_int
+  }
+  allprofiles = replicate(profilestr, ngal)
+  ; hack on 
+  ; populate structure
+  for i=0,ngal-1 do begin
+      allprofiles[i].radius     = ptr_new(radan[pt0[i] : max([pts2[i],ptf2[i],pts3[i],ptf3[i]]) ])
+      allprofiles[i].radius_int = ptr_new(rad[pt0[i]   : max([pts2[i],ptf2[i],pts3[i],ptf3[i]]) ])
+      for j=0,nbandavail-1 do begin
+          allprofiles[i].mprof[j]                 = ptr_new(smprof[pt0[i]    : pts2[i], j])
+          allprofiles[i].err_mprof[j]             = ptr_new(esmproft[pt0[i]  : pts2[i], j])
+          allprofiles[i].mprof_int[j]             = ptr_new(fmprof[pt0[i]    : ptf2[i], j])
+          allprofiles[i].err_mprof_int[j]         = ptr_new(efmproft[pt0[i]  : ptf2[i], j])
+          allprofiles[i].mprof_dustcor[j]         = ptr_new(smprof0[pt0[i]   : pts3[i], j])
+          allprofiles[i].err_mprof_dustcor[j]     = ptr_new(esmproft0[pt0[i] : pts3[i], j])
+          allprofiles[i].mprof_dustcor_int[j]     = ptr_new(fmprof0[pt0[i]   : ptf3[i], j])
+          allprofiles[i].err_mprof_dustcor_int[j] = ptr_new(efmproft0[pt0[i] : ptf3[i], j])
+      endfor
+  endfor
+  save,filename=hname+".save",bname,allprofiles
+END
+

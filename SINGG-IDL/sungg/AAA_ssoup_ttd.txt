@@ -2,7 +2,7 @@ SSOUP Programming Things To Do
 ==============================
 
 * Save results for each galaxy as an IDL saveset?
-  - stores at machine accuracy...
+  - stores at machine accuracy (pointless, since everything is 32 bit floats ~ 7 sf accuracy)
 
 * Improve handling of multiple galaxies
   + consistent masking when calculating sky

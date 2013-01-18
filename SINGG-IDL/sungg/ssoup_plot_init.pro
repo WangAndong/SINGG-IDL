@@ -11,6 +11,7 @@ pro ssoup_plot_finish, fjpg, feps, wxsize, epilepsy=epilepsy
   ; S. Andrews (ICRAR/UWA) 01/2013
 
     ; finish PS
+    compile_opt idl2
     device,/close
     set_plot,'X',/copy
     setplotcolors
@@ -28,8 +29,8 @@ pro ssoup_plot_finish, fjpg, feps, wxsize, epilepsy=epilepsy
     crap = ""
     reads,strtemp,crap,x1,y1,x2,y2,format='(A14, 4(x, I0))'
     x2 = fix(x2)
-    wysize = 1L*fix(y2)*wxsize/x2
-    res = 72L*wxsize/x2 ; Short ints? Who uses those any more?
+    wysize = 1*fix(y2)*wxsize/x2
+    res = 72*wxsize/x2
     ; We need to increase right/top margins a little.
     wxsize = fix(wxsize*1.05)
     wysize = fix(wysize*1.05)
@@ -55,6 +56,8 @@ pro ssoup_plot_init, feps, xs, ys, xoff, yoff
   ; xoff -> eps plot parameter
   ; yoff -> eps plot parameter
  
+    compile_opt idl2 ; sigh...
+    
     ; write to PS
     set_plot,'ps',/copy, /interpolate
     IF strpos(strlowcase(feps), '.eps') GT 0 THEN $

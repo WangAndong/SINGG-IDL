@@ -33,13 +33,6 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   prog     = 'SSOUP_PROFILES: '
   COMMON bands, band, nband, bandnam, bandavail, nbandavail
   ;
-  ; somewhere where we can dump things into for saving
-  profilestr = { hello, $
-      bname : '' ,$ ; the band
-      flux_good : ptr_new(1) $
-  }
-  allprofiles = replicate(profilestr, nbandavail)
-  ;
   plog,ll,prog,'------------------------- starting '+prog+'---------------------------------'
   ;
   vb       = keyword_set(verbose)
@@ -183,8 +176,6 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
      openw, lu, fprof[jj], /get_lun
      ;
      ; write header for output file
-     ; TODO: write profiles out for other bands. At the moment, we don't care about MIR profiles
-     ; (looking at the images, they would be... useless).
      write_profile_header, lu, fimages[jj], as_pix, units, fscale, proftype, headline, nelg
      FOR ii = 0, nelg-1 DO BEGIN 
         plog,ll,prog,'measuring source number: '+strtrim(ii,2)
@@ -209,13 +200,8 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
         plog,ll,prog,'calling growth_profile'
         growth_profile, lu, ii, xc[ii], yc[ii], arat[ii], pa[ii], del_pa, sky, aa, aa, aa, $
                         abin, flux, ngood, nbad, flux_good, sb, sbsig, fout
-        ; save profile
-        allprofiles[jj].bname = bandavail[jj]
-        allprofiles[jj].flux_good = ptr_new(flux_good)
      ENDFOR 
      plog,ll,prog,'closing output ASCII file'
      free_lun, lu
   ENDFOR
-  plog,ll,prog,"Saving profile as IDL saveset"
-  save,filename=hname + ".save",allprofiles
 END 

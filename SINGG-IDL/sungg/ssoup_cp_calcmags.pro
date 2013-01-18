@@ -44,7 +44,7 @@ PRO ssoup_cp_calcmags, ll, mag0, dredf, snlimit, $
   IF sz[0] NE 2 THEN stop, prog+'**** FLX array must be 2d'
   nap     = sz[1]
   nb      = sz[2]
-  ih      = where(bandavail EQ band.HALPHA)
+  ih      = (where(bandavail EQ band.HALPHA))[0]
   ;
   ; make output arrays
   mag     = 0.0*flx

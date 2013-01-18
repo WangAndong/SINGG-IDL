@@ -9,3 +9,8 @@ How to add more bands:
 7) Create a template header in soup (same directory as ssoup_atidyhdr.pro) called XX_templ_hdr.dat and tell ssoup_atidyhdr.pro where to find it.
 8) Dump your photflams into ssoup_addphotkwds.pro, if they aren't already in the FITS header.
 9) Choose a low cut and high cut threshold for JPGs in ssoup_mkjpg.pro.
+
+Profile save set structure:
+
+*str = { bname: band name, flux_good: ptrarr(number of galaxies) }
+*allprofiles = replicate(str, number of bands available)

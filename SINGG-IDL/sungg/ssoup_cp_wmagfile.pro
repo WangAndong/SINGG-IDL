@@ -16,8 +16,7 @@ pro ssoup_cp_wmagfile, ll, outtype, filo, ngal, pt0, pt1, rad, mprof, emproft, e
   ;  pt0     -> first element for each galaxy
   ;  pt1     -> last element for each galaxy
   ;  rad     -> radius
-  ;  mprof   -> magnitude profile this is 2D array [4,nn]
-  ;             for now assume 1 = R, 0 = Halpha, 2 = NUV, 3 = FUV
+  ;  mprof   -> magnitude profiles for all available bands
   ;  emproft -> total mag error
   ;  emprofs -> sky error for Halpha
   ;  emprofc -> continuum subtraction for Halpha
@@ -43,7 +42,7 @@ pro ssoup_cp_wmagfile, ll, outtype, filo, ngal, pt0, pt1, rad, mprof, emproft, e
   ir   = where(bandavail eq band.R, /null)
   inuv = where(bandavail eq band.NUV, /null)
   ifuv = where(bandavail eq band.FUV, /null)
-  
+  ; FIXME: cannot handle more than Halpha, R, NUV, FUV
   prog    = 'SSOUP_CP_WMAGFILE: '
   fmto    = '(f7.2,f8.3,f6.3,f9.3,f6.3,f6.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3)'
   case outtype of 

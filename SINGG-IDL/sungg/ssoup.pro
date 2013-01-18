@@ -159,7 +159,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; calibrate surface brightness profiles
      plog,ll,prog,'making calibrated profiles'
-     ssoup_calprof, ll, phpl, ebv, (inputstr.fprofs_out), inputstr.scalprof, inputstr.fcalprof, $
+     ssoup_calprof, ll, inputstr.hname, phpl, ebv, (inputstr.fprofs_out), inputstr.scalprof, inputstr.fcalprof, $
                     (inputstr.scalprof0), inputstr.fcalprof0, fecntrat=fecntrat
      IF slow THEN keywait, 'type any key to continue: '
      ;

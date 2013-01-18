@@ -280,4 +280,10 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
   !p.multi   = 0
   !p.noerase = 0
   ssoup_plot_finish,fjpg,feps,wxsize,epilepsy=epilepsy
+  ;
+  ; dump the points into an IDL saveset
+  ; note: due to IDL being... IDL we cannot get more than 6 digits of accuracy because
+  ; IDL uses 32 bit floats. These give about 7dp accuracy. Exercise: try
+  ; IDL> a = 9999.90
+  ; IDL> print,a,format='(F)'
 END 
