@@ -555,7 +555,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       mprof_dustcor_int     : ptrarr(nbandavail), $ ; integrated surface (enclosed) brightness profile corrected for dust
       err_mprof_dustcor_int : ptrarr(nbandavail)  $ ; total error in mprof_dustcor_int
   }
-  allprofiles = replicate(profilestr, ngal)
+  allprofiles = replicate(profilestr, ngal) ; one entry for each galaxy 
   ; populate structure
   for i=0,ngal-1 do begin
       allprofiles[i].radius     = ptr_new(radan[pt0[i] : max([pts2[i],ptf2[i],pts3[i],ptf3[i]]) ])
@@ -571,6 +571,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
           allprofiles[i].err_mprof_dustcor_int[j] = ptr_new(efmproft0[pt0[i] : ptf3[i], j])
       endfor
   endfor
+  bname = bandavail
   save,filename=hname+"_profiles.save",bname,allprofiles
 END
 
