@@ -542,6 +542,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
                      fmcfn0, efmcfn0, fmcnr0, efmcnr0, flewr0, eflewr0, flewf0, eflewf0
                      
   ; somewhere where we can dump things into for saving
+  plog,ll,prog,"making IDL saveset"
   profilestr = { $
       radius                : ptr_new(!null),     $ ; ?
       radius_int            : ptr_new(!null),     $ ; like radius, but for integrated quantities
@@ -555,7 +556,6 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       err_mprof_dustcor_int : ptrarr(nbandavail)  $ ; total error in mprof_dustcor_int
   }
   allprofiles = replicate(profilestr, ngal)
-  ; hack on 
   ; populate structure
   for i=0,ngal-1 do begin
       allprofiles[i].radius     = ptr_new(radan[pt0[i] : max([pts2[i],ptf2[i],pts3[i],ptf3[i]]) ])
@@ -571,6 +571,6 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
           allprofiles[i].err_mprof_dustcor_int[j] = ptr_new(efmproft0[pt0[i] : ptf3[i], j])
       endfor
   endfor
-  save,filename=hname+".save",bname,allprofiles
+  save,filename=hname+"_profiles.save",bname,allprofiles
 END
 

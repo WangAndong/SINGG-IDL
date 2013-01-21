@@ -316,6 +316,25 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   fits_write, inputstr.fmask_sky, msks, newhdf
   IF slow THEN keywait, 'type any key to continue: '
   ;
+  ; place to dump values for saving
+  skyboxstr = { $
+      order      : 0              ,$ ; polynomial order
+      boxsize    : 0              ,$ ; size of box in pixels
+      type       : 0              ,$ ; type of fit (0=2d polynomial in x,y, 1=polynomial in radius)
+      skylev     : 0.0            ,$ ; box to box sky level
+      skysig     : 0.0            ,$ ; pixel to pixel sky RMS
+      skysigbox  : 0.0            ,$ ; box to box sky RMS
+      params     : ptr_new(!null) ,$ ; fit parameters (in order: 1, x, y, x^2, xy, y^2, ...)
+      params_err : ptr_new(!null) ,$ ; error in params
+      average    : ptr_new(!null) ,$ ; average
+      x          : ptr_new(!null) ,$ ; box x position
+      y          : ptr_new(!null) ,$ ; box y position
+      sigma      : ptr_new(!null) ,$ ; detection in sigma(?)
+      fit        : ptr_new(!null) ,$ ; fitted value
+      residual   : ptr_new(!null)  $ ; residual from fit
+  }
+  skymodeldata = replicate(skyboxstr, nbandavail)
+      
   ; Loop to measure sky levels and update headers
   for ii = 0, nbandavail-1 do begin
      hd0    = *hdcompile0[ii]  ; initial header
@@ -429,7 +448,27 @@ pro ssoup_align, ll, inputstr, goslow=goslow
      plog,ll,prog,'information written for: '+numstr(nb)+' good boxes'
      free_lun,lu
      IF slow THEN keywait, 'type any key to continue: '
+     
+     ; dump stuff to saveset
+     skymodeldata[ii].order = ord
+     skymodeldata[ii].boxsize = boxsize1
+     skymodeldata[ii].type = 0
+     skymodeldata[ii].skylev = skylev
+     skymodeldata[ii].skysig = skysig
+     skymodeldata[ii].skysigbox = skysigbox
+     skymodeldata[ii].params = ptr_new(skypar)
+     skymodeldata[ii].params_err = ptr_new(eskypar)
+     skymodeldata[ii].average = ptr_new(boxdata[0,*])
+     skymodeldata[ii].x = ptr_new(boxdata[1,*])
+     skymodeldata[ii].y = ptr_new(boxdata[2,*])
+     skymodeldata[ii].sigma = ptr_new(boxdata[3,*])
+     skymodeldata[ii].fit = ptr_new(boxdata[4,*])
+     skymodeldata[ii].residual = ptr_new(boxdata[5,*])
   endfor 
   ptr_free,imgs,hdcompile0,hdcompile1 ; don't leak memory
+  ; create saveset
+  plog,ll,prog,"creating IDL save set"
+  bname = bandavail
+  save,filename=inputstr.hname+"_skymodel.save",bname,skymodeldata
   plog,ll,prog,'finished '
 end 
