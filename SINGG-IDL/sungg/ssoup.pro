@@ -80,7 +80,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      FOR ii = 0, nbandavail-1 DO BEGIN 
         ssoup_plotboxes, ll, bxdef, inputstr.hname, bandavail[ii], inputstr.fbox[ii], inputstr.fbplotj[ii], inputstr.fbplote[ii], epilepsy=epilepsy
      ENDFOR 
-     epilepsy=0
+      epilepsy=0
      ;
      ; extract radial profiles
      IF slow THEN keywait, 'type any key to continue: '

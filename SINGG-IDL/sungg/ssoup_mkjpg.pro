@@ -32,14 +32,6 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ;
    ; G. Meurer (ICRAR/UWA) 06/2010  based on sample.pro by Ji Hoon Kim
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
-   minr_h  = -2.0e-19
-   minr_l  = -1.0e-19
-   maxr_h  =  2.0e-16
-   maxr_l  =  2.0e-17
-   minh_l  = -7.0e-18
-   minh_h  = -1.4e-17
-   maxh_l  =  1.4e-16
-   maxh_h  =  1.4e-15
    ;beta    = -1
    beta    = 0
    prog    = 'SSOUP_MKJPG: '
@@ -151,75 +143,84 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ENDIF 
    ;
    ; get deredden parameters
-   dredf   = make_array(nband, /float, value=1.0)
+   dredf   = make_array(nbandavail, /float, value=1.0)
    IF keyword_set(ebv) THEN BEGIN
          ccm_unred, photplam, dredf, ebv[0]
       plog,ll,prog,'will de-redden fluxes using the following band | wl | factor sets'
       FOR ii = 0, nbandavail-1 DO plog,ll,prog,'   '+ljust(bandavail[ii],6)+' | '+numstr(photplam[ii])+' | '+numstr(dredf[ii])
    ENDIF 
    ;
-   ; set levels
-   IF NOT keyword_set(highcut) THEN BEGIN 
-      ;
-      ; low cut values selected
-      plog,ll,prog,'selecting low cut display levels.'
-      maxr = maxr_l
-      minr = minr_l
-      minh = minh_l
-      maxh = maxh_l
-  ENDIF ELSE BEGIN
-      ;
-      ; high cut values selected
-      plog,ll,prog,'selecting high cut display levels.'
-      maxr = maxr_h
-      minr = minr_h
-      minh = minh_h
-      maxh = maxh_h
-   ENDELSE 
-   mind     = make_array(nbandavail,/float,value=0.0)
-   maxd     = mind
-   mind[jr] = minr
-   maxd[jr] = maxr
-   mind[jh] = minh
-   maxd[jh] = maxh
-   mind[jn] = mind[jr]*(photplam[jn]/photplam[jr])^beta
-   maxd[jn] = maxd[jr]*(photplam[jn]/photplam[jr])^beta
-   mind[jf] = mind[jr]*(photplam[jf]/photplam[jr])^beta
-   maxd[jf] = maxd[jr]*(photplam[jf]/photplam[jr])^beta
-   ; WISE minimum/maximum values
-   ; TODO: come up with less retarded values
-   blahindex = (where(bandavail eq band.mir_W1, blahcount))[0]
-   if blahcount ge 1 then begin 
-       mind[blahindex] = 1e-20
-       maxd[blahindex] = 100e-20
-   endif
-   blahindex = (where(bandavail eq band.mir_W2, blahcount))[0]
-   if blahcount ge 1 then begin 
-       mind[blahindex] = 1e-20
-       maxd[blahindex] = 100e-20
-   endif
-   blahindex = (where(bandavail eq band.mir_W3, blahcount))[0]
-   if blahcount ge 1 then begin 
-       mind[blahindex] = 1e-20
-       maxd[blahindex] = 100e-20
-   endif
-   blahindex = (where(bandavail eq band.mir_W4, blahcount))[0]
-   if blahcount ge 1 then begin 
-       mind[blahindex] = 1e-20
-       maxd[blahindex] = 100e-20
-   endif
-   plog,ll,prog,'will use the following flux calibrated display levels (band   min   max)'
-   FOR ii = 0, nbandavail-1 DO plog,ll,'  ',ljust(bandavail[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
-   ;
    ; empty cube for putting only the planes we want,
    ; and in the order we want
    imcal    = make_array(nx, ny, nbandavail, /float, value=0.0)
    ;
    ; assemble cube of signed-sqrt calibrated fluxes
-   FOR ii = 0, nz-1 DO imcal[*,*,ii] = ssqrt(photfl[kk[ii]]*dredf[ii]*imcube[*,*,kk[ii]])  ; calibrate 
-   mind  = ssqrt(mind)    ; convert display ranges to signed sqrt
-   maxd  = ssqrt(maxd)    ; convert display ranges to signed sqrt
+   FOR ii = 0, nz-1 DO imcal[*,*,ii] = photfl[kk[ii]]*dredf[ii]*imcube[*,*,kk[ii]]  ; calibrate 
    ;
+   ; set levels
+   mind     = make_array(nbandavail,/float,value=0.0)
+   maxd     = mind
+   index_w1 = (where(bandavail eq band.mir_W1, count_w1))[0]
+   index_w2 = (where(bandavail eq band.mir_W2, count_w2))[0]
+   index_w3 = (where(bandavail eq band.mir_W3, count_w3))[0]
+   index_w4 = (where(bandavail eq band.mir_W4, count_w4))[0]   
+   IF NOT keyword_set(highcut) THEN BEGIN 
+      ;
+      ; low cut values selected
+      plog,ll,prog,'selecting low cut display levels.'
+      mind[jr]  = -1.0e-19 
+      maxd[jr]  =  2.0e-17
+      mind[jh]  = -7.0e-18
+      maxd[jh]  =  1.4e-16
+      if count_w1 ge 1 then begin 
+          mind[index_w1] = percentile(imcal[*,*,index_w1], 10)
+          maxd[index_w1] = percentile(imcal[*,*,index_w1], 92)
+      endif
+      if count_w2 ge 1 then begin 
+          mind[index_w2] = percentile(imcal[*,*,index_w2], 10)
+          maxd[index_w2] = percentile(imcal[*,*,index_w2], 90)
+      endif
+      if count_w3 ge 1 then begin 
+          mind[index_w3] = percentile(imcal[*,*,index_w3], 10)
+          maxd[index_w3] = percentile(imcal[*,*,index_w3], 95)
+      endif
+      if count_w4 ge 1 then begin 
+          mind[index_w4] = percentile(imcal[*,*,index_w4], 10)
+          maxd[index_w4] = percentile(imcal[*,*,index_w4], 95)
+      endif
+  ENDIF ELSE BEGIN
+      ;
+      ; high cut values selected
+      plog,ll,prog,'selecting high cut display levels.'
+      mind[jr] = -2.0e-19
+      maxd[jr] =  2.0e-16
+      mind[jh] = -1.4e-17
+      maxd[jh] =  1.4e-15
+      if count_w1 ge 1 then begin 
+          mind[index_w1] = percentile(imcal[*,*,index_w1], 13)
+          maxd[index_w1] = percentile(imcal[*,*,index_w1], 95)
+      endif
+      if count_w2 ge 1 then begin 
+          mind[index_w2] = percentile(imcal[*,*,index_w1], 13)
+          maxd[index_w2] = percentile(imcal[*,*,index_w1], 95)
+      endif
+      if count_w3 ge 1 then begin 
+          mind[index_w3] = percentile(imcal[*,*,index_w1], 13)
+          maxd[index_w3] = percentile(imcal[*,*,index_w1], 97)
+      endif
+      if count_w4 ge 1 then begin 
+          mind[index_w4] = percentile(imcal[*,*,index_w1], 13)
+          maxd[index_w4] = percentile(imcal[*,*,index_w1], 98)
+      endif
+   ENDELSE 
+   mind[jn] = mind[jr]*(photplam[jn]/photplam[jr])^beta
+   maxd[jn] = maxd[jr]*(photplam[jn]/photplam[jr])^beta
+   mind[jf] = mind[jr]*(photplam[jf]/photplam[jr])^beta
+   maxd[jf] = maxd[jr]*(photplam[jf]/photplam[jr])^beta
+   plog,ll,prog,'will use the following flux calibrated display levels (band   min   max)'
+   FOR ii = 0, nbandavail-1 DO plog,ll,'  ',ljust(bandavail[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
+   ;mind  = ssqrt(mind)    ; convert display ranges to signed sqrt
+   ;maxd  = ssqrt(maxd)    ; convert display ranges to signed sqrt
    ; loop through combinations
    rgbim  = make_array(nx,ny,3,/byte,value=0b)
    FOR ii = 0, ncombo-1 DO BEGIN 
