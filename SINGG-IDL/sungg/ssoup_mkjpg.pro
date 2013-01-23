@@ -154,7 +154,7 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ; and in the order we want
    imcal    = make_array(nx, ny, nbandavail, /float, value=0.0)
    ;
-   ; assemble cube of signed-sqrt calibrated fluxes
+   ; assemble cube of calibrated fluxes
    FOR ii = 0, nz-1 DO imcal[*,*,ii] = photfl[kk[ii]]*dredf[ii]*imcube[*,*,kk[ii]]  ; calibrate 
    ;
    ; set levels
@@ -173,20 +173,20 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
       mind[jh]  = -7.0e-18
       maxd[jh]  =  1.4e-16
       if count_w1 ge 1 then begin 
-          mind[index_w1] = percentile(imcal[*,*,index_w1], 10)
-          maxd[index_w1] = percentile(imcal[*,*,index_w1], 92)
+          mind[index_w1] = percentile(imcal[*,*,index_w1], 5)
+          maxd[index_w1] = percentile(imcal[*,*,index_w1], 99.5)
       endif
       if count_w2 ge 1 then begin 
-          mind[index_w2] = percentile(imcal[*,*,index_w2], 10)
-          maxd[index_w2] = percentile(imcal[*,*,index_w2], 90)
+          mind[index_w2] = percentile(imcal[*,*,index_w2], 5)
+          maxd[index_w2] = percentile(imcal[*,*,index_w2], 99.5)
       endif
       if count_w3 ge 1 then begin 
-          mind[index_w3] = percentile(imcal[*,*,index_w3], 10)
-          maxd[index_w3] = percentile(imcal[*,*,index_w3], 95)
+          mind[index_w3] = percentile(imcal[*,*,index_w3], 5)
+          maxd[index_w3] = percentile(imcal[*,*,index_w3], 99.5)
       endif
       if count_w4 ge 1 then begin 
-          mind[index_w4] = percentile(imcal[*,*,index_w4], 10)
-          maxd[index_w4] = percentile(imcal[*,*,index_w4], 95)
+          mind[index_w4] = percentile(imcal[*,*,index_w4], 5)
+          maxd[index_w4] = percentile(imcal[*,*,index_w4], 99.5)
       endif
   ENDIF ELSE BEGIN
       ;
@@ -197,20 +197,20 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
       mind[jh] = -1.4e-17
       maxd[jh] =  1.4e-15
       if count_w1 ge 1 then begin 
-          mind[index_w1] = percentile(imcal[*,*,index_w1], 13)
-          maxd[index_w1] = percentile(imcal[*,*,index_w1], 95)
+          mind[index_w1] = percentile(imcal[*,*,index_w1], 10)
+          maxd[index_w1] = percentile(imcal[*,*,index_w1], 99.99)
       endif
       if count_w2 ge 1 then begin 
-          mind[index_w2] = percentile(imcal[*,*,index_w1], 13)
-          maxd[index_w2] = percentile(imcal[*,*,index_w1], 95)
+          mind[index_w2] = percentile(imcal[*,*,index_w1], 10)
+          maxd[index_w2] = percentile(imcal[*,*,index_w1], 99.99)
       endif
       if count_w3 ge 1 then begin 
-          mind[index_w3] = percentile(imcal[*,*,index_w1], 13)
-          maxd[index_w3] = percentile(imcal[*,*,index_w1], 97)
+          mind[index_w3] = percentile(imcal[*,*,index_w1], 10)
+          maxd[index_w3] = percentile(imcal[*,*,index_w1], 99.99)
       endif
       if count_w4 ge 1 then begin 
-          mind[index_w4] = percentile(imcal[*,*,index_w1], 13)
-          maxd[index_w4] = percentile(imcal[*,*,index_w1], 98)
+          mind[index_w4] = percentile(imcal[*,*,index_w1], 10)
+          maxd[index_w4] = percentile(imcal[*,*,index_w1], 99.99)
       endif
    ENDELSE 
    mind[jn] = mind[jr]*(photplam[jn]/photplam[jr])^beta
@@ -219,8 +219,6 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    maxd[jf] = maxd[jr]*(photplam[jf]/photplam[jr])^beta
    plog,ll,prog,'will use the following flux calibrated display levels (band   min   max)'
    FOR ii = 0, nbandavail-1 DO plog,ll,'  ',ljust(bandavail[ii],6)+'  '+numstr(mind[ii])+'   '+numstr(maxd[ii])
-   ;mind  = ssqrt(mind)    ; convert display ranges to signed sqrt
-   ;maxd  = ssqrt(maxd)    ; convert display ranges to signed sqrt
    ; loop through combinations
    rgbim  = make_array(nx,ny,3,/byte,value=0b)
    FOR ii = 0, ncombo-1 DO BEGIN 
