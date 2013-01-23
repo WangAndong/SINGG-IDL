@@ -41,26 +41,35 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
   ;
   ; read in profile files
   plog,ll,prog,'reading in (not dust corrected) surface brightness profile file: '+fsprof
-  readcol, fsprof, sma, sr, esr, sha, eshat, eshas, eshac, snuv, esnuv, sfuv, esfuv, $
-           scfn, escfn, scnr, escnr, slewr, eslewr, slewf, eslewf, format=fmti
-  np        = n_elements(sma)
+;  readcol, fsprof, sma, sr, esr, sha, eshat, eshas, eshac, snuv, esnuv, sfuv, esfuv, $
+;           scfn, escfn, scnr, escnr, slewr, eslewr, slewf, eslewf, format=fmti
+;  np        = n_elements(sma)
   plog,ll,prog,'reading in (dust corrected) surface brightness profile file: '+fsprof0
   readcol, fsprof0, sma0, sr0, esr0, sha0, eshat0, eshas0, eshac0, snuv0, esnuv0, sfuv0, esfuv0, $
            scfn0, escfn0, scnr0, escnr0, slewr0, eslewr0, slewf0, eslewf0, format=fmti
   np0       = n_elements(sma0)
-  ;restore,sname+"_profiles.save"
+  restore,sname+"_profiles.save"
   ; for each galaxy
   ;for i=0,n_elements(allprofiles) do begin
-    ;sma = *(allprofiles[i].radius)
-    ;sr = *(allprofiles[i].mprof[5])
-    ;esr = *(allprofiles[i].err_mprof[5])
-    ;sha = *(allprofiles[i].mprof[4])
-    ;eshat = *(allprofiles[i].err_mprof[4])
-    ;snuv = *(allprofiles[i].mprof[6])
-    ;esnuv = *(allprofiles[i].err_mprof[6])
-    ;sfuv = *(allprofiles[i].mprof[7])
-    ;esfuv = *(allprofiles[i].err_mprof[7])
-    ;
+    i = 0
+    sma = *(allprofiles[i].radius)
+    sr = *(allprofiles[i].mprof[5])
+    esr = *(allprofiles[i].err_mprof[5])
+    sha = *(allprofiles[i].mprof[4])
+    eshat = *(allprofiles[i].err_mprof[4])
+    snuv = *(allprofiles[i].mprof[6])
+    esnuv = *(allprofiles[i].err_mprof[6])
+    sfuv = *(allprofiles[i].mprof[7])
+    esfuv = *(allprofiles[i].err_mprof[7])
+    scfn = *(allprofiles[i].col_fuv_nuv)
+    escfn = *(allprofiles[i].err_col_fuv_nuv)
+    scnr = *(allprofiles[i].col_nuv_r)
+    escnr = *(allprofiles[i].err_col_nuv_r)
+    slewr = *(allprofiles[i].log_ha_r)
+    eslewr = *(allprofiles[i].err_log_ha_r)
+    slewf = *(allprofiles[i].log_ha_fuv)
+    eslewf = *(allprofiles[i].err_log_ha_fuv)
+    
     ; determine max radii and corresponding pointers
     plog,ll,prog,'determining maxima radii, and points to plot'
     ;
