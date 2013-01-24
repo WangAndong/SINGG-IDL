@@ -1,13 +1,13 @@
-PRO ssoup_plotsprofs, ll, sname, bands, fjpg, feps, epilepsy=epilepsy
+PRO ssoup_plotsprofs, ll, sname, plot_bands, fjpg, feps, epilepsy=epilepsy
   ;
   ; plot surface brightness and surface colour profiles
   ;
-  ;   ll       -> logical unit number for plot
-  ;   sname    -> Source name
-  ;   bands    -> which bands to plot (array of strings)
-  ;   fjpg     -> output plot file name (JPG)
-  ;   feps     -> optput plot file name (EPS)
-  ;   epilepsy -> whether we should display images on the screen
+  ;   ll         -> logical unit number for plot
+  ;   sname      -> Source name
+  ;   plot_bands -> which bands to plot (array of strings)
+  ;   fjpg       -> output plot file name (JPG)
+  ;   feps       -> optput plot file name (EPS)
+  ;   epilepsy   -> whether we should display images on the screen
   ;
   ; G. Meurer (ICRAR/UWA) 6/2010
   ; G. Meurer (ICRAR/UWA) 5/2011: 
@@ -43,6 +43,13 @@ PRO ssoup_plotsprofs, ll, sname, bands, fjpg, feps, epilepsy=epilepsy
     ; reform filenames based on galaxy number
     fjpg_1 = string(i, format='(%"' + fjpg + '")') 
     feps_1 = string(i, format='(%"' + feps + '")') 
+    
+    ; look here
+    blah = [0]
+    for j=0,n_elements(plot_bands)-1 do begin
+       x = where(plot_bands eq bname, count)
+       if count ge 1 then blah = [blah, x[0]
+    endfor
     
     ; will do a find and replace
     sma = *(allprofiles[i].radius)

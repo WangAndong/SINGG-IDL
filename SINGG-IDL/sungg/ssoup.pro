@@ -90,9 +90,9 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; get foreground dust absorption
      dbopen,sdb
-     list = dbmatch('name', inputstr.hname)
+     lista = dbmatch('name', inputstr.hname)
      ebv  = 0.0
-     IF list[0] NE -1 THEN dbext,list,'ebv',ebv
+     IF lista[0] NE -1 THEN dbext,lista,'ebv',ebv
      dbclose
      plog,ll,prog,'using E(B-V) = '+numstr(ebv)
      ;
