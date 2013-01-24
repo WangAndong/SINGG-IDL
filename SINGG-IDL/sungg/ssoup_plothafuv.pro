@@ -64,10 +64,9 @@ PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=e
   symsize   = 0.5
   ; set window parameters
   xs    = 8.0
-  ys    = xs/(2.*aspect)
+  ys    = 4.0/aspect
   yoff  = 6.0
   xoff  = 0.0
-  wxsize   = 1200
   thick    = 1
   IF keyword_set(dcorr) THEN raw = 0b ELSE raw = 1b
   ;
@@ -314,6 +313,6 @@ PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=e
       plog,ll,prog,'finishing. Will write plotfile: '+feps_1
       !p.multi   = 0
       !p.noerase = 0
-      ssoup_plot_finish,fjpg_1,feps_1,wxsize,epilepsy=epilepsy
+      ssoup_plot_finish,fjpg_1,feps_1,1200,epilepsy=epilepsy
   endfor
 END
