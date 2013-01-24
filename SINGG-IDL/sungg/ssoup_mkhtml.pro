@@ -10,39 +10,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   ;   srcdir       -> source directory
   ;   basedir      -> base directory for output
   ;   outdir       -> output directory. 
-  ;   inputstr     -> an input structure, containing all of the following: 
-  ;   hname        -> hipass names
-  ;   fjpg_low     -> name of low cut jpg images
-  ;   fjpg_high    -> name of high cut jpg images
-  ;   fjpg_mlow1   -> name of low cut jpg images masked with maskcmd=1
-  ;   fjpg_mhigh1  -> name of high cut jpg images masked with maskcmd=1
-  ;   fjpg_mlow2   -> name of low cut jpg images masked with maskcmd=2
-  ;   fjpg_mhigh2  -> name of high cut jpg images masked with maskcmd=2
-  ;   fjpg_mlow3   -> name of low cut jpg images masked with maskcmd=3
-  ;   fjpg_mhigh3  -> name of high cut jpg images masked with maskcmd=3
-  ;   fjpg_imlow1  -> name of low cut jpg images masked with maskcmd=-1
-  ;   fjpg_imhigh1 -> name of high cut jpg images masked with maskcmd=-1
-  ;   fjpg_imlow2  -> name of low cut jpg images masked with maskcmd=-2
-  ;   fjpg_imhigh2 -> name of high cut jpg images masked with maskcmd=-2
-  ;   fjpg_imlow3  -> name of low cut jpg images masked with maskcmd=-3
-  ;   fjpg_imhigh3 -> name of high cut jpg images masked with maskcmd=-3
-  ;   fcompare     -> name of db vs. ssoup comparison file 
-  ;   scalprof     -> name of ascii output calibrated surface 
-  ;                   brightness/color profiles
-  ;   fcalprof     -> name of ascii output calibrated enclosed 
-  ;                   flux / color profiles
-  ;   scalprof0    -> name of ascii output calibrated surface 
-  ;                   brightness/color profiles - dust corrected
-  ;   fcalprof0    -> name of ascii output calibrated enclosed 
-  ;                   flux / color profiles - dust corrected
-  ;   profjpg      -> name of output profile plot in jpg format
-  ;   profps       -> name of output profile plot in ps format
-  ;   hafuvjpg     -> name of output raw Halpha/fuv plot in jpg format
-  ;   hafuvps      -> name of output raw Halpha/fuv plot in ps format
-  ;   hafuvjpg0    -> name of output dust corr Halpha/fuv plot in jpg format
-  ;   hafuvps0     -> name of output dust corr Halpha/fuv plot in ps format
-  ;   fbplot_jpg   -> name of background sky box plot files in JPG format
-  ;   fbplot_eps   -> name of background sky box plot files in EPS format
+  ;   inputstr     -> the input structure made by ssoup_inputs.pro
   ;   uselink      -> if set, then link files to outdir, otherwise they 
   ;                   are copied.
   ;
@@ -94,6 +62,14 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
                (inputstr.fcalprof), inputstr.scalprof0, inputstr.fcalprof0, inputstr.profjpg, $
                (inputstr.profps), inputstr.hafuvjpg, inputstr.hafuvps, inputstr.hafuvjpg0, $
                (inputstr.hafuvps0), inputstr.fbplotj, inputstr.fbplote]
+  ; add mid-infrared profiles if we have them
+  w1 = where(bandavail eq band.mir_W1, count_w1)
+  w2 = where(bandavail eq band.mir_W2, count_w2)
+  w3 = where(bandavail eq band.mir_W3, count_w3)
+  w4 = where(bandavail eq band.mir_W4, count_w4)
+  if count_w1 + count_w2 + count_w3 + count_w4 ge 1 then begin
+      f2cp = [f2cp, inputstr.mir_profjpg, inputstr.mir_profps]
+  endif
   nf         = n_elements(f2cp)
   IF NOT keyword_set(uselink) THEN BEGIN 
      FOR jj = 0, nf-1 DO BEGIN 

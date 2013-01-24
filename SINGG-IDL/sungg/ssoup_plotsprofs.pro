@@ -1,13 +1,10 @@
-PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
+PRO ssoup_plotsprofs, ll, sname, bands, fjpg, feps, epilepsy=epilepsy
   ;
   ; plot surface brightness and surface colour profiles
   ;
   ;   ll       -> logical unit number for plot
   ;   sname    -> Source name
-  ;   fsprof   -> file containing surface brightness profiles prior to
-  ;               internal dust correction
-  ;   fsprof0  -> file containing internal dust corrected surface 
-  ;               brightness profiles
+  ;   bands    -> which bands to plot (array of strings)
   ;   fjpg     -> output plot file name (JPG)
   ;   feps     -> optput plot file name (EPS)
   ;   epilepsy -> whether we should display images on the screen
@@ -40,16 +37,14 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
   thick     = 1
   ;
   ; read in profile files
-  plog,ll,prog,'reading in (not dust corrected) surface brightness profile file: '+fsprof
-;  readcol, fsprof, sma, sr, esr, sha, eshat, eshas, eshac, snuv, esnuv, sfuv, esfuv, $
-;           scfn, escfn, scnr, escnr, slewr, eslewr, slewf, eslewf, format=fmti
-;  np        = n_elements(sma)
-  plog,ll,prog,'reading in (dust corrected) surface brightness profile file: '+fsprof0
-  readcol, fsprof0, sma0, sr0, esr0, sha0, eshat0, eshas0, eshac0, snuv0, esnuv0, sfuv0, esfuv0, $
-           scfn0, escfn0, scnr0, escnr0, slewr0, eslewr0, slewf0, eslewf0, format=fmti
-  np0       = n_elements(sma0)
+  plog,ll,prog,'reading in surface brightness profile saveset'
   restore,sname+"_profiles.save"
   for i=0,n_elements(allprofiles)-1 do begin
+    ; reform filenames based on galaxy number
+    fjpg_1 = string(i, format='(%"' + fjpg + '")') 
+    feps_1 = string(i, format='(%"' + feps + '")') 
+    
+    ; will do a find and replace
     sma = *(allprofiles[i].radius)
     sr = *(allprofiles[i].mprof[5])
     esr = *(allprofiles[i].err_mprof[5])
@@ -168,7 +163,7 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
      thick    = 2
      wxsize   = 600
      ansize   = 1.0
-    ssoup_plot_init,"a"+numstr(i)+feps,xs,ys,xoff,yoff
+    ssoup_plot_init,feps_1,xs,ys,xoff,yoff
     ;
     ; ------------------------------------------------------------------
     ; panel 1
@@ -312,9 +307,9 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
     ;
     ; ------------------------------------------------------------------
     ; finish plot
-    plog,ll,prog,'finishing. Will write plotfile: '+feps
+    plog,ll,prog,'finishing. Will write plotfile: '+feps_1
     !p.multi   = 0
     !p.noerase = 0
-    ssoup_plot_finish,"a"+numstr(i)+fjpg,"a"+numstr(i)+feps,wxsize,epilepsy=epilepsy
+    ssoup_plot_finish,fjpg_1,feps_1,wxsize,epilepsy=epilepsy
   endfor
 END 

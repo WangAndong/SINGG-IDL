@@ -166,7 +166,8 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ; plot surface brightness profiles
      ; **** the following should be adjusted to allow for multiple ELGs
      plog,ll,prog,'Creating surface brightness and color profiles'
-     ssoup_plotsprofs, ll, inputstr.hname, inputstr.scalprof, inputstr.scalprof0, inputstr.profjpg, inputstr.profps, epilepsy=epilepsy
+     ssoup_plotsprofs, ll, inputstr.hname, [band.HALPHA, band.R, band.NUV, band.FUV], inputstr.profjpg, inputstr.profps, epilepsy=epilepsy
+     ; ssoup_plotsprofs, ll, inputstr.hname, [band.W4, band.W3, band.W2, band.W1], inputstr.mir_profjpg, inputstr.mir_profps, epilepsy=epilepsy
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; create Ha/FUV plots 

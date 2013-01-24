@@ -153,8 +153,8 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   fcalprof        = hname+'_aligned_fprof.dat'
   scalprof0       = hname+'_aligned_sprof0.dat'
   fcalprof0       = hname+'_aligned_fprof0.dat'
-  profjpg         = hname+'_aligned_sprof.jpg'
-  profps          = hname+'_aligned_sprof.ps'
+  profjpg         = hname+'_aligned_sprof_%d.jpg'
+  profps          = hname+'_aligned_sprof_%d.ps'
   hafuvjpg        = hname+'_aligned_hafuv.jpg'
   hafuvps         = hname+'_aligned_hafuv.ps'
   hafuvjpg0       = hname+'_aligned_hafuv0.jpg'
@@ -278,6 +278,19 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   plog,ll,'','HAFUVJPG0       = '+hafuvjpg0
   printf,lu, 'HAFUVPS0        = '+hafuvps0
   plog,ll,'','HAFUVPS0        = '+hafuvps0
+  ; add mid-infrared profiles if we have them
+  w1 = where(bandavail eq band.mir_W1, count_w1)
+  w2 = where(bandavail eq band.mir_W2, count_w2)
+  w3 = where(bandavail eq band.mir_W3, count_w3)
+  w4 = where(bandavail eq band.mir_W4, count_w4)
+  if count_w1 + count_w2 + count_w3 + count_w4 ge 1 then begin
+      mirprofjpg         = hname+'_aligned_mir_sprof_%d.jpg'
+      mirprofps          = hname+'_aligned_mir_sprof_%d.ps'
+      plog,ll,'','MIRPROFJPG = ' + mirprofjpg
+      printf,lu, 'MIRPROFJPG = ' + mirprofjpg
+      plog,ll,'','MIRPROFPS  = ' + mirprofps
+      printf,lu, 'MIRPROFPS  = ' + mirprofps
+  endif
   ;
   ; close output file
   free_lun,lu

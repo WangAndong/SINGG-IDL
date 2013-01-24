@@ -41,12 +41,15 @@ pro ssoup_inputs, fili, ll, inputstr
    ;                   brightness/color profiles - dust corrected
    ;   fcalprof0    <- name of ascii output calibrated enclosed 
    ;                   flux / color profiles - dust corrected
-   ;   profjpg      <- name of output profile plot in jpg format
-   ;   profps       <- name of output profile plot in ps format
+   ;   profjpg      <- name of output profile plot in jpg format (must contain at least one
+   ;                   %d to allow for multiple galaxies)
+   ;   profps       <- name of output profile plot in ps format (with %d as above)
    ;   hafuvjpg     <- name of output raw Halpha/fuv plot in jpg format
    ;   hafuvps      <- name of output raw Halpha/fuv plot in ps format
    ;   hafuvjpg0    <- name of output dust corr Halpha/fuv plot in jpg format
-   ;   hafuvps0     <- name of output dust corr Halpha/fuv plot in ps format
+   ;   hafuvps0     <- name of output dust corr Halpha/fuv plot in ps format  
+   ;   mir_profjpg  <- JPG filename for mid-infrared profile plot (with %d as above)
+   ;   mir_profps   <- PS filename for mid-infrared profile plot (with %d as above)
    ;   status       <- status
    ;
    ; G. Meurer 6/2010 (ICRAR/UWA)
@@ -133,6 +136,8 @@ pro ssoup_inputs, fili, ll, inputstr
      hafuvps      : '', $
      hafuvjpg0    : '', $
      hafuvps0     : '', $
+     mir_profjpg  : '', $
+     mir_profps   : '', $
      status       : 0b $
    }
    ; read stuff in
@@ -176,6 +181,8 @@ pro ssoup_inputs, fili, ll, inputstr
    inputstr.hafuvps          = pfplt_kwdread('HAFUVPS',keywd,value,'',usetype='STRING')
    inputstr.hafuvjpg0        = pfplt_kwdread('HAFUVJPG0',keywd,value,'',usetype='STRING')
    inputstr.hafuvps0         = pfplt_kwdread('HAFUVPS0',keywd,value,'',usetype='STRING')
+   inputstr.mir_profjpg      = pfplt_kwdread('MIRPROFJPG',keywd,value,'',usetype='STRING')
+   inputstr.mir_profps       = pfplt_kwdread('MIRPROFPS',keywd,value,'',usetype='STRING')
    ;
    ; **** should probably allow badvalues to be read in...
    ;
