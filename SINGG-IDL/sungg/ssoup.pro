@@ -70,6 +70,8 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
   IF slow THEN keywait, 'type any key to continue: '
   ;
   IF inputstr.status THEN BEGIN
+     ; flush JPGs and PSs
+     spawn,"rm *.jpg *.eps *.ps"
      ;
      ; image alignment
      plog,ll,prog,'starting image alignment'
@@ -86,7 +88,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      IF slow THEN keywait, 'type any key to continue: '
      plog,ll,prog,'extracting profiles'
      ssoup_profiles, ll, inputstr.fimages_out, inputstr.fmask_out, inputstr.hname, $ 
-                     (inputstr.fprofs_out), shapepar='OPT'
+                     (inputstr.fprofs_out), ngal, shapepar='OPT'
      ;
      ; get foreground dust absorption
      dbopen,sdb
@@ -180,7 +182,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; Mark up results 
-     ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, /uselink
+     ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, /uselink
   ENDIF ELSE BEGIN 
      plog,ll,prog,'could not run pipeline because inputs were incorrect'
   ENDELSE

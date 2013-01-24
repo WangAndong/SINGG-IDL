@@ -48,7 +48,7 @@ PRO ssoup_plotsprofs, ll, sname, plot_bands, fjpg, feps, epilepsy=epilepsy
     blah = [0]
     for j=0,n_elements(plot_bands)-1 do begin
        x = where(plot_bands eq bname, count)
-       if count ge 1 then blah = [blah, x[0]
+       if count ge 1 then blah = [blah, x[0]]
     endfor
     
     ; will do a find and replace

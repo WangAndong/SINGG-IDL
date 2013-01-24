@@ -1,4 +1,4 @@
-PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $ 
+PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $ 
                   uselink=uselink
   ;
   ; Makes a web page showing the output from a ssoup run.  
@@ -11,6 +11,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   ;   basedir      -> base directory for output
   ;   outdir       -> output directory. 
   ;   inputstr     -> the input structure made by ssoup_inputs.pro
+  ;   ngal         -> the number of galaxies detected
   ;   uselink      -> if set, then link files to outdir, otherwise they 
   ;                   are copied.
   ;
@@ -54,22 +55,27 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   cd, sdir
   ;
   ; copy (or link) files to the output directory
-  f2cp       = bdir+[inputstr.fjpg_low, inputstr.fjpg_high, inputstr.fjpg_mlow1, $
+  f2cp       = [inputstr.fjpg_low, inputstr.fjpg_high, inputstr.fjpg_mlow1, $
                (inputstr.fjpg_mhigh1), inputstr.fjpg_mlow2, inputstr.fjpg_mhigh2, $
                (inputstr.fjpg_mlow3), inputstr.fjpg_mhigh3, inputstr.fjpg_imlow1, $
                (inputstr.fjpg_imhigh1), inputstr.fjpg_imlow2, inputstr.fjpg_imhigh2, $
                (inputstr.fjpg_imlow3), inputstr.fjpg_imhigh3, inputstr.fcompare, inputstr.scalprof, $
-               (inputstr.fcalprof), inputstr.scalprof0, inputstr.fcalprof0, inputstr.profjpg, $
-               (inputstr.profps), inputstr.hafuvjpg, inputstr.hafuvps, inputstr.hafuvjpg0, $
-               (inputstr.hafuvps0), inputstr.fbplotj, inputstr.fbplote]
+               (inputstr.fcalprof), inputstr.scalprof0, inputstr.fcalprof0, inputstr.hafuvjpg, $
+               (inputstr.hafuvps), inputstr.hafuvjpg0, (inputstr.hafuvps0), inputstr.fbplotj, $
+               inputstr.fbplote]
+  profjpg = string(indgen(ngal), format='(%"' + inputstr.profjpg + '")')
+  profps  = string(indgen(ngal), format='(%"' + inputstr.profps + '")')
+  f2cp = [f2cp, profjpg, profps]
   ; add mid-infrared profiles if we have them
   w1 = where(bandavail eq band.mir_W1, count_w1)
   w2 = where(bandavail eq band.mir_W2, count_w2)
   w3 = where(bandavail eq band.mir_W3, count_w3)
   w4 = where(bandavail eq band.mir_W4, count_w4)
   if count_w1 + count_w2 + count_w3 + count_w4 ge 1 then begin
-      f2cp = [f2cp, inputstr.mir_profjpg, inputstr.mir_profps]
+      f2cp = [f2cp, string(indgen(ngal), format='(%"' + inputstr.mir_profjpg + '")')]
+      f2cp = [f2cp, string(indgen(ngal), format='(%"' + inputstr.mir_profps + '")')]
   endif
+  f2cp = bdir+f2cp
   nf         = n_elements(f2cp)
   IF NOT keyword_set(uselink) THEN BEGIN 
      FOR jj = 0, nf-1 DO BEGIN 
@@ -123,13 +129,15 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   ; mark-up profile plots
   plog,ll,prog,'marking up three color image'
   printf,lu,'<h3>Surface brightness profile</h3>'
-  pp        = strpos(inputstr.profjpg,'.jpg')
-  fjpgo     = strmid(inputstr.profjpg,0,pp)+'_sm.jpg'
-  cmd       = 'convert '+inputstr.profjpg+' -resize '+numstr(widthp)+' '+fjpgo
-  plog,ll,prog,'making thumbnail using command: '+cmd
-  spawn,cmd
-  printf,lu,'<a href="'+inputstr.profjpg+'"><img src="'+fjpgo+'"></a><br>'
-  printf,lu,'<a href="'+inputstr.profps+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a>'
+  for i=0,ngal-1 do begin
+      pp        = strpos(profjpg[i],'.jpg')
+      fjpgo     = strmid(profjpg[i],0,pp)+'_sm.jpg'
+      cmd       = 'convert '+profjpg[i]+' -resize '+numstr(widthp)+' '+fjpgo
+      plog,ll,prog,'making thumbnail using command: '+cmd
+      spawn,cmd
+      printf,lu,'<a href="'+profjpg[i]+'"><img src="'+fjpgo+'"></a><br>'
+      printf,lu,'<a href="'+profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a>'
+  endfor
   printf,lu,'<hr>'
   ;
   ; mark up Halpha/FUV versus surface brightness plots
