@@ -1,10 +1,9 @@
-PRO ssoup_plothafuv, ll, sname, fsprof, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=epilepsy
+PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=epilepsy
   ;
   ; plot Halpha/FUV vs Halpha and R surface brightnesses
   ;
   ;  ll       -> logical unit of log file
   ;  sname    -> name of singg/hipass source
-  ;  fsprof   -> name of calibrated surface brightness profile file
   ;  fjpg     -> name of output file (JPG)
   ;  feps     -> name of output file (EPS)
   ;  dcorr    -> if set then the plot is set for dust corrected
@@ -61,8 +60,15 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fjpg, feps, dcorr=dcorr, kline=kline, ep
   aa        = angstsym()
   xmargin   = [8.,2.]
   ymargin   = [3.5,2.5]
-  charsize  = 1.7
-  symsize   = 1.0
+  charsize  = 1.0
+  symsize   = 0.5
+  ; set window parameters
+  xs    = 8.0
+  ys    = xs/(2.*aspect)
+  yoff  = 6.0
+  xoff  = 0.0
+  wxsize   = 1200
+  thick    = 1
   IF keyword_set(dcorr) THEN raw = 0b ELSE raw = 1b
   ;
   ; maximum allowed errors  
@@ -109,10 +115,7 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fjpg, feps, dcorr=dcorr, kline=kline, ep
   ENDELSE 
   ;
   ; read files
-  plog,ll,prog,'reading in surface brightness profile file: '+fsprof
-  ;readcol, fsprof, sma, sr, esr, sha, eshat, eshas, eshac, snuv, esnuv, sfuv, esfuv, $
-  ;         scfn, escfn, scnr, escnr, slewr, eslewr, slewf, eslewf, format=fmti
-  ;np        = n_elements(sma)
+  plog,ll,prog,'reading in surface brightness profile saveset'
   restore,sname+"_profiles.save"
   COMMON bands, band
   ih   = (where(bname eq band.HALPHA, a))[0]
@@ -207,15 +210,6 @@ PRO ssoup_plothafuv, ll, sname, fsprof, fjpg, feps, dcorr=dcorr, kline=kline, ep
       plog,ll,prog,'Number of weak H-alpha detection matches: '+strtrim(string(npw),2)
       plog,ll,prog,'Number of (nominal) H-alpha non-detection matches: '+strtrim(string(npu),2)
       ;
-      ; set window parameters
-      xs    = 8.0
-      ys    = xs/(2.*aspect)
-      yoff  = 6.0
-      xoff  = 0.0
-      charsize = 0.6*charsize
-      symsize  = 0.6*symsize
-      wxsize   = 1200
-      thick    = 1
       ssoup_plot_init,feps_1,xs,ys,xoff,yoff
       ;
       ; left panel Halpha/FUV versus Halpha surface brightness

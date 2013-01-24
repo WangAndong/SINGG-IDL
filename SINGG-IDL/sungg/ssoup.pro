@@ -175,10 +175,10 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ; create Ha/FUV plots 
      ; **** the following should be adjusted to allow for multiple ELGs
      plog,ll,prog,'Creating raw Halpha/FUV versus surface brightness plots'
-     ssoup_plothafuv, ll, inputstr.hname, inputstr.scalprof, inputstr.hafuvjpg, inputstr.hafuvps, epilepsy=epilepsy
+     ssoup_plothafuv, ll, inputstr.hname, inputstr.hafuvjpg, inputstr.hafuvps, epilepsy=epilepsy
      IF slow THEN keywait, 'type any key to continue: '
      plog,ll,prog,'Creating dust corrected Halpha/FUV versus surface brightness plots'
-     ssoup_plothafuv, ll, inputstr.hname, inputstr.scalprof0, inputstr.hafuvjpg0, inputstr.hafuvps0, /dcorr, epilepsy=epilepsy
+     ssoup_plothafuv, ll, inputstr.hname, inputstr.hafuvjpg0, inputstr.hafuvps0, /dcorr, epilepsy=epilepsy
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; Mark up results 

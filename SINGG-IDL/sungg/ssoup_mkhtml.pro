@@ -60,12 +60,15 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
                (inputstr.fjpg_mlow3), inputstr.fjpg_mhigh3, inputstr.fjpg_imlow1, $
                (inputstr.fjpg_imhigh1), inputstr.fjpg_imlow2, inputstr.fjpg_imhigh2, $
                (inputstr.fjpg_imlow3), inputstr.fjpg_imhigh3, inputstr.fcompare, inputstr.scalprof, $
-               (inputstr.fcalprof), inputstr.scalprof0, inputstr.fcalprof0, inputstr.hafuvjpg, $
-               (inputstr.hafuvps), inputstr.hafuvjpg0, (inputstr.hafuvps0), inputstr.fbplotj, $
+               (inputstr.fcalprof), inputstr.scalprof0, inputstr.fcalprof0, inputstr.fbplotj, $
                inputstr.fbplote]
-  profjpg = string(indgen(ngal), format='(%"' + inputstr.profjpg + '")')
-  profps  = string(indgen(ngal), format='(%"' + inputstr.profps + '")')
-  f2cp = [f2cp, profjpg, profps]
+  hafuvjpg  = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg + '")')
+  hafuvjpg0 = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg0 + '")')
+  hafuvps   = string(indgen(ngal), format='(%"' + inputstr.hafuvps + '")')
+  hafuvps0  = string(indgen(ngal), format='(%"' + inputstr.hafuvps0 + '")')
+  profjpg   = string(indgen(ngal), format='(%"' + inputstr.profjpg + '")')
+  profps    = string(indgen(ngal), format='(%"' + inputstr.profps + '")')
+  f2cp = [f2cp, hafuvjpg, hafuvjpg0, hafuvps, hafuvps0, profjpg, profps]
   ; add mid-infrared profiles if we have them
   w1 = where(bandavail eq band.mir_W1, count_w1)
   w2 = where(bandavail eq band.mir_W2, count_w2)
@@ -148,13 +151,16 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   printf,lu,'<h3>Local H&alpha;/FUV versus surface brightness plots</h3>'
   printf,lu,'<P><TABLE border=1 cellpadding=3>'
   printf,lu,'<tr>'
+  printf,lu,'  <th><b>Galaxy</b></th>
   printf,lu,'  <th><b>H&alpha;/FUV versus &Sigma; , raw</b></th>'
   printf,lu,'  <th><b>H&alpha;/FUV versus &Sigma; , dust corrected</b></th>'
   printf,lu,'</tr>'
-  printf,lu,'<tr>'
-  ssoup_imcell,ll,lu,inputstr.hafuvjpg,fjpgo,width=widthh,uannot='<a href="'+inputstr.hafuvps+'">PS</a>',/plot
-  ssoup_imcell,ll,lu,inputstr.hafuvjpg0,fjpgo,width=widthh,uannot='<a href="'+inputstr.hafuvps0+'">PS</a>',/plot
-  printf,lu,'</tr>'
+  for i=0,ngal-1 do begin
+      printf,lu,'<tr><td>' + numstr(i) + "</td>
+      ssoup_imcell,ll,lu,hafuvjpg[i],fjpgo,width=widthh,uannot='<a href="'+hafuvps[i]+'">PS</a>',/plot
+      ssoup_imcell,ll,lu,hafuvjpg0[i],fjpgo,width=widthh,uannot='<a href="'+hafuvps0[i]+'">PS</a>',/plot
+      printf,lu,'</tr>'
+  endfor
   printf,lu,'</table>'
   printf,lu,'<hr>'
   ;
