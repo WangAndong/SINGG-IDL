@@ -128,17 +128,20 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   ;
   ; mark-up profile plots
   plog,ll,prog,'marking up three color image'
-  printf,lu,'<h3>Surface brightness profile</h3>'
+  printf,lu,'<h3>Surface brightness profile</h3><table border=1 cellpadding=3><tr><th>Bands</th>'
+  for i=0,ngal-1 do printf,lu,"<th>Galaxy " + numstr(i) + "</th>
+  printf,lu,"<tr><td>Optical/UV</td>
   for i=0,ngal-1 do begin
       pp        = strpos(profjpg[i],'.jpg')
       fjpgo     = strmid(profjpg[i],0,pp)+'_sm.jpg'
       cmd       = 'convert '+profjpg[i]+' -resize '+numstr(widthp)+' '+fjpgo
       plog,ll,prog,'making thumbnail using command: '+cmd
       spawn,cmd
-      printf,lu,'<a href="'+profjpg[i]+'"><img src="'+fjpgo+'"></a><br>'
-      printf,lu,'<a href="'+profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a>'
+      printf,lu,"<td>
+      printf,lu,'<a href="'+profjpg[i]+'"><img src="'+fjpgo+'"></a><br><br>'
+      printf,lu,'<a href="'+profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
   endfor
-  printf,lu,'<hr>'
+  printf,lu,'</tr></table><hr>'
   ;
   ; mark up Halpha/FUV versus surface brightness plots
   plog,ll,prog,'marking up Halpha/FUV vs surface brightness plots'
