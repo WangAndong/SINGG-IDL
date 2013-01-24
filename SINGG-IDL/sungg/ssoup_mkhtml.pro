@@ -167,7 +167,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   ; read-in database comparison table
   plog,ll,prog,'reading database comparison table: '+inputstr.fcompare
   fmtc     = '(a,a,f,f,f,a,f,f,f)'
-  readcol, inputstr.fcompare, snam, band, r50d, flxd, eflxd, dum, r50s, flxs, eflxs, format=fmtc
+  readcol, inputstr.fcompare, snam, banda, r50d, flxd, eflxd, dum, r50s, flxs, eflxs, format=fmtc
   nc       = n_elements(snam)
   ;
   ; Mark up database comparison table
@@ -182,7 +182,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   printf,lu,'</tr>'
   FOR ii = 0, nc-1 DO BEGIN 
      printf,lu,'<tr>'
-     printf,lu,'  <td>'+snam[ii]+'</td><td>'+band[ii]+'</td>'+$
+     printf,lu,'  <td>'+snam[ii]+'</td><td>'+banda[ii]+'</td>'+$
             '<td>'+numstr(r50d[ii])+'</td><td>'+numstr(flxd[ii])+'</td><td>'+numstr(eflxd[ii])+'</td>'+$
             '<td>'+numstr(r50s[ii])+'</td><td>'+numstr(flxs[ii])+'</td><td>'+numstr(eflxs[ii])+'</td>'
      printf,lu,'</tr>'

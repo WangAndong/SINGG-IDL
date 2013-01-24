@@ -91,6 +91,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
   dbclose
   plog,ll,prog,'number of matching entries in optical database: '+numstr(noo)
   ; TODO: these are hardcoded number of wavelengths. We can ignore these until we get MIR results...
+  ; Need to also fix pp below.
   flx       = [lfha, mr, mnuv, mfuv]
   ;flx       = [lfha, mr, mnuv0, mfuv0]
   eflx      = [elfha, emr, emnuv, emfuv]
@@ -116,7 +117,7 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
           or bandavail[ii] eq band.mir_W4 then continue ; TODO: get database results for comparison
      ;
      ; pointer to position in db arrays. No count because this will never be less than 0.
-     pp     = where(tag_names(band) EQ bandavail[ii], /null)
+     pp     = where(tag_names(band) EQ bandavail[ii], /null)-4
      ;
      ; read header of file, that's where the info is...
      pixsize = 0.0
