@@ -44,10 +44,10 @@ pro ssoup_inputs, fili, ll, inputstr
    ;   profjpg      <- name of output profile plot in jpg format (must contain at least one
    ;                   %d to allow for multiple galaxies)
    ;   profps       <- name of output profile plot in ps format (with %d as above)
-   ;   hafuvjpg     <- name of output raw Halpha/fuv plot in jpg format
-   ;   hafuvps      <- name of output raw Halpha/fuv plot in ps format
-   ;   hafuvjpg0    <- name of output dust corr Halpha/fuv plot in jpg format
-   ;   hafuvps0     <- name of output dust corr Halpha/fuv plot in ps format  
+   ;   hafuvjpg     <- name of output raw Halpha/fuv plot in jpg format (with %d as above)
+   ;   hafuvps      <- name of output raw Halpha/fuv plot in ps format (with %d as above)
+   ;   hafuvjpg0    <- name of output dust corr Halpha/fuv plot in jpg format (with %d as above)
+   ;   hafuvps0     <- name of output dust corr Halpha/fuv plot in ps format (with %d as above)
    ;   mir_profjpg  <- JPG filename for mid-infrared profile plot (with %d as above)
    ;   mir_profps   <- PS filename for mid-infrared profile plot (with %d as above)
    ;   status       <- status

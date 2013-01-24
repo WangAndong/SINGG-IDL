@@ -155,10 +155,10 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   fcalprof0       = hname+'_aligned_fprof0.dat'
   profjpg         = hname+'_aligned_sprof_%d.jpg'
   profps          = hname+'_aligned_sprof_%d.ps'
-  hafuvjpg        = hname+'_aligned_hafuv.jpg'
-  hafuvps         = hname+'_aligned_hafuv.ps'
-  hafuvjpg0       = hname+'_aligned_hafuv0.jpg'
-  hafuvps0        = hname+'_aligned_hafuv0.ps'
+  hafuvjpg        = hname+'_aligned_hafuv_%d.jpg'
+  hafuvps         = hname+'_aligned_hafuv_%d.ps'
+  hafuvjpg0       = hname+'_aligned_hafuv0_%d.jpg'
+  hafuvps0        = hname+'_aligned_hafuv0_%d.ps'
   
   ; combos
   ncombo = factorial(nbandavail)/(6*factorial(nbandavail-3)) ; number of 3 color combos
