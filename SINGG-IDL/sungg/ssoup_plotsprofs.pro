@@ -36,7 +36,7 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
   abtitle   = '!4 l!3 [ABmag arcssec!u-2!n]'
   abctitle  = '!3 surface colour'
   charsize  = 2.5
-  symsize   = 1.3
+  symsize   = 1.0
   thick     = 1
   ;
   ; read in profile files
@@ -49,9 +49,7 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
            scfn0, escfn0, scnr0, escnr0, slewr0, eslewr0, slewf0, eslewf0, format=fmti
   np0       = n_elements(sma0)
   restore,sname+"_profiles.save"
-  ; for each galaxy
-  ;for i=0,n_elements(allprofiles) do begin
-    i = 0
+  for i=0,n_elements(allprofiles)-1 do begin
     sma = *(allprofiles[i].radius)
     sr = *(allprofiles[i].mprof[5])
     esr = *(allprofiles[i].err_mprof[5])
@@ -69,6 +67,23 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
     eslewr = *(allprofiles[i].err_log_ha_r)
     slewf = *(allprofiles[i].log_ha_fuv)
     eslewf = *(allprofiles[i].err_log_ha_fuv)
+    sma0 = sma
+    sr0 = *(allprofiles[i].mprof_dustcor[5])
+    esr0 = *(allprofiles[i].err_mprof_dustcor[5])
+    sha0 = *(allprofiles[i].mprof_dustcor[4])
+    eshat0 = *(allprofiles[i].err_mprof_dustcor[4])
+    snuv0 = *(allprofiles[i].mprof_dustcor[6])
+    esnuv0 = *(allprofiles[i].err_mprof_dustcor[6])
+    sfuv0 = *(allprofiles[i].mprof_dustcor[7])
+    esfuv0 = *(allprofiles[i].err_mprof_dustcor[7])
+    scfn0 = *(allprofiles[i].col_fuv_nuv_dustcor)
+    escfn0 = *(allprofiles[i].err_col_fuv_nuv_dustcor)
+    scnr0 = *(allprofiles[i].col_nuv_r_dustcor)
+    escnr0 = *(allprofiles[i].err_col_nuv_r_dustcor)
+    slewr0 = *(allprofiles[i].log_ha_r_dustcor)
+    eslewr0 = *(allprofiles[i].err_log_ha_r_dustcor)
+    slewf0 = *(allprofiles[i].log_ha_fuv_dustcor)
+    eslewf0 = *(allprofiles[i].err_log_ha_fuv_dustcor)
     
     ; determine max radii and corresponding pointers
     plog,ll,prog,'determining maxima radii, and points to plot'
@@ -153,7 +168,7 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
      thick    = 2
      wxsize   = 600
      ansize   = 1.0
-    ssoup_plot_init,feps,xs,ys,xoff,yoff
+    ssoup_plot_init,"a"+numstr(i)+feps,xs,ys,xoff,yoff
     ;
     ; ------------------------------------------------------------------
     ; panel 1
@@ -300,6 +315,6 @@ PRO ssoup_plotsprofs, ll, sname, fsprof, fsprof0, fjpg, feps, epilepsy=epilepsy
     plog,ll,prog,'finishing. Will write plotfile: '+feps
     !p.multi   = 0
     !p.noerase = 0
-    ssoup_plot_finish,fjpg,feps,wxsize,epilepsy=epilepsy
-;  endfor
+    ssoup_plot_finish,"a"+numstr(i)+fjpg,"a"+numstr(i)+feps,wxsize,epilepsy=epilepsy
+  endfor
 END 

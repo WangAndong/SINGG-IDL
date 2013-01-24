@@ -6,7 +6,7 @@ SSOUP Programming Things To Do
 
 * Improve handling of multiple galaxies
   + consistent masking when calculating sky
-  + separate plots for each galaxy
+  + separate plots for each galaxy (done for radial profiles 01/13 - Stephen)
 
 * Generalize to add other bands
   + most likely add-ons
