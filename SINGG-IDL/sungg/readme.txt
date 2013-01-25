@@ -36,16 +36,48 @@ save,filename=inputstr.hname+"_skymodel.save",bname,skymodeldata
 
 ===Profiles===
 profilestr = { $
-    radius                : ptr_new(!null),     $ ; ?
-    radius_int            : ptr_new(!null),     $ ; like radius, but for integrated quantities
-    mprof                 : ptrarr(nbandavail), $ ; surface brightness profile, corresponds (like everything below) 1-1 with bname
-    err_mprof             : ptrarr(nbandavail), $ ; total error in mprof
-    mprof_int             : ptrarr(nbandavail), $ ; integrated (enclosed) surface brightness profile
-    err_mprof_int         : ptrarr(nbandavail), $ ; total error in mprof_int
-    mprof_dustcor         : ptrarr(nbandavail), $ ; surface brightness profile corrected for dust
-    err_mprof_dustcor     : ptrarr(nbandavail), $ ; total error in mprof_dustcor
-    mprof_dustcor_int     : ptrarr(nbandavail), $ ; integrated surface (enclosed) brightness profile corrected for dust
-    err_mprof_dustcor_int : ptrarr(nbandavail)  $ ; total error in mprof_dustcor_int
+      radius                      : ptr_new(!null),     $ ; ?
+      radius_int                  : ptr_new(!null),     $ ; like radius, but for integrated quantities
+      mprof                       : ptrarr(nbandavail), $ ; surface brightness profile, corresponds (like everything below) 1-1 with bname
+      err_mprof                   : ptrarr(nbandavail), $ ; total error in mprof
+      mprof_int                   : ptrarr(nbandavail), $ ; integrated (enclosed) surface brightness profile
+      err_mprof_int               : ptrarr(nbandavail), $ ; total error in mprof_int
+      mprof_dustcor               : ptrarr(nbandavail), $ ; surface brightness profile corrected for dust
+      err_mprof_dustcor           : ptrarr(nbandavail), $ ; total error in mprof_dustcor
+      mprof_dustcor_int           : ptrarr(nbandavail), $ ; integrated surface (enclosed) brightness profile corrected for dust
+      err_mprof_dustcor_int       : ptrarr(nbandavail), $ ; total error in mprof_dustcor_int
+      col_fuv_nuv                 : ptr_new(!null),     $ ; FUV-NUV color index (uncorrected for dust)
+      err_col_fuv_nuv             : ptr_new(!null),     $ ; error in FUV-NUV color index
+      col_nuv_r                   : ptr_new(!null),     $ ; NUV-R color index (uncorrected for dust)
+      err_col_nuv_r               : ptr_new(!null),     $ ; error in FUV-NUV color index
+      log_ha_r                    : ptr_new(!null),     $ ; log(flux in Ha/flux in R)
+      err_log_ha_r                : ptr_new(!null),     $ ; error in above
+      log_ha_fuv                  : ptr_new(!null),     $ ; log(flux in Ha/flux in FUV)
+      err_log_ha_fuv              : ptr_new(!null),     $ ; error in above
+      col_fuv_nuv_int             : ptr_new(!null),     $ ; integrated FUV-NUV color index (uncorrected for dust)
+      err_col_fuv_nuv_int         : ptr_new(!null),     $ ; error in FUV-NUV color index
+      col_nuv_r_int               : ptr_new(!null),     $ ; integrated NUV-R color index (uncorrected for dust)
+      err_col_nuv_r_int           : ptr_new(!null),     $ ; error in FUV-NUV color index
+      log_ha_r_int                : ptr_new(!null),     $ ; integrated log(flux in Ha/flux in R)
+      err_log_ha_r_int            : ptr_new(!null),     $ ; error in above
+      log_ha_fuv_int              : ptr_new(!null),     $ ; integrated log(flux in Ha/flux in FUV)
+      err_log_ha_fuv_int          : ptr_new(!null),     $ ; error in above
+      col_fuv_nuv_dustcor         : ptr_new(!null),     $ ; FUV-NUV color index (corrected for dust)
+      err_col_fuv_nuv_dustcor     : ptr_new(!null),     $ ; error in FUV-NUV color index
+      col_nuv_r_dustcor           : ptr_new(!null),     $ ; NUV-R color index (corrected for dust)
+      err_col_nuv_r_dustcor       : ptr_new(!null),     $ ; error in FUV-NUV color index
+      log_ha_r_dustcor            : ptr_new(!null),     $ ; log(flux in Ha/flux in R)
+      err_log_ha_r_dustcor        : ptr_new(!null),     $ ; error in above
+      log_ha_fuv_dustcor          : ptr_new(!null),     $ ; log(flux in Ha/flux in FUV)
+      err_log_ha_fuv_dustcor      : ptr_new(!null),     $ ; error in above
+      col_fuv_nuv_dustcor_int     : ptr_new(!null),     $ ; integrated FUV-NUV color index (corrected for dust)
+      err_col_fuv_nuv_dustcor_int : ptr_new(!null),     $ ; error in FUV-NUV color index
+      col_nuv_r_dustcor_int       : ptr_new(!null),     $ ; integrated NUV-R color index (corrected for dust)
+      err_col_nuv_r_dustcor_int   : ptr_new(!null),     $ ; error in FUV-NUV color index
+      log_ha_r_dustcor_int        : ptr_new(!null),     $ ; integrated dust corrected log(flux in Ha/flux in R)
+      err_log_ha_r_dustcor_int    : ptr_new(!null),     $ ; error in above
+      log_ha_fuv_dustcor_int      : ptr_new(!null),     $ ; integrated dust corrected log(flux in Ha/flux in FUV)
+      err_log_ha_fuv_dustcor_int  : ptr_new(!null)      $ ; error in above
 }
 allprofiles = replicate(profilestr, ngal) ; one entry for each galaxy
 bname = bandavail
