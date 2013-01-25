@@ -21,8 +21,8 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy
   clflag  =   7.777  ; colour lower limit flag
   
   ; plot parameters
-  charsize  = 2.5
-  symsize   = 1.0
+  charsize  = 0.4
+  symsize   = 0.2
   thick     = 1
   abtitle   = '!4 l!3 [ABmag arcssec!u-2!n]'
   rtitle    = '!3 semi-major axis [arcsec]' 
@@ -68,11 +68,10 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy
     ; start plot
     rrange    = [0.0,rmax]
     abrange   = [32.0,14.0]    
-    xs       = 6.5
+    xs       = 2.5
     ys       = 1.25*xs
-    yoff     = 3.
-    xoff     = 1.2
-    thick    = 2
+    yoff     = 0.4
+    xoff     = 0.4
     wxsize   = 600
     ansize   = 1.0
     ssoup_plot_init,feps_1,xs,ys,xoff,yoff
