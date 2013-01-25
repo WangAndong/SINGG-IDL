@@ -1,10 +1,9 @@
-PRO ssoup_plotsprofs, ll, sname, plot_bands, fjpg, feps, epilepsy=epilepsy
+PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy
   ;
   ; plot surface brightness and surface colour profiles
   ;
   ;   ll         -> logical unit number for plot
   ;   sname      -> Source name
-  ;   plot_bands -> which bands to plot (array of strings)
   ;   fjpg       -> output plot file name (JPG)
   ;   feps       -> optput plot file name (EPS)
   ;   epilepsy   -> whether we should display images on the screen
@@ -22,7 +21,6 @@ PRO ssoup_plotsprofs, ll, sname, plot_bands, fjpg, feps, epilepsy=epilepsy
   elflag  =   9.999  ; error log flag
   cuflag  =   8.888  ; colour upper limit flag
   clflag  =   7.777  ; colour lower limit flag
-  fmti      = '(f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f)'
   prog      = 'SSOUP_PLOTSPROFS: '
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
   ;
@@ -37,6 +35,7 @@ PRO ssoup_plotsprofs, ll, sname, plot_bands, fjpg, feps, epilepsy=epilepsy
   thick     = 1
   ;
   ; read in profile files
+  COMMON bands, band
   plog,ll,prog,'reading in surface brightness profile saveset'
   restore,sname+"_profiles.save"
   for i=0,n_elements(allprofiles)-1 do begin
@@ -45,22 +44,21 @@ PRO ssoup_plotsprofs, ll, sname, plot_bands, fjpg, feps, epilepsy=epilepsy
     feps_1 = string(i, format='(%"' + feps + '")') 
     
     ; look here
-    blah = [0]
-    for j=0,n_elements(plot_bands)-1 do begin
-       x = where(plot_bands eq bname, count)
-       if count ge 1 then blah = [blah, x[0]]
-    endfor
+    index_ha = (where(bname eq band.HALPHA, /null))[0]
+    index_nuv = (where(bname eq band.NUV, /null))[0]
+    index_fuv = (where(bname eq band.FUV, /null))[0]
+    index_r = (where(bname eq band.R, /null))[0]
     
     ; will do a find and replace
     sma = *(allprofiles[i].radius)
-    sr = *(allprofiles[i].mprof[5])
-    esr = *(allprofiles[i].err_mprof[5])
-    sha = *(allprofiles[i].mprof[4])
-    eshat = *(allprofiles[i].err_mprof[4])
-    snuv = *(allprofiles[i].mprof[6])
-    esnuv = *(allprofiles[i].err_mprof[6])
-    sfuv = *(allprofiles[i].mprof[7])
-    esfuv = *(allprofiles[i].err_mprof[7])
+    sr = *(allprofiles[i].mprof[index_r])
+    esr = *(allprofiles[i].err_mprof[index_r])
+    sha = *(allprofiles[i].mprof[index_ha])
+    eshat = *(allprofiles[i].err_mprof[index_ha])
+    snuv = *(allprofiles[i].mprof[index_nuv])
+    esnuv = *(allprofiles[i].err_mprof[index_nuv])
+    sfuv = *(allprofiles[i].mprof[index_fuv])
+    esfuv = *(allprofiles[i].err_mprof[index_fuv])
     scfn = *(allprofiles[i].col_fuv_nuv)
     escfn = *(allprofiles[i].err_col_fuv_nuv)
     scnr = *(allprofiles[i].col_nuv_r)
@@ -70,14 +68,14 @@ PRO ssoup_plotsprofs, ll, sname, plot_bands, fjpg, feps, epilepsy=epilepsy
     slewf = *(allprofiles[i].log_ha_fuv)
     eslewf = *(allprofiles[i].err_log_ha_fuv)
     sma0 = sma
-    sr0 = *(allprofiles[i].mprof_dustcor[5])
-    esr0 = *(allprofiles[i].err_mprof_dustcor[5])
-    sha0 = *(allprofiles[i].mprof_dustcor[4])
-    eshat0 = *(allprofiles[i].err_mprof_dustcor[4])
-    snuv0 = *(allprofiles[i].mprof_dustcor[6])
-    esnuv0 = *(allprofiles[i].err_mprof_dustcor[6])
-    sfuv0 = *(allprofiles[i].mprof_dustcor[7])
-    esfuv0 = *(allprofiles[i].err_mprof_dustcor[7])
+    sr0 = *(allprofiles[i].mprof_dustcor[index_r])
+    esr0 = *(allprofiles[i].err_mprof_dustcor[index_r])
+    sha0 = *(allprofiles[i].mprof_dustcor[index_ha])
+    eshat0 = *(allprofiles[i].err_mprof_dustcor[index_ha])
+    snuv0 = *(allprofiles[i].mprof_dustcor[index_nuv])
+    esnuv0 = *(allprofiles[i].err_mprof_dustcor[index_nuv])
+    sfuv0 = *(allprofiles[i].mprof_dustcor[index_fuv])
+    esfuv0 = *(allprofiles[i].err_mprof_dustcor[index_fuv])
     scfn0 = *(allprofiles[i].col_fuv_nuv_dustcor)
     escfn0 = *(allprofiles[i].err_col_fuv_nuv_dustcor)
     scnr0 = *(allprofiles[i].col_nuv_r_dustcor)
@@ -181,61 +179,14 @@ PRO ssoup_plotsprofs, ll, sname, plot_bands, fjpg, feps, epilepsy=epilepsy
           charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
           xtitle=rtitle, ytitle=abtitle, title=sname, charthick=thick, $
           xmargin=[8,8], ymargin=[2,4], /nodata
-    IF njr GT 0 THEN BEGIN 
-       oplot, sma[jr], sr[jr], thick=thick, color=!dorange, linestyle=1
-       if nkr gt 0 then oplot, sma[kr], sr[kr], thick=thick, color=!dorange, linestyle=0
-       if njr0 gt 0 then oplot, sma0[jr0], sr0[jr0], thick=thick+1, color=!dorange, linestyle=1
-       if nkr0 gt 0 then begin 
-          oplot, sma0[kr0], sr0[kr0], symsize=symsize, color=!dorange, psym=gsym(1)
-          oplot, sma0[kr0], sr0[kr0], thick=thick+1, color=!dorange
-          oploterror_old, sma0[kr0], sr0[kr0], 0.0*sma0[kr0], esr0[kr0], $
-                   /nohat, errthick=thick+1, psym=3, errcolor=!dorange, color=!dorange
-       endif 
-       if nlr0 gt 0 then oplot, sma0[lr0], sr0[lr0], color=!dorange, psym=gsym(19), symsize=symsize
-       if nmr0 gt 0 then oplot, sma0[mr0], sr0[mr0], color=!dorange, psym=gsym(18), symsize=symsize
-    ENDIF 
-    ;
-    IF njn GT 0 THEN BEGIN 
-       oplot, sma[jn], snuv[jn], thick=thick, color=!cyan, linestyle=1
-       if nkn gt 0 then oplot, sma[kn], snuv[kn], thick=thick, color=!cyan, linestyle=0
-       if njn0 gt 0 then oplot, sma0[jn0], snuv0[jn0], thick=thick+1, color=!cyan, linestyle=1
-       if nkn0 gt 0 then begin 
-          oplot, sma0[kn0], snuv0[kn0], symsize=symsize, color=!cyan, psym=gsym(2)
-          oplot, sma0[kn0], snuv0[kn0], thick=thick+1, color=!cyan
-          oploterror_old, sma0[kn0], snuv0[kn0], 0.0*sma0[kn0], esnuv0[kn0], $
-                   /nohat, errthick=thick+1, psym=3, errcolor=!cyan, color=!cyan
-       endif 
-       if nln0 gt 0 then oplot, sma0[ln0], snuv0[ln0], color=!cyan, psym=gsym(19), symsize=symsize
-       if nmn0 gt 0 then oplot, sma0[mn0], snuv0[mn0], color=!cyan, psym=gsym(18), symsize=symsize
-    ENDIF 
-    ;
-    IF njf GT 0 THEN BEGIN 
-       oplot, sma[jf], sfuv[jf], thick=thick, color=!blue, linestyle=1
-       if nkf gt 0 then oplot, sma[kf], sfuv[kf], thick=thick, color=!blue, linestyle=0
-       if njf0 gt 0 then oplot, sma0[jf0], sfuv0[jf0], thick=thick+1, color=!blue, linestyle=1
-       if nkf0 gt 0 then begin 
-          oplot, sma0[kf0], sfuv0[kf0], symsize=symsize, color=!blue, psym=gsym(3)
-          oplot, sma0[kf0], sfuv0[kf0], thick=thick+1, color=!blue
-          oploterror_old, sma0[kf0], sfuv0[kf0], 0.0*sma0[kf0], esfuv0[kf0], $
-                   /nohat, errthick=thick+1, psym=3, errcolor=!blue, color=!blue
-       endif 
-       if nlf0 gt 0 then oplot, sma0[lf0], sfuv0[lf0], color=!blue, psym=gsym(19), symsize=symsize
-       if nmf0 gt 0 then oplot, sma0[mf0], sfuv0[mf0], color=!blue, psym=gsym(18), symsize=symsize
-    ENDIF 
-    ;
-    IF njh GT 0 THEN BEGIN 
-       oplot, sma[jh], msha[jh], thick=thick, color=!dpink, linestyle=1
-       if nkh gt 0 then oplot, sma[kh], msha[kh], thick=thick, color=!dpink, linestyle=0
-       if njh0 gt 0 then oplot, sma0[jh0], msha0[jh0], thick=thick+1, color=!dpink, linestyle=1
-       if nkh0 gt 0 then begin 
-          oplot, sma0[kh0], msha0[kh0], symsize=symsize, color=!dpink, psym=gsym(14)
-          oplot, sma0[kh0], msha0[kh0], thick=thick+1, color=!dpink
-          oploterror_old, sma0[kh0], msha0[kh0], 0.0*sma0[kh0], meshat0[kh0], $
-                   /nohat, errthick=thick+1, psym=3, errcolor=!dpink, color=!dpink
-       endif 
-       if nlh0 gt 0 then oplot, sma0[lh0], msha0[lh0], color=!dpink, psym=gsym(19), symsize=symsize
-       if nmh0 gt 0 then oplot, sma0[mh0], msha0[mh0], color=!dpink, psym=gsym(18), symsize=symsize
-    ENDIF 
+    ssoup_overlay_prof, sma, sr, sr0, esr0, symsize, thick, !dorange, jr, kr, lr, mr, njr, nkr, $
+      nlr, nmr, jr0, kr0, lr0, mr0, njr0, nkr0, nlr0, nmr0
+    ssoup_overlay_prof, sma, snuv, snuv0, esnuv0, symsize, thick, !cyan, jn, kn, ln, mn, njn, nkn, $
+      nln, nmn, jn0, kn0, ln0, mn0, njn0, nkn0, nln0, nmn0
+    ssoup_overlay_prof, sma, sfuv, sfuv0, esfuv0, symsize, thick, !blue, jf, kf, lf, mf, njf, nkf, $
+      nlf, nmf, jf0, kf0, lf0, mf0, njf0, nkf0, nlf0, nmf0
+    ssoup_overlay_prof, sma, msha, msha0, eshat0, symsize, thick, !dpink, jh, kh, lh, mh, njh, nkh, $
+      nlh, nmh, jh0, kh0, lh0, mh0, njh0, nkh0, nlh0, nmh0
     ;
     ; ------------------------------------------------------------------
     ; panel 2

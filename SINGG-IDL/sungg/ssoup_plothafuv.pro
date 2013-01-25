@@ -25,7 +25,6 @@ PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=e
   clflag  =   7.777  ; colour lower limit flag
   findpro,'ssoup_plothafuv.pro',DIRLIST=Dirlist,/noprint
   ddir      = Dirlist[0]         ; expect to find data in same directory as this file
-  fmti      = '(f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f,f)'
   fmtold    = '(a,f,f,f,f,f,f)'
   odb       = 'singg_derived'
   udb1      = 'sungg_derived_sep08'
