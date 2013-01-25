@@ -49,7 +49,7 @@ PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy
     index_fuv = (where(bname eq band.FUV, /null))[0]
     index_r = (where(bname eq band.R, /null))[0]
     
-    ; will do a find and replace
+    ; rename stuff
     sma = *(allprofiles[i].radius)
     sr = *(allprofiles[i].mprof[index_r])
     esr = *(allprofiles[i].err_mprof[index_r])

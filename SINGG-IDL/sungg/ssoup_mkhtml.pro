@@ -75,8 +75,9 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   w3 = where(bandavail eq band.mir_W3, count_w3)
   w4 = where(bandavail eq band.mir_W4, count_w4)
   if count_w1 + count_w2 + count_w3 + count_w4 ge 1 then begin
-      f2cp = [f2cp, string(indgen(ngal), format='(%"' + inputstr.mir_profjpg + '")')]
-      f2cp = [f2cp, string(indgen(ngal), format='(%"' + inputstr.mir_profps + '")')]
+      mir_profjpg = string(indgen(ngal), format='(%"' + inputstr.mir_profjpg + '")')
+      mir_profps  = string(indgen(ngal), format='(%"' + inputstr.mir_profps + '")')
+      f2cp = [f2cp, mir_profjpg, mir_profps]
   endif
   f2cp = bdir+f2cp
   nf         = n_elements(f2cp)
@@ -143,6 +144,17 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
       printf,lu,"<td>
       printf,lu,'<a href="'+profjpg[i]+'"><img src="'+fjpgo+'"></a><br><br>'
       printf,lu,'<a href="'+profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
+  endfor
+  printf,lu,"<tr><td>MIR (test)</td>
+  for i=0,ngal-1 do begin
+      pp        = strpos(mir_profjpg[i],'.jpg')
+      fjpgo     = strmid(mir_profjpg[i],0,pp)+'_sm.jpg'
+      cmd       = 'convert '+mir_profjpg[i]+' -resize '+numstr(widthp)+' '+fjpgo
+      plog,ll,prog,'making thumbnail using command: '+cmd
+      spawn,cmd
+      printf,lu,"<td>
+      printf,lu,'<a href="'+mir_profjpg[i]+'"><img src="'+fjpgo+'"></a><br><br>'
+      printf,lu,'TEST IMAGE <a href="'+mir_profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
   endfor
   printf,lu,'</tr></table><hr>'
   ;

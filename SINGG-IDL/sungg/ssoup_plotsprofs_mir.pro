@@ -9,6 +9,8 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy
   ;   feps       -> optput plot file name (EPS)
   ;   epilepsy   -> whether we should display images on the screen
   ;   
+  ;   FIXME: mir profiles are all infinity. Not sure if this is a result of the original images.
+  ;   
   ; S. Andrews (ICRAR/UWA) 1/2013
   
   COMMON bands, band
