@@ -146,25 +146,13 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   for i=0,ngal-1 do printf,lu,"<th>Galaxy " + numstr(i) + "</th>
   printf,lu,"<tr><td>Optical/UV</td>
   for i=0,ngal-1 do begin
-      pp        = strpos(profjpg[i],'.jpg')
-      fjpgo     = strmid(profjpg[i],0,pp)+'_sm.jpg'
-      cmd       = 'convert '+profjpg[i]+' -resize '+numstr(widthp)+' '+fjpgo
-      plog,ll,prog,'making thumbnail using command: '+cmd
-      spawn,cmd
-      printf,lu,"<td>
-      printf,lu,'<a href="'+profjpg[i]+'"><img src="'+fjpgo+'"></a><br><br>'
-      printf,lu,'<a href="'+profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
+      uannot = '<a href="'+profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a>
+      ssoup_imcell,ll,lu,profjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
   endfor
   printf,lu,"<tr><td>MIR (test)</td>
   for i=0,ngal-1 do begin
-      pp        = strpos(mir_profjpg[i],'.jpg')
-      fjpgo     = strmid(mir_profjpg[i],0,pp)+'_sm.jpg'
-      cmd       = 'convert '+mir_profjpg[i]+' -resize '+numstr(widthp)+' '+fjpgo
-      plog,ll,prog,'making thumbnail using command: '+cmd
-      spawn,cmd
-      printf,lu,"<td>
-      printf,lu,'<a href="'+mir_profjpg[i]+'"><img src="'+fjpgo+'"></a><br><br>'
-      printf,lu,'TEST IMAGE <a href="'+mir_profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
+      uannot='TEST IMAGE <a href="'+mir_profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
+      ssoup_imcell,ll,lu,mir_profjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
   endfor
   printf,lu,'</tr></table><hr>'
   ;
