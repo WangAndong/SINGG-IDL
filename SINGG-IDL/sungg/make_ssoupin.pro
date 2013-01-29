@@ -57,10 +57,10 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ; these search strings are in the same order as band
   ; add a new one by x = ptr_arr(array of search strings)
    sstr = ptrarr(nband)
-   sstr[0] = ptr_new(hname + '-wise-w1.fits')           ; MIR-W1
-   sstr[1] = ptr_new(hname + '-wise-w2.fits')           ; MIR-W2
-   sstr[2] = ptr_new(hname + '-wise-w3.fits')           ; MIR-W3
-   sstr[3] = ptr_new(hname + '-wise-w4.fits')           ; MIR-W4
+   sstr[0] = ptr_new(hname + '-wise-w4.fits')           ; MIR-W4
+   sstr[1] = ptr_new(hname + '-wise-w3.fits')           ; MIR-W3
+   sstr[2] = ptr_new(hname + '-wise-w2.fits')           ; MIR-W2
+   sstr[3] = ptr_new(hname + '-wise-w1.fits')           ; MIR-W1
    sstr[4] = ptr_new(hname + '*_?sub_ss.fits')          ; Ha
    sstr[5] = ptr_new(hname + '_?_ss.fits')              ; R
    sstr[6] = ptr_new('*'+['-nd-int.fits', '_nuv.fits']) ; NUV

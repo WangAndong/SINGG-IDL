@@ -42,7 +42,6 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ; setup stuff
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
    compile_opt idl2
-  fmto    = '(f7.2,f8.3,f6.3,f9.3,f6.3,f6.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3,f8.3,f6.3)'
   hlines1 = '# Surface quantities (in annuli)'
   hlines2 = '#  sma   mu_R   err     lSHa   esky  ecnt  etot   mu_nuv err    mu_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
   hlines3 = '# Surface quantities, dust corrected (in annuli)'
@@ -249,7 +248,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
         efbproft[ptt0:ptt1,ii] = factfb*sqrt((npixap*eslev)^2+ephotfb^2) ; total error = sky+photon
      ENDFOR 
      ;stupid kludge to get R executing before Ha
-     if ii eq ir then ii = ir-2 
+     if ii eq ir then ii = -1 
      if ii eq ir-1 then ii = ir
   ENDFOR
   ;

@@ -3,7 +3,7 @@ PRO ssoup_atidyhdr, ll, bname, fnami, fnamo, kfwhm, im, hdin, hdout, astr
   ; Tidy headers for output from ssoup_align
   ;
   ; ll     -> logical unit of log file
-  ; band   -> name of band (string).
+  ; bname  -> name of band (string).
   ; fnami  -> input filename (to be stored in hdout) 
   ; fnamo  -> output filename (also stored in header)
   ; kfwhm  -> FWHM of convolution kernel
