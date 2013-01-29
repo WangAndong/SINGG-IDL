@@ -1,22 +1,23 @@
-PRO ssoup_imcell, ll, lu, fjpgi, fjpgo, width=width, uannot=uannot, plot=plot
+PRO ssoup_imcell, ll, lu, fjpgi, fjpgo, width=width, uannot=uannot, plot=plot, noresize=noresize
   ;
   ; mark up an html table cell to show
   ; * thumbnail with link to full size image
   ; * RGB mapping unless plot is set
   ;
-  ; ll     -> logical unit of log file
-  ;           (already opened)
-  ; lu     -> logical unit of output html file
-  ;           (already opened)
-  ; fjpgi  -> name of jpg image for whivh the mark-up
-  ;           and thumbnail implies
-  ; fjpgo  <- name of created thumbnail jpg
-  ; width  -> if set the width of the thumbnail in pixels
-  ;           default is 200 pixels
-  ; uannot -> if set the annotation string that will be set 
-  ;           underneath the image.  
-  ; plot   -> if set the passed jpg is a plot not an image so 
-  ;           no RGB mark up is done.
+  ; ll       -> logical unit of log file
+  ;             (already opened)
+  ; lu       -> logical unit of output html file
+  ;             (already opened)
+  ; fjpgi    -> name of jpg image for whivh the mark-up
+  ;             and thumbnail implies
+  ; fjpgo    <- name of created thumbnail jpg
+  ; width    -> if set the width of the thumbnail in pixels
+  ;             default is 200 pixels
+  ; uannot   -> if set the annotation string that will be set 
+  ;             underneath the image.  
+  ; plot     -> if set the passed jpg is a plot not an image so 
+  ;             no RGB mark up is done.
+  ; noresize -> if set, skip JPG resizing
   ; 
   ; G. Meurer (UWA/ICRAR) 07/2010: originally written
   ; G. Meurer (UWA/ICRAR) 08/2012: fix bug with quotes and <font color=>
@@ -48,9 +49,11 @@ PRO ssoup_imcell, ll, lu, fjpgi, fjpgo, width=width, uannot=uannot, plot=plot
   ;
   pp        = strpos(fjpgi,'.jpg')
   fjpgo     = strmid(fjpgi,0,pp)+'_sm.jpg'
-  cmd       = 'convert '+fjpgi+' -resize '+numstr(width)+' '+fjpgo
-  plog,ll,prog,'making thumbnail using command: '+cmd
-  spawn,cmd
+  if not keyword_set(noresize) then begin
+      cmd       = 'convert '+fjpgi+' -resize '+numstr(width)+' '+fjpgo
+      plog,ll,prog,'making thumbnail using command: '+cmd
+      spawn,cmd
+  endif
   IF NOT keyword_set(plot) THEN BEGIN 
      printf,lu,'  <td align="center">'+rgbstr+'</br><a href="'+fjpgi+'"><img src="'+fjpgo+'"></a>'+undannot+'</td>'
   ENDIF ELSE BEGIN 

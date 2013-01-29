@@ -1,5 +1,5 @@
 PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $ 
-                  uselink=uselink
+                  uselink=uselink, abridged=abridged
   ;
   ; Makes a web page showing the output from a ssoup run.  
   ; The output file are written, copied or linked to
@@ -14,13 +14,14 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   ;   ngal         -> the number of galaxies detected
   ;   uselink      -> if set, then link files to outdir, otherwise they 
   ;                   are copied.
+  ;   abridged     -> if set, output a shorter summary version to index.html
   ;
   ; G. Meurer ICRAR/UWA  07/2010  (ICRAR/UWA): wrote code
   ; G. Meurer ICRAR/UWA  08/2012  (ICRAR/UWA):
   ;           - now mark up sky background plot files
   ;           - improve documentation
   prog      = 'SSOUP_MKHTML: '
-  subtitle  = 'Results from SSOUP'
+  subtitle  = keyword_set(abridged) ? 'Selected Results from SSOUP' : 'Results from SSOUP'
   callprog  = 'SSOUP'
   widthi    = 200
   widthp    = 300
@@ -30,8 +31,8 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo
   ;
   ; expand base and source directories
-  IF basedir EQ '.' THEN bdir = file_expand_path(basedir) ELSE bdir = expand_path(basedir)
-  IF srcdir EQ '.' THEN sdir = file_expand_path(srcdir) ELSE sdir = expand_path(srcdir)
+  bdir = basedir EQ '.' ? file_expand_path(basedir) : expand_path(basedir)
+  sdir = srcdir  EQ '.' ? file_expand_path(srcdir)  : expand_path(srcdir)
   ;
   ; go to base directory
   cd, bdir, current=cwd
@@ -40,13 +41,15 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   ; * if so nuke it
   ; * otherwise or afterwards create clean directory having target name
   ; * then enter directory
-  finfo      = file_info(outdir)
-  IF finfo.exists THEN BEGIN 
-     plog,ll,prog,'Deleting old directory'
-     file_delete, outdir, /recursive
-  ENDIF 
-  plog,ll,prog,'creating directory, name = '+outdir
-  file_mkdir, outdir
+  if not keyword_set(abridged) then begin
+      finfo      = file_info(outdir)
+      IF finfo.exists THEN BEGIN 
+         plog,ll,prog,'Deleting old directory'
+         file_delete, outdir, /recursive
+      ENDIF 
+      plog,ll,prog,'creating directory, name = '+outdir
+      file_mkdir, outdir
+  endif
   ;
   ch         = strmid(bdir,0,1,/reverse_offset)
   IF ch NE '/' THEN bdir = bdir+'/'
@@ -55,6 +58,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   cd, sdir
   ;
   ; copy (or link) files to the output directory
+  ; all this stuff only needs to happen once
   f2cp       = [inputstr.fjpg_low, inputstr.fjpg_high, inputstr.fjpg_mlow1, $
                (inputstr.fjpg_mhigh1), inputstr.fjpg_mlow2, inputstr.fjpg_mhigh2, $
                (inputstr.fjpg_mlow3), inputstr.fjpg_mhigh3, inputstr.fjpg_imlow1, $
@@ -80,23 +84,25 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
       f2cp = [f2cp, mir_profjpg, mir_profps]
   endif
   f2cp = bdir+f2cp
-  nf         = n_elements(f2cp)
-  IF NOT keyword_set(uselink) THEN BEGIN 
-     FOR jj = 0, nf-1 DO BEGIN 
-        plog,ll,prog,'copying '+f2cp[jj]+' to '+odir
-        file_copy, f2cp[jj], odir
-     ENDFOR 
-  ENDIF ELSE BEGIN 
-     FOR jj = 0, nf-1 DO BEGIN 
-        plog,ll,prog,'linking '+f2cp[jj]+' to '+odir
-        file_link, f2cp[jj], odir
-     ENDFOR 
-  ENDELSE 
+  if not keyword_set(abridged) then begin
+      nf         = n_elements(f2cp)
+      IF NOT keyword_set(uselink) THEN BEGIN 
+         FOR jj = 0, nf-1 DO BEGIN 
+            plog,ll,prog,'copying '+f2cp[jj]+' to '+odir
+            file_copy, f2cp[jj], odir
+         ENDFOR 
+      ENDIF ELSE BEGIN 
+         FOR jj = 0, nf-1 DO BEGIN 
+            plog,ll,prog,'linking '+f2cp[jj]+' to '+odir
+            file_link, f2cp[jj], odir
+         ENDFOR 
+      ENDELSE 
+  endif
   ;
   cd, odir
   ;
   ; open web page, write top of file
-  filo       = inputstr.hname+'_ssoup.html'
+  filo       = keyword_set(abridged) ? 'index.html' : inputstr.hname+'_ssoup.html'
   plog,ll,prog,'opening file: '+filo
   openw,lu,filo,/get_lun
   plog,ll,prog,'starting markup...'
@@ -109,6 +115,10 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   link2      = sr2qa_link(inputstr.hname)
   printf,lu, 'SINGG sample page <a href="'+link1+'">link</a> (<a href="'+l1tab+'">full sample table</a>)<br>'
   printf,lu, 'SR2QA page <a href="'+link2+'">link</a>  (<a href="'+l2tab+'">full SR2QA table</a>)<br>'
+  if keyword_set(abridged) then begin
+      printf, lu, 'This page presents only selected results and images, see <a href="' + inputstr.hname+'_ssoup.html">here</a> for everything.' 
+  endif
+  noresize = keyword_set(abridged)
   printf,lu, '<hr>'
   ;
   ; table of three color thumbnails and links
@@ -121,10 +131,10 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   printf,lu,'</tr>'
   for i=0,ncombo-1,2 do begin
       printf,lu,'<tr>'
-      ssoup_imcell,ll,lu,inputstr.fjpg_high[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_high[i+1],fjpgo,width=widthi
-      ssoup_imcell,ll,lu,inputstr.fjpg_low[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_low[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_high[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_high[i+1],fjpgo,width=widthi,noresize=noresize
+      ssoup_imcell,ll,lu,inputstr.fjpg_low[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_low[i+1],fjpgo,width=widthi,noresize=noresize
       printf,lu,'</tr>'
   endfor
   printf,lu,'</table>'
@@ -169,8 +179,8 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   printf,lu,'</tr>'
   for i=0,ngal-1 do begin
       printf,lu,'<tr><td>' + numstr(i) + "</td>
-      ssoup_imcell,ll,lu,hafuvjpg[i],fjpgo,width=widthh,uannot='<a href="'+hafuvps[i]+'">PS</a>',/plot
-      ssoup_imcell,ll,lu,hafuvjpg0[i],fjpgo,width=widthh,uannot='<a href="'+hafuvps0[i]+'">PS</a>',/plot
+      ssoup_imcell,ll,lu,hafuvjpg[i],fjpgo,width=widthh,uannot='<a href="'+hafuvps[i]+'">PS</a>',/plot,noresize=noresize
+      ssoup_imcell,ll,lu,hafuvjpg0[i],fjpgo,width=widthh,uannot='<a href="'+hafuvps0[i]+'">PS</a>',/plot,noresize=noresize
       printf,lu,'</tr>'
   endfor
   printf,lu,'</table>'
@@ -210,12 +220,13 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   FOR ii = 0, nbandavail-1 DO BEGIN 
      printf,lu,'<tr>'
      printf,lu,'<td>'+bandnam[ii]+'</td>'
-     ssoup_imcell,ll,lu,inputstr.fbplotj[ii],fjpgo,width=widths,uannot='<a href="'+inputstr.fbplote[ii]+'">EPS</a>',/plot
+     ssoup_imcell,ll,lu,inputstr.fbplotj[ii],fjpgo,width=widths,uannot='<a href="'+inputstr.fbplote[ii]+'">EPS</a>',/plot,noresize=noresize
      printf,lu,'</tr>'
   ENDFOR
   printf,lu,'</TABLE>'
   ;
   ; mark-up masked images
+  if not keyword_set(abridged) then begin
   printf,lu,'<h3>Three colour images with masks applied</h3>'
   plog,ll,prog,'creating 3 colour bad object masked images table, high cut.'
   printf,lu,'<P><TABLE border=1 cellpadding=3>'
@@ -225,10 +236,10 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   printf,lu,'</tr>'
   for i=0,ncombo-1,2 do begin
       printf,lu,'<tr>'
-      ssoup_imcell,ll,lu,inputstr.fjpg_mhigh1[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mhigh1[i+1],fjpgo,width=widthi
-      ssoup_imcell,ll,lu,inputstr.fjpg_imhigh1[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imhigh1[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_mhigh1[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mhigh1[i+1],fjpgo,width=widthi,noresize=noresize
+      ssoup_imcell,ll,lu,inputstr.fjpg_imhigh1[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imhigh1[i+1],fjpgo,width=widthi,noresize=noresize
       printf,lu,'</tr>'
   endfor
   printf,lu,'</table>'
@@ -241,10 +252,10 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   printf,lu,'</tr>'
   for i=0,ncombo-1,2 do begin
       printf,lu,'<tr>'
-      ssoup_imcell,ll,lu,inputstr.fjpg_mlow1[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mlow1[i+1],fjpgo,width=widthi
-      ssoup_imcell,ll,lu,inputstr.fjpg_imlow1[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imlow1[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_mlow1[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mlow1[i+1],fjpgo,width=widthi,noresize=noresize
+      ssoup_imcell,ll,lu,inputstr.fjpg_imlow1[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imlow1[i+1],fjpgo,width=widthi,noresize=noresize
       printf,lu,'</tr>'
   endfor
   printf,lu,'</table>'
@@ -259,10 +270,10 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   printf,lu,'<tr>'
   for i=0,ncombo-1,2 do begin
       printf,lu,'<tr>'
-      ssoup_imcell,ll,lu,inputstr.fjpg_mhigh2[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mhigh2[i+1],fjpgo,width=widthi
-      ssoup_imcell,ll,lu,inputstr.fjpg_imhigh2[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imhigh2[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_mhigh2[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mhigh2[i+1],fjpgo,width=widthi,noresize=noresize
+      ssoup_imcell,ll,lu,inputstr.fjpg_imhigh2[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imhigh2[i+1],fjpgo,width=widthi,noresize=noresize
       printf,lu,'</tr>'
   endfor
   printf,lu,'</table>'
@@ -275,10 +286,10 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   printf,lu,'</tr>'
   for i=0,ncombo-1,2 do begin
       printf,lu,'<tr>'
-      ssoup_imcell,ll,lu,inputstr.fjpg_mlow2[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mlow2[i+1],fjpgo,width=widthi
-      ssoup_imcell,ll,lu,inputstr.fjpg_imlow2[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imlow2[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_mlow2[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mlow2[i+1],fjpgo,width=widthi,noresize=noresize
+      ssoup_imcell,ll,lu,inputstr.fjpg_imlow2[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imlow2[i+1],fjpgo,width=widthi,noresize=noresize
       printf,lu,'</tr>'
   endfor
   printf,lu,'</table>'
@@ -291,10 +302,10 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   printf,lu,'</tr>'
   for i=0,ncombo-1,2 do begin
       printf,lu,'<tr>'
-      ssoup_imcell,ll,lu,inputstr.fjpg_mhigh3[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mhigh3[i+1],fjpgo,width=widthi
-      ssoup_imcell,ll,lu,inputstr.fjpg_imhigh3[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imhigh3[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_mhigh3[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mhigh3[i+1],fjpgo,width=widthi,noresize=noresize
+      ssoup_imcell,ll,lu,inputstr.fjpg_imhigh3[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imhigh3[i+1],fjpgo,width=widthi,noresize=noresize
       printf,lu,'</tr>'
   endfor
   printf,lu,'</table>'
@@ -307,13 +318,14 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   printf,lu,'</tr>'
   for i=0,ncombo-1,2 do begin
       printf,lu,'<tr>'
-      ssoup_imcell,ll,lu,inputstr.fjpg_mlow3[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mlow3[i+1],fjpgo,width=widthi
-      ssoup_imcell,ll,lu,inputstr.fjpg_imlow3[i],fjpgo,width=widthi
-      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imlow3[i+1],fjpgo,width=widthi
+      ssoup_imcell,ll,lu,inputstr.fjpg_mlow3[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_mlow3[i+1],fjpgo,width=widthi,noresize=noresize
+      ssoup_imcell,ll,lu,inputstr.fjpg_imlow3[i],fjpgo,width=widthi,noresize=noresize
+      if (i+1) ne ncombo then ssoup_imcell,ll,lu,inputstr.fjpg_imlow3[i+1],fjpgo,width=widthi,noresize=noresize
       printf,lu,'</tr>'
   endfor
   printf,lu,'</table>'
+  endif
   ;
   ; mark up comparison table
   ;

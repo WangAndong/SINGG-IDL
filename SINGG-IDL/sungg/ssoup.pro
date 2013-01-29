@@ -183,6 +183,7 @@ pro SSOUP, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; Mark up results 
      ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, /uselink
+     ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, /uselink, /abridged
   ENDIF ELSE BEGIN 
      plog,ll,prog,'could not run pipeline because inputs were incorrect'
   ENDELSE

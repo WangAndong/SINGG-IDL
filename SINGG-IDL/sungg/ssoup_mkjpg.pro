@@ -198,19 +198,19 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
       maxd[jh] =  1.4e-15
       if count_w1 ge 1 then begin 
           mind[index_w1] = percentile(imcal[*,*,index_w1], 10)
-          maxd[index_w1] = percentile(imcal[*,*,index_w1], 99.99)
+          maxd[index_w1] = percentile(imcal[*,*,index_w1], 99.9)
       endif
       if count_w2 ge 1 then begin 
           mind[index_w2] = percentile(imcal[*,*,index_w1], 10)
-          maxd[index_w2] = percentile(imcal[*,*,index_w1], 99.99)
+          maxd[index_w2] = percentile(imcal[*,*,index_w1], 99.9)
       endif
       if count_w3 ge 1 then begin 
           mind[index_w3] = percentile(imcal[*,*,index_w1], 10)
-          maxd[index_w3] = percentile(imcal[*,*,index_w1], 99.99)
+          maxd[index_w3] = percentile(imcal[*,*,index_w1], 99.9)
       endif
       if count_w4 ge 1 then begin 
           mind[index_w4] = percentile(imcal[*,*,index_w1], 10)
-          maxd[index_w4] = percentile(imcal[*,*,index_w1], 99.99)
+          maxd[index_w4] = percentile(imcal[*,*,index_w1], 99.9)
       endif
    ENDELSE 
    mind[jn] = mind[jr]*(photplam[jn]/photplam[jr])^beta
