@@ -35,9 +35,9 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ;    * upper limits and flags introduced
   ;    * output data file format changed
   ;    * s/n limit set to 2.0 (from 3.0)
-  ;
-  ; bugs/issues: probably need to check whether this will work if
-  ;              order in band or bandparam is different from default.
+  ; S. Andrews (ICRAR/UWA) 1/2013
+  ;    * significantly refactored
+  ;    * dump results to IDL saveset
   ;
   ; setup stuff
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
@@ -514,11 +514,11 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
      rin      = [0.0,rad[ptt0:ptt1-1]]
      anarea   = !pi*(rout^2-rin^2)
      FOR ii = 0, nbandavail-1 DO BEGIN 
-        fbprof0[ptt0:ptt1,ii]   = total(anarea*sbprof0[ptt0:ptt1,ii],/cumulative)
-        efbproft0[ptt0:ptt1,ii] = sqrt(total((anarea*esbproft0[ptt0:ptt1,ii])^2,/cumulative))
+        fbprof0[ptt0:ptt1,ii]   = total(anarea*sbprof0[ptt0:ptt1,ii],/cumulative,/nan)
+        efbproft0[ptt0:ptt1,ii] = sqrt(total((anarea*esbproft0[ptt0:ptt1,ii])^2,/cumulative,/nan))
         IF ii EQ ih THEN BEGIN 
-           efbprofc0[ptt0:ptt1] = sqrt(total((anarea*esbprofc0[ptt0:ptt1])^2,/cumulative))
-           efbprofs0[ptt0:ptt1] = sqrt(total((anarea*esbprofs0[ptt0:ptt1])^2,/cumulative))
+           efbprofc0[ptt0:ptt1] = sqrt(total((anarea*esbprofc0[ptt0:ptt1])^2,/cumulative,/nan))
+           efbprofs0[ptt0:ptt1] = sqrt(total((anarea*esbprofs0[ptt0:ptt1])^2,/cumulative,/nan))
         ENDIF 
      ENDFOR 
   ENDFOR  

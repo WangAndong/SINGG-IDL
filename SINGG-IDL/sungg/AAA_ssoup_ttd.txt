@@ -51,8 +51,8 @@ SSOUP Programming Things To Do
   + calculate modeled FIR flux.
 
 * Make plots of enclosed quantities (with and without dust correction)
-  + fluxes/mag (FUV, NUV, R, Halpha)
-  + color (FUV-NUV, NUV-R, EW(Halpha), Halpha/FUV)
+  + fluxes/mag (FUV, NUV, R, Halpha) (done 01/13 - Stephen)
+  + color (FUV-NUV, NUV-R, EW(Halpha), Halpha/FUV) (done 01/13 - Stephen)
   + calculate and show R_20, R_80: radii containing 20% and 80% of fluxes
 
 * Stand alone or initial SExtractor pipeline
