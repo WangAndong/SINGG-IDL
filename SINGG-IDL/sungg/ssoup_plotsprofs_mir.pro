@@ -68,7 +68,7 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy
     rrange    = [0.0,rmax]
     abrange   = [32.0,14.0]    
     xs       = 6.5
-    ys       = 5.0
+    ys       = 6.0
     yoff     = 3.0
     xoff     = 0.4
     wxsize   = 600
@@ -79,7 +79,7 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy
     plot, radius[0:1], sw1[0:1], xrange=rrange, yrange=abrange, xstyle=1, ystyle=1, $
           charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
           xtitle=rtitle, ytitle=abtitle, title=sname, charthick=thick, $
-          xmargin=[8,8], ymargin=[2,4], /nodata
+          xmargin=[8,8], ymargin=[4,4], /nodata
     ssoup_overlay_prof, radius, sw1, sw1, *(allprofiles[i].err_mprof[w1]), symsize, thick, !dorange, ij_w1, ik_w1, il_w1, im_w1, $
       nij_w1, nik_w1, nil_w1, nim_w1, ij_w1, ik_w1, il_w1, im_w1, nij_w1, nik_w1, nil_w1, nim_w1
     ssoup_overlay_prof, radius, sw2, sw2, *(allprofiles[i].err_mprof[w2]), symsize, thick, !cyan, ij_w2, ik_w2, il_w2, im_w2, $
