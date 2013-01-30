@@ -23,8 +23,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   bandavail = ['']
   fili  = ['']
   skyord = [0]
-  COMMON bands, band, nband, bandnam, aaaa1, aaaa2, aaaa3, aaaa4 ; sigh
-  ssoup_initvars
+  COMMON bands, band, nband, bandnam
   ;
   ; set logical unit for log file
   IF NOT keyword_set(ll) THEN ll = -1

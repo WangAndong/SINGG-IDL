@@ -1,7 +1,7 @@
 pro ssoup_overlay_prof, rad, prof, prof0, eprof0, symsize, thick, $
     plot_col, j, k, l, m, nj, nk, nl, nm, j0, k0, l0, m0, nj0, nk0, nl0, nm0
   ;
-  ; Prevention of copypasta in profile plot creation
+  ; Prevention of copypasta in radial profile plot creation.
   ; 
   ; rad        -> radii to plot
   ; prof       -> profile to plot
@@ -11,6 +11,8 @@ pro ssoup_overlay_prof, rad, prof, prof0, eprof0, symsize, thick, $
   ; thick      -> plot line thickness
   ; plot_col   -> plot_col(our)
   ; the rest   -> stuff that comes out of ssoup_psp_indices
+  ;
+  ; S. Andrews (ICRAR/UWA) 01/13
   
   IF nj GT 0 THEN BEGIN 
      oplot, rad[j], prof[j], thick=thick, color=plot_col, linestyle=1

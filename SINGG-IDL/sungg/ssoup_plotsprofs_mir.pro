@@ -1,18 +1,15 @@
 pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy
   ;
-  ; Plots mid-infrared radial profiles. I don't know what colors would be
+  ; Plots mid-infrared radial profiles. I don't know what other stuff is
   ; interesting here, so this is a separate file.
   ; 
   ;   ll         -> logical unit number for plot
   ;   sname      -> Source name
-  ;   fjpg       -> output plot file name (JPG)
-  ;   feps       -> optput plot file name (EPS)
+  ;   fjpg       -> output plot file name (JPG), must contain "%d"
+  ;   feps       -> optput plot file name (EPS), must contain "%d"
   ;   epilepsy   -> whether we should display images on the screen
   ;   
-  ;   FIXME: mir profiles are all infinity. Not sure if this is a result of the original images.
-  ;   
   ; S. Andrews (ICRAR/UWA) 1/2013
-  
   COMMON bands, band
   prog      = 'SSOUP_PLOTSPROFS_MIR: '
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
@@ -23,9 +20,9 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy
   clflag  =   7.777  ; colour lower limit flag
   
   ; plot parameters
-  charsize  = 0.4
-  symsize   = 0.2
-  thick     = 1
+  charsize  = 1.5
+  symsize   = 1.0
+  thick     = 2
   abtitle   = '!4 l!3 [ABmag arcssec!u-2!n]'
   rtitle    = '!3 semi-major axis [arcsec]' 
   
@@ -70,9 +67,9 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy
     ; start plot
     rrange    = [0.0,rmax]
     abrange   = [32.0,14.0]    
-    xs       = 2.5
-    ys       = 1.25*xs
-    yoff     = 0.4
+    xs       = 6.5
+    ys       = 5.0
+    yoff     = 3.0
     xoff     = 0.4
     wxsize   = 600
     ansize   = 1.0
