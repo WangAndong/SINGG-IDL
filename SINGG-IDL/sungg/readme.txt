@@ -1,3 +1,19 @@
+== Standalone usage instructions==
+List of standalone procedures: ssoup_plotsprofs, ssoup_plotsprofs_mir, ssoup_plotboxes
+
+To get something running, type:
+
+IDL> soup,"IDL command line"
+
+Examples:
+
+IDL> ssoup,"ssoup_plotsprofs,-1,'J0221-05','test_%d.jpg','test_%d.jpg',/epilepsy"
+IDL> ssoup,"ssoup_inputs, 'ssoup.in', -1, inputstr & ssoup_mkhtml,-1, '.', '.', 'HTML', inputstr, 2"
+
+For more information, see:
+
+IDL> ?execute
+
 ==How to add more bands==
 
 1) Download the images. MAKE SURE THAT THE FOV IS GREATER THAN THE ORIGINAL OPTICAL IMAGE (about 800 arcsec), otherwise strange things may happen (the first thing that will go wrong is the sky box plots will have a big square taken out of them). The WISE images have a FOV of 1000 arcsec. Give them descriptive filenames (I am looking at you, WISE).

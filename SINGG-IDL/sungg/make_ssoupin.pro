@@ -18,6 +18,9 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ;    + improved default for R mask name also for case of 
   ;      J0008-59; now tries either hname+'_mask.fits' and
   ;      hname+'_R_mask.fits'
+  ; S. Andrews (ICRAR/UWA) 1/2013
+  ;    + Add WISE support
+  ;    + Refactored significantly
   ;
   ; some arrays we will need later
   bandavail = ['']

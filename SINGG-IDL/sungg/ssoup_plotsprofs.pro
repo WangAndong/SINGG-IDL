@@ -1,18 +1,24 @@
-PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy
+PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=integrated
   ;
   ; plot surface brightness and surface colour profiles
   ;
   ;   ll         -> logical unit number for plot
   ;   sname      -> Source name
-  ;   fjpg       -> output plot file name (JPG)
-  ;   feps       -> optput plot file name (EPS)
+  ;   fjpg       -> output plot file name (JPG), must contain "%d"
+  ;   feps       -> optput plot file name (EPS), must contain "%d"
   ;   epilepsy   -> whether we should display images on the screen
+  ;   integrated -> if set, plot integrated quantities
   ;
   ; G. Meurer (ICRAR/UWA) 6/2010
   ; G. Meurer (ICRAR/UWA) 5/2011: 
   ;    * improve doc. 
   ;    * plot upper and lower limits, and handle flags
   ;    * reads new file format
+  ; S. Andrews (ICRAR/UWA) 1/2013
+  ;    * Add integrated quantities
+  ;    * Add option to disable plotting to screen
+  ;    * Read from IDL saveset
+  ;    * Remove some copypasta and other refactoring
   ;
   snlimit   = 2.0
   mflag   =  99.999  ; magnitude flag value
@@ -51,39 +57,76 @@ PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy
     
     ; rename stuff
     sma = *(allprofiles[i].radius)
-    sr = *(allprofiles[i].mprof[index_r])
-    esr = *(allprofiles[i].err_mprof[index_r])
-    sha = *(allprofiles[i].mprof[index_ha])
-    eshat = *(allprofiles[i].err_mprof[index_ha])
-    snuv = *(allprofiles[i].mprof[index_nuv])
-    esnuv = *(allprofiles[i].err_mprof[index_nuv])
-    sfuv = *(allprofiles[i].mprof[index_fuv])
-    esfuv = *(allprofiles[i].err_mprof[index_fuv])
-    scfn = *(allprofiles[i].col_fuv_nuv)
-    escfn = *(allprofiles[i].err_col_fuv_nuv)
-    scnr = *(allprofiles[i].col_nuv_r)
-    escnr = *(allprofiles[i].err_col_nuv_r)
-    slewr = *(allprofiles[i].log_ha_r)
-    eslewr = *(allprofiles[i].err_log_ha_r)
-    slewf = *(allprofiles[i].log_ha_fuv)
-    eslewf = *(allprofiles[i].err_log_ha_fuv)
     sma0 = sma
-    sr0 = *(allprofiles[i].mprof_dustcor[index_r])
-    esr0 = *(allprofiles[i].err_mprof_dustcor[index_r])
-    sha0 = *(allprofiles[i].mprof_dustcor[index_ha])
-    eshat0 = *(allprofiles[i].err_mprof_dustcor[index_ha])
-    snuv0 = *(allprofiles[i].mprof_dustcor[index_nuv])
-    esnuv0 = *(allprofiles[i].err_mprof_dustcor[index_nuv])
-    sfuv0 = *(allprofiles[i].mprof_dustcor[index_fuv])
-    esfuv0 = *(allprofiles[i].err_mprof_dustcor[index_fuv])
-    scfn0 = *(allprofiles[i].col_fuv_nuv_dustcor)
-    escfn0 = *(allprofiles[i].err_col_fuv_nuv_dustcor)
-    scnr0 = *(allprofiles[i].col_nuv_r_dustcor)
-    escnr0 = *(allprofiles[i].err_col_nuv_r_dustcor)
-    slewr0 = *(allprofiles[i].log_ha_r_dustcor)
-    eslewr0 = *(allprofiles[i].err_log_ha_r_dustcor)
-    slewf0 = *(allprofiles[i].log_ha_fuv_dustcor)
-    eslewf0 = *(allprofiles[i].err_log_ha_fuv_dustcor)
+    if not keyword_set(integrated) then begin
+      sr = *(allprofiles[i].mprof[index_r])
+      esr = *(allprofiles[i].err_mprof[index_r])
+      sha = *(allprofiles[i].mprof[index_ha])
+      eshat = *(allprofiles[i].err_mprof[index_ha])
+      snuv = *(allprofiles[i].mprof[index_nuv])
+      esnuv = *(allprofiles[i].err_mprof[index_nuv])
+      sfuv = *(allprofiles[i].mprof[index_fuv])
+      esfuv = *(allprofiles[i].err_mprof[index_fuv])
+      scfn = *(allprofiles[i].col_fuv_nuv)
+      escfn = *(allprofiles[i].err_col_fuv_nuv)
+      scnr = *(allprofiles[i].col_nuv_r)
+      escnr = *(allprofiles[i].err_col_nuv_r)
+      slewr = *(allprofiles[i].log_ha_r)
+      eslewr = *(allprofiles[i].err_log_ha_r)
+      slewf = *(allprofiles[i].log_ha_fuv)
+      eslewf = *(allprofiles[i].err_log_ha_fuv)
+
+      sr0 = *(allprofiles[i].mprof_dustcor[index_r])
+      esr0 = *(allprofiles[i].err_mprof_dustcor[index_r])
+      sha0 = *(allprofiles[i].mprof_dustcor[index_ha])
+      eshat0 = *(allprofiles[i].err_mprof_dustcor[index_ha])
+      snuv0 = *(allprofiles[i].mprof_dustcor[index_nuv])
+      esnuv0 = *(allprofiles[i].err_mprof_dustcor[index_nuv])
+      sfuv0 = *(allprofiles[i].mprof_dustcor[index_fuv])
+      esfuv0 = *(allprofiles[i].err_mprof_dustcor[index_fuv])
+      scfn0 = *(allprofiles[i].col_fuv_nuv_dustcor)
+      escfn0 = *(allprofiles[i].err_col_fuv_nuv_dustcor)
+      scnr0 = *(allprofiles[i].col_nuv_r_dustcor)
+      escnr0 = *(allprofiles[i].err_col_nuv_r_dustcor)
+      slewr0 = *(allprofiles[i].log_ha_r_dustcor)
+      eslewr0 = *(allprofiles[i].err_log_ha_r_dustcor)
+      slewf0 = *(allprofiles[i].log_ha_fuv_dustcor)
+      eslewf0 = *(allprofiles[i].err_log_ha_fuv_dustcor)
+    endif else begin
+      sr = *(allprofiles[i].mprof_int[index_r])
+      esr = *(allprofiles[i].err_mprof_int[index_r])
+      sha = *(allprofiles[i].mprof_int[index_ha])
+      eshat = *(allprofiles[i].err_mprof_int[index_ha])
+      snuv = *(allprofiles[i].mprof_int[index_nuv])
+      esnuv = *(allprofiles[i].err_mprof_int[index_nuv])
+      sfuv = *(allprofiles[i].mprof_int[index_fuv])
+      esfuv = *(allprofiles[i].err_mprof_int[index_fuv])
+      scfn = *(allprofiles[i].col_fuv_nuv_int)
+      escfn = *(allprofiles[i].err_col_fuv_nuv_int)
+      scnr = *(allprofiles[i].col_nuv_r_int)
+      escnr = *(allprofiles[i].err_col_nuv_r_int)
+      slewr = *(allprofiles[i].log_ha_r_int)
+      eslewr = *(allprofiles[i].err_log_ha_r_int)
+      slewf = *(allprofiles[i].log_ha_fuv_int)
+      eslewf = *(allprofiles[i].err_log_ha_fuv_int)
+
+      sr0 = *(allprofiles[i].mprof_dustcor_int[index_r])
+      esr0 = *(allprofiles[i].err_mprof_dustcor_int[index_r])
+      sha0 = *(allprofiles[i].mprof_dustcor_int[index_ha])
+      eshat0 = *(allprofiles[i].err_mprof_dustcor_int[index_ha])
+      snuv0 = *(allprofiles[i].mprof_dustcor_int[index_nuv])
+      esnuv0 = *(allprofiles[i].err_mprof_dustcor_int[index_nuv])
+      sfuv0 = *(allprofiles[i].mprof_dustcor_int[index_fuv])
+      esfuv0 = *(allprofiles[i].err_mprof_dustcor_int[index_fuv])
+      scfn0 = *(allprofiles[i].col_fuv_nuv_dustcor_int)
+      escfn0 = *(allprofiles[i].err_col_fuv_nuv_dustcor_int)
+      scnr0 = *(allprofiles[i].col_nuv_r_dustcor_int)
+      escnr0 = *(allprofiles[i].err_col_nuv_r_dustcor_int)
+      slewr0 = *(allprofiles[i].log_ha_r_dustcor_int)
+      eslewr0 = *(allprofiles[i].err_log_ha_r_dustcor_int)
+      slewf0 = *(allprofiles[i].log_ha_fuv_dustcor_int)
+      eslewf0 = *(allprofiles[i].err_log_ha_fuv_dustcor_int)
+    endelse    
     
     ; determine max radii and corresponding pointers
     plog,ll,prog,'determining maxima radii, and points to plot'
