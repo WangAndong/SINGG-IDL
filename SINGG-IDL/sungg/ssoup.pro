@@ -1,10 +1,11 @@
-pro ssoup, procedure
+pro ssoup, procedure, makeinput=makeinput
   ;
   ; SSOUP launch pad. Defines the possible bands and dumps them in a COMMON 
   ; block named band. (The reason this exists is because of how IDL handles common blocks).
   ; 
   ; procedure -> A SSOUP IDL command line (see ?execute). Optional, will run ssoup_main if
-  ;               not specified.
+  ;              not specified.
+  ; makeinput -> If set, makes an input file using make_ssoupin
   ;
   ; S. Andrews (ICRAR/UWA) 01/2013
 
@@ -38,6 +39,6 @@ pro ssoup, procedure
     resetplot
   
     ; launch stuff
-    if not keyword_set(procedure) then procedure = "ssoup_main"
-    a = execute(procedure)
+    if keyword_set(makeinput) then make_ssoupin else $
+    if not keyword_set(procedure) then ssoup_main else a = execute(procedure)
 end
