@@ -1,11 +1,9 @@
-PRO ssoup_plotboxes, ll, bxsiz, sname, band, fbox, fjpg, feps, outline=outline, epilepsy=epilepsy
+PRO ssoup_plotboxes, ll, sname, bn, fjpg, feps, outline=outline, epilepsy=epilepsy
   ;
   ;  ll     -> logical unit of log file
-  ;  bxsiz  -> size of boxes
   ;  sname  -> name of singg/hipass source
-  ;  band   -> name of band
+  ;  bn     -> name of band
   ;  fimage -> Name of image
-  ;  fbox   -> name of file containing box data. 
   ;  fjpg   -> name of output file (JPG)
   ;  feps   -> name of output file (EPS)
   ;  outline -> if set outline each box otherwise just the grayscale
@@ -15,7 +13,6 @@ PRO ssoup_plotboxes, ll, bxsiz, sname, band, fbox, fjpg, feps, outline=outline, 
   ; G. Meurer 9/2012  (ICRAR/UWA)
   ;    * add outline keyword
   ;
-  fmtb      = '(f,f,f,f,f,f)'
   prog      = 'SSOUP_PLOTBOXES: '
   charsize  = 2.1
   aspect    = 1.1
@@ -24,10 +21,18 @@ PRO ssoup_plotboxes, ll, bxsiz, sname, band, fbox, fjpg, feps, outline=outline, 
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
   ;
   ; make title
-  title     = 'Source: '+sname+' filter: '+band+' file: '+fbox
+  title     = 'Source: '+sname+' filter: '+bn
   ;
   ; read file
-  readcol, fbox, bavg, bx, by, bsig, bfit, bresid, format=fmtb
+  restore,sname+"_skymodel.save"
+  idx = (where(bname eq bn, /null))[0]
+  bx = *(skymodeldata[idx].x)
+  by = *(skymodeldata[idx].y)
+  bavg = *(skymodeldata[idx].average)
+  bsig = *(skymodeldata[idx].sigma)
+  bresid = *(skymodeldata[idx].residual)
+  bfit = *(skymodeldata[idx].fit)
+  bxsiz = skymodeldata[idx].boxsize
   nb        = n_elements(bavg)
   ;
   ; get rms of residuals

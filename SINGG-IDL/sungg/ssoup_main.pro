@@ -42,8 +42,7 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
   fecntrat  = 0.03
   srcdir    = '.'
   basedir   = '.'
-  outdir    = 'HTML'
-  bxdef     = 15      
+  outdir    = 'HTML'   
   
   COMMON bands, band, nband, bandnam, bandavail, nbandavail
   epilepsy = 1
@@ -75,7 +74,7 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
      ; make sky box plots
      plog,ll,prog,'making plots of sky boxes'
      FOR ii = 0, nbandavail-1 DO BEGIN 
-        ssoup_plotboxes, ll, bxdef, inputstr.hname, bandavail[ii], inputstr.fbox[ii], inputstr.fbplotj[ii], inputstr.fbplote[ii], epilepsy=epilepsy
+        ssoup_plotboxes, ll, inputstr.hname, bandavail[ii], inputstr.fbplotj[ii], inputstr.fbplote[ii], epilepsy=epilepsy
      ENDFOR 
       epilepsy=0
      ;
