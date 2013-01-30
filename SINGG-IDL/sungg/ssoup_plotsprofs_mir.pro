@@ -11,6 +11,7 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=i
   ;   integrated -> if set, plot integrated quantities
   ;   
   ; S. Andrews (ICRAR/UWA) 1/2013
+  ;
   COMMON bands, band
   prog      = 'SSOUP_PLOTSPROFS_MIR: '
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
@@ -24,7 +25,13 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=i
   charsize  = 1.5
   symsize   = 1.0
   thick     = 2
-  abtitle   = '!4 l!3 [ABmag arcssec!u-2!n]'
+  if keyword_set(integrated) then begin
+      abrange   = [20.0,0.0] 
+      abtitle   = 'test'
+  endif else begin
+      abrange   = [27.0,10.0] 
+      abtitle = '!4 l!3 [ABmag arcssec!u-2!n]'
+  endelse
   rtitle    = '!3 semi-major axis [arcsec]' 
   
   ; read in profile files
@@ -85,8 +92,7 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=i
     rmax      = 1.05*max([rmax_w1, rmax_w2, rmax_w3, rmax_w4])
     
     ; start plot
-    rrange    = [0.0,rmax]
-    abrange   = [32.0,14.0]    
+    rrange    = [0.0,rmax]   
     xs       = 6.5
     ys       = 5.0
     yoff     = 3.0

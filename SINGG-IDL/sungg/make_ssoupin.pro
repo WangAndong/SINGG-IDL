@@ -20,6 +20,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   ;      hname+'_R_mask.fits'
   ; S. Andrews (ICRAR/UWA) 1/2013
   ;    + Add WISE support
+  ;    + Added inputs for integrated plots
   ;    + Refactored significantly
   ;
   ; some arrays we will need later
@@ -157,6 +158,8 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   fcalprof0       = hname+'_aligned_fprof0.dat'
   profjpg         = hname+'_aligned_sprof_%d.jpg'
   profps          = hname+'_aligned_sprof_%d.ps'
+  intprofjpg      = hname+'_aligned_fprof_%d.jpg'
+  intprofps       = hname+'_aligned_fprof_%d.ps'
   hafuvjpg        = hname+'_aligned_hafuv_%d.jpg'
   hafuvps         = hname+'_aligned_hafuv_%d.ps'
   hafuvjpg0       = hname+'_aligned_hafuv0_%d.jpg'
@@ -272,6 +275,10 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   plog,ll,'','PROFJPG         = '+profjpg
   printf,lu, 'PROFPS          = '+profps
   plog,ll,'','PROFPS          = '+profps
+  printf,lu, 'INTPROFJPG      = '+intprofjpg
+  plog,ll,'','INTPROFJPG      = '+intprofjpg
+  printf,lu, 'INTPROFPS       = '+intprofps
+  plog,ll,'','INTPROFPS       = '+intprofps
   printf,lu, 'HAFUVJPG        = '+hafuvjpg
   plog,ll,'','HAFUVJPG        = '+hafuvjpg
   printf,lu, 'HAFUVPS         = '+hafuvps
@@ -288,10 +295,16 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   if count_w1 + count_w2 + count_w3 + count_w4 ge 1 then begin
       mirprofjpg         = hname+'_aligned_mir_sprof_%d.jpg'
       mirprofps          = hname+'_aligned_mir_sprof_%d.ps'
-      plog,ll,'','MIRPROFJPG = ' + mirprofjpg
-      printf,lu, 'MIRPROFJPG = ' + mirprofjpg
-      plog,ll,'','MIRPROFPS  = ' + mirprofps
-      printf,lu, 'MIRPROFPS  = ' + mirprofps
+      mirintprofjpg      = hname+'_aligned_mir_fprof_%d.jpg'
+      mirintprofps       = hname+'_aligned_mir_fprof_%d.ps'
+      plog,ll,'','MIRPROFJPG    = ' + mirprofjpg
+      printf,lu, 'MIRPROFJPG    = ' + mirprofjpg
+      plog,ll,'','MIRPROFPS     = ' + mirprofps
+      printf,lu, 'MIRPROFPS     = ' + mirprofps
+      plog,ll,'','MIRINTPROFJPG = ' + mirintprofjpg
+      printf,lu, 'MIRINTPROFJPG = ' + mirintprofjpg
+      plog,ll,'','MIRINTPROFPS  = ' + mirintprofps
+      printf,lu, 'MIRINTPROFPS  = ' + mirintprofps
   endif
   ;
   ; close output file

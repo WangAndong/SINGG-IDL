@@ -160,14 +160,15 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; plot surface brightness profiles
-     ; **** the following should be adjusted to allow for multiple ELGs
      plog,ll,prog,'Creating surface brightness and color profiles'
      ssoup_plotsprofs, ll, inputstr.hname, inputstr.profjpg, inputstr.profps, epilepsy=epilepsy
      ssoup_plotsprofs_mir, ll, inputstr.hname, inputstr.mir_profjpg, inputstr.mir_profps, epilepsy=epilepsy
+     plog,ll,prog,'Creating integrated surface brightness and color profiles'     
+     ssoup_plotsprofs, ll, inputstr.hname, inputstr.intprofjpg, inputstr.intprofps, epilepsy=epilepsy, /integrated
+     ssoup_plotsprofs_mir, ll, inputstr.hname, inputstr.mir_intprofjpg, inputstr.mir_intprofjpg, epilepsy=epilepsy, /integrated
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; create Ha/FUV plots 
-     ; **** the following should be adjusted to allow for multiple ELGs
      plog,ll,prog,'Creating raw Halpha/FUV versus surface brightness plots'
      ssoup_plothafuv, ll, inputstr.hname, inputstr.hafuvjpg, inputstr.hafuvps, epilepsy=epilepsy
      IF slow THEN keywait, 'type any key to continue: '

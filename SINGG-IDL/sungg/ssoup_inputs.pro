@@ -54,6 +54,12 @@ pro ssoup_inputs, fili, ll, inputstr
    ;
    ; G. Meurer 6/2010 (ICRAR/UWA)
    ; G. Meurer 8/2012 (ICRAR/UWA) add inputs for box plots
+   ; S. Andrews 1/2013 (ICRAR/UWA)
+   ;    * Made band independent
+   ;    * Use IDL structures
+   ;    * Added inputs for mid-infrared and integrated profiles
+   ;    * Refactored significantly
+   ;
    prog         = 'SSOUP_INPUTS: '
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo
       bandavail = [''] ; these are the bands we have for this galaxy
@@ -98,47 +104,51 @@ pro ssoup_inputs, fili, ll, inputstr
    combo = transpose(combigen(nbandavail, 3))
    combostr = strjoin(strmid(bandavail[combo], 0, 2)) ; generates RHN, RHF, etc.
    inputstr = { $
-     hname        : '', $
-     fimages_in   : strarr(nbandavail), $
-     fmasks_in    : strarr(nbandavail), $
-     mbadval_in   : make_array(nbandavail, /byte, value=1b), $
-     fimages_out  : strarr(nbandavail), $
-     fmask_out    : '', $
-     fmask_sky    : '', $
-     skyord       : intarr(nbandavail), $
-     mbadval_out  : 1b, $
-     fprofs_out   : strarr(nbandavail), $
-     fbox         : strarr(nbandavail), $
-     fbplotj      : strarr(nbandavail), $
-     fbplote      : strarr(nbandavail), $
-     fjpg_low     : strarr(ncombo), $
-     fjpg_high    : strarr(ncombo), $
-     fjpg_mlow1   : strarr(ncombo), $
-     fjpg_mhigh1  : strarr(ncombo), $
-     fjpg_mlow2   : strarr(ncombo), $
-     fjpg_mhigh2  : strarr(ncombo), $
-     fjpg_mlow3   : strarr(ncombo), $
-     fjpg_mhigh3  : strarr(ncombo), $
-     fjpg_imlow1  : strarr(ncombo), $
-     fjpg_imhigh1 : strarr(ncombo), $
-     fjpg_imlow2  : strarr(ncombo), $
-     fjpg_imhigh2 : strarr(ncombo), $
-     fjpg_imlow3  : strarr(ncombo), $
-     fjpg_imhigh3 : strarr(ncombo), $
-     fcompare     : '', $
-     scalprof     : '', $
-     fcalprof     : '', $
-     scalprof0    : '', $
-     fcalprof0    : '', $
-     profjpg      : '', $
-     profps       : '', $
-     hafuvjpg     : '', $
-     hafuvps      : '', $
-     hafuvjpg0    : '', $
-     hafuvps0     : '', $
-     mir_profjpg  : '', $
-     mir_profps   : '', $
-     status       : 0b $
+     hname          : '', $
+     fimages_in     : strarr(nbandavail), $
+     fmasks_in      : strarr(nbandavail), $
+     mbadval_in     : make_array(nbandavail, /byte, value=1b), $
+     fimages_out    : strarr(nbandavail), $
+     fmask_out      : '', $
+     fmask_sky      : '', $
+     skyord         : intarr(nbandavail), $
+     mbadval_out    : 1b, $
+     fprofs_out     : strarr(nbandavail), $
+     fbox           : strarr(nbandavail), $
+     fbplotj        : strarr(nbandavail), $
+     fbplote        : strarr(nbandavail), $
+     fjpg_low       : strarr(ncombo), $
+     fjpg_high      : strarr(ncombo), $
+     fjpg_mlow1     : strarr(ncombo), $
+     fjpg_mhigh1    : strarr(ncombo), $
+     fjpg_mlow2     : strarr(ncombo), $
+     fjpg_mhigh2    : strarr(ncombo), $
+     fjpg_mlow3     : strarr(ncombo), $
+     fjpg_mhigh3    : strarr(ncombo), $
+     fjpg_imlow1    : strarr(ncombo), $
+     fjpg_imhigh1   : strarr(ncombo), $
+     fjpg_imlow2    : strarr(ncombo), $
+     fjpg_imhigh2   : strarr(ncombo), $
+     fjpg_imlow3    : strarr(ncombo), $
+     fjpg_imhigh3   : strarr(ncombo), $
+     fcompare       : '', $
+     scalprof       : '', $
+     fcalprof       : '', $
+     scalprof0      : '', $
+     fcalprof0      : '', $
+     profjpg        : '', $
+     profps         : '', $
+     intprofjpg     : '', $
+     intprofps      : '', $
+     hafuvjpg       : '', $
+     hafuvps        : '', $
+     hafuvjpg0      : '', $
+     hafuvps0       : '', $
+     mir_profjpg    : '', $
+     mir_profps     : '', $
+     mir_intprofjpg : '', $
+     mir_intprofps  : '', $
+     status         : 0b $
    }
    ; read stuff in
    inputstr.hname               = pfplt_kwdread('HNAME',keywd,value,'',usetype='STRING')
@@ -177,12 +187,16 @@ pro ssoup_inputs, fili, ll, inputstr
    inputstr.fcalprof0        = pfplt_kwdread('FCALPROF0',keywd,value,'',usetype='STRING')
    inputstr.profjpg          = pfplt_kwdread('PROFJPG',keywd,value,'',usetype='STRING')
    inputstr.profps           = pfplt_kwdread('PROFPS',keywd,value,'',usetype='STRING')
+   inputstr.intprofjpg       = pfplt_kwdread('INTPROFJPG',keywd,value,'',usetype='STRING')
+   inputstr.intprofps        = pfplt_kwdread('INTPROFPS',keywd,value,'',usetype='STRING')
    inputstr.hafuvjpg         = pfplt_kwdread('HAFUVJPG',keywd,value,'',usetype='STRING')
    inputstr.hafuvps          = pfplt_kwdread('HAFUVPS',keywd,value,'',usetype='STRING')
    inputstr.hafuvjpg0        = pfplt_kwdread('HAFUVJPG0',keywd,value,'',usetype='STRING')
    inputstr.hafuvps0         = pfplt_kwdread('HAFUVPS0',keywd,value,'',usetype='STRING')
    inputstr.mir_profjpg      = pfplt_kwdread('MIRPROFJPG',keywd,value,'',usetype='STRING')
    inputstr.mir_profps       = pfplt_kwdread('MIRPROFPS',keywd,value,'',usetype='STRING')
+   inputstr.mir_intprofjpg   = pfplt_kwdread('MIRINTPROFJPG',keywd,value,'',usetype='STRING')
+   inputstr.mir_intprofps    = pfplt_kwdread('MIRINTPROFPS',keywd,value,'',usetype='STRING')
    ;
    ; **** should probably allow badvalues to be read in...
    ;

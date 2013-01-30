@@ -18,6 +18,7 @@ PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=integ
   ;    * Add integrated quantities
   ;    * Add option to disable plotting to screen
   ;    * Read from IDL saveset
+  ;    * Cope with multiple galaxies
   ;    * Remove some copypasta and other refactoring
   ;
   snlimit   = 2.0
@@ -33,9 +34,17 @@ PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=integ
   ; some plot parameters
   aa        = angstsym()
   rtitle    = '!3 semi-major axis [arcsec]'
-  hftitle   = '!3 log(F!dH!4a!3!n/f!dFUV!n,f!dR!N ['+aa+'])'
-  abtitle   = '!4 l!3 [ABmag arcssec!u-2!n]'
-  abctitle  = '!3 surface colour'
+  if keyword_set(integrated) then begin
+      hftitle   = 'test'
+      abtitle   = 'test'
+      abctitle  = '!3 integrated surface color'
+      abrange   = [28.0,10.0]
+  endif else begin
+      hftitle   = '!3 log(F!dH!4a!3!n/f!dFUV!n,f!dR!N ['+aa+'])'
+      abtitle   = '!4 l!3 [ABmag arcssec!u-2!n]'
+      abctitle  = '!3 surface colour'
+      abrange   = [32.0,14.0]
+  endelse
   charsize  = 2.5
   symsize   = 1.0
   thick     = 1
@@ -191,7 +200,6 @@ PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=integ
     ; set plot limits
     rrange    = [0.0,rmax]
     hfrange   = [-1.0,3.2]
-    abrange   = [32.0,14.0]
     shrange   = -18.5 + [0.0,-0.4*(abrange[1]-abrange[0])]
     abcrange  = [-1.5,6.0]
     ;
