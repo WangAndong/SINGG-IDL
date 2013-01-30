@@ -20,6 +20,12 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   ; G. Meurer ICRAR/UWA  08/2012  (ICRAR/UWA):
   ;           - now mark up sky background plot files
   ;           - improve documentation
+  ; S. Andrews (ICRAR/UWA) 01/2013
+  ;           - cope with unlimited bands and galaxies
+  ;           - added abridged output
+  ;           - added MIR profiles
+  ;           - added integrated profiles
+  ;
   prog      = 'SSOUP_MKHTML: '
   subtitle  = keyword_set(abridged) ? 'Selected Results from SSOUP' : 'Results from SSOUP'
   callprog  = 'SSOUP'
@@ -66,22 +72,26 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
                (inputstr.fjpg_imlow3), inputstr.fjpg_imhigh3, inputstr.fcompare, inputstr.scalprof, $
                (inputstr.fcalprof), inputstr.scalprof0, inputstr.fcalprof0, inputstr.fbplotj, $
                inputstr.fbplote]
-  hafuvjpg  = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg + '")')
-  hafuvjpg0 = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg0 + '")')
-  hafuvps   = string(indgen(ngal), format='(%"' + inputstr.hafuvps + '")')
-  hafuvps0  = string(indgen(ngal), format='(%"' + inputstr.hafuvps0 + '")')
-  profjpg   = string(indgen(ngal), format='(%"' + inputstr.profjpg + '")')
-  profps    = string(indgen(ngal), format='(%"' + inputstr.profps + '")')
-  f2cp = [f2cp, hafuvjpg, hafuvjpg0, hafuvps, hafuvps0, profjpg, profps]
+  hafuvjpg   = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg + '")')
+  hafuvjpg0  = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg0 + '")')
+  hafuvps    = string(indgen(ngal), format='(%"' + inputstr.hafuvps + '")')
+  hafuvps0   = string(indgen(ngal), format='(%"' + inputstr.hafuvps0 + '")')
+  profjpg    = string(indgen(ngal), format='(%"' + inputstr.profjpg + '")')
+  profps     = string(indgen(ngal), format='(%"' + inputstr.profps + '")')
+  intprofjpg = string(indgen(ngal), format='(%"' + inputstr.intprofjpg + '")')
+  intprofps  = string(indgen(ngal), format='(%"' + inputstr.intprofps + '")')
+  f2cp = [f2cp, hafuvjpg, hafuvjpg0, hafuvps, hafuvps0, profjpg, profps, intprofjpg, intprofps]
   ; add mid-infrared profiles if we have them
   w1 = where(bandavail eq band.mir_W1, count_w1)
   w2 = where(bandavail eq band.mir_W2, count_w2)
   w3 = where(bandavail eq band.mir_W3, count_w3)
   w4 = where(bandavail eq band.mir_W4, count_w4)
   if count_w1 + count_w2 + count_w3 + count_w4 ge 1 then begin
-      mir_profjpg = string(indgen(ngal), format='(%"' + inputstr.mir_profjpg + '")')
-      mir_profps  = string(indgen(ngal), format='(%"' + inputstr.mir_profps + '")')
-      f2cp = [f2cp, mir_profjpg, mir_profps]
+      mir_profjpg    = string(indgen(ngal), format='(%"' + inputstr.mir_profjpg + '")')
+      mir_profps     = string(indgen(ngal), format='(%"' + inputstr.mir_profps + '")')
+      mir_intprofjpg = string(indgen(ngal), format='(%"' + inputstr.mir_intprofjpg + '")')
+      mir_intprofps  = string(indgen(ngal), format='(%"' + inputstr.mir_intprofps + '")')
+      f2cp = [f2cp, mir_profjpg, mir_profps, mir_intprofjpg, mir_intprofps]
   endif
   f2cp = bdir+f2cp
   if not keyword_set(abridged) then begin
@@ -141,7 +151,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   printf,lu,'<hr>'
   ;
   ; mark-up profile plots
-  plog,ll,prog,'marking up three color image'
+  plog,ll,prog,'marking up profile plots'
   printf,lu,'<h3>Surface brightness profile</h3><table border=1 cellpadding=3><tr><th>Bands</th>'
   for i=0,ngal-1 do printf,lu,"<th>Galaxy " + numstr(i) + "</th>
   printf,lu,"<tr><td>Optical/UV</td>
@@ -153,6 +163,22 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   for i=0,ngal-1 do begin
       uannot='TEST IMAGE <a href="'+mir_profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
       ssoup_imcell,ll,lu,mir_profjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
+  endfor
+  printf,lu,'</tr></table><hr>'
+  
+  ; mark-up integrated plots
+  plog,ll,prog,'marking up integrated profile plots'
+  printf,lu,'<h3>Integrated surface brightness profile (TEST)</h3><table border=1 cellpadding=3><tr><th>Bands</th>'
+  for i=0,ngal-1 do printf,lu,"<th>Galaxy " + numstr(i) + "</th>
+  printf,lu,"<tr><td>Optical/UV</td>
+  for i=0,ngal-1 do begin
+      uannot = '<a href="'+intprofps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a>
+      ssoup_imcell,ll,lu,intprofjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
+  endfor
+  printf,lu,"<tr><td>MIR (test)</td>
+  for i=0,ngal-1 do begin
+      uannot='TEST IMAGE <a href="'+mir_intprofps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
+      ssoup_imcell,ll,lu,mir_intprofjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
   endfor
   printf,lu,'</tr></table><hr>'
   ;
