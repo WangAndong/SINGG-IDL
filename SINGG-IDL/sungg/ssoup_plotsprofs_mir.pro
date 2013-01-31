@@ -27,7 +27,7 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=i
   thick     = 2
   if keyword_set(integrated) then begin
       abrange   = [20.0,0.0] 
-      abtitle   = 'test'
+      abtitle   = 'm(r) [ABmag]'
   endif else begin
       abrange   = [27.0,10.0] 
       abtitle = '!4 l!3 [ABmag arcssec!u-2!n]'

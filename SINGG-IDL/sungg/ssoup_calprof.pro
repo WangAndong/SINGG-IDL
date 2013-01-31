@@ -504,6 +504,12 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ssoup_cp_ccolours, ll, mag0, phfl, smprof0, esmproft0, smcfn0, esmcfn0, smcnr0, esmcnr0, slewr0, eslewr0, slewf0, eslewf0, $
                      mflag, emflag, lflag, elflag, clflag, cuflag
   ;
+  r20   = dblarr(ngal, nbandavail)
+  r50   = dblarr(ngal, nbandavail)
+  r80   = dblarr(ngal, nbandavail)
+  err20 = dblarr(ngal, nbandavail)
+  err50 = dblarr(ngal, nbandavail)
+  err80 = dblarr(ngal, nbandavail)
   ; reintegrate linear surface brightnesses to get fluxes
   plog,ll,prog,'integrating dust corrected surface brightness profiles to get dust corrected enclosed fluxes '
   FOR jj = 0, ngal-1 DO BEGIN 
@@ -520,6 +526,13 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
            efbprofc0[ptt0:ptt1] = sqrt(total((anarea*esbprofc0[ptt0:ptt1])^2,/cumulative,/nan))
            efbprofs0[ptt0:ptt1] = sqrt(total((anarea*esbprofs0[ptt0:ptt1])^2,/cumulative,/nan))
         ENDIF 
+     ; calculate radii
+     halflight, fbprof0[ptt0:ptt1,ii], efbproft0[ptt0:ptt1,ii], rad[ptt0:ptt1]/1.5, rad[ptt1]/1.5, r20a, err20a, thresh=0.2
+     r20[jj,ii] = 1.5*r20a & err20[jj,ii] = 1.5*err20a ; convert from pixels to arcsec
+     halflight, fbprof0[ptt0:ptt1,ii], efbproft0[ptt0:ptt1,ii], rad[ptt0:ptt1]/1.5, rad[ptt1]/1.5, r50a, err50a, thresh=0.5
+     r50[jj,ii] = 1.5*r50a & err50[jj,ii] = 1.5*err50a
+     halflight, fbprof0[ptt0:ptt1,ii], efbproft0[ptt0:ptt1,ii], rad[ptt0:ptt1]/1.5, rad[ptt1]/1.5, r80a, err80a, thresh=0.8
+     r80[jj,ii] = 1.5*r80a & err80[jj,ii] = 1.5*err80a
      ENDFOR 
   ENDFOR  
   ;
@@ -539,7 +552,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   plog,ll,prog,'writing calibrated dust corrected integrated magnitudes and colors'
   ssoup_cp_wmagfile, ll, 3, ffcalprof0, ngal, pt0, ptf3, rad, fmprof0, efmproft0, efmprofs0, efmprofc0, $
                      fmcfn0, efmcfn0, fmcnr0, efmcnr0, flewr0, eflewr0, flewf0, eflewf0
-                     
+     
   ; dump the points into an IDL saveset
   ; note: due to IDL being... IDL we cannot get more than 6 digits of accuracy because
   ; IDL uses 32 bit floats. These give about 7dp accuracy. Exercise: try
@@ -547,8 +560,14 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ; IDL> print,a,format='(F)'
   plog,ll,prog,"making IDL saveset"
   profilestr = { $
-      radius                      : ptr_new(!null),     $ ; ?
+      radius                      : ptr_new(!null),     $ ; galactocentric radius along major axis (arcsec)
       radius_int                  : ptr_new(!null),     $ ; like radius, but for integrated quantities
+      r20                         : dblarr(nbandavail), $ ; radius enclosing 20% of flux
+      err20                       : dblarr(nbandavail), $ ; error in above
+      r50                         : dblarr(nbandavail), $ ; radius enclosing 50% of flux
+      err50                       : dblarr(nbandavail), $ ; error in above
+      r80                         : dblarr(nbandavail), $ ; radius enclosing 80% of flux
+      err80                       : dblarr(nbandavail), $ ; error in above
       mprof                       : ptrarr(nbandavail), $ ; surface brightness profile, corresponds (like everything below) 1-1 with bname
       err_mprof                   : ptrarr(nbandavail), $ ; total error in mprof
       mprof_int                   : ptrarr(nbandavail), $ ; integrated (enclosed) surface brightness profile
@@ -596,6 +615,12 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       a = max([pts2[i],ptf2[i],pts3[i],ptf3[i]])
       allprofiles[i].radius     = ptr_new(radan[pt0[i] : a ])
       allprofiles[i].radius_int = ptr_new(rad[pt0[i]   : a ])
+      allprofiles[i].r20        = r20[i,*]
+      allprofiles[i].err20      = err20[i,*]
+      allprofiles[i].r50        = r50[i,*]
+      allprofiles[i].err50      = err50[i,*]
+      allprofiles[i].r80        = r80[i,*]
+      allprofiles[i].err80      = err80[i,*]
       for j=0,nbandavail-1 do begin
           allprofiles[i].mprof[j]                 = ptr_new(smprof[pt0[i]    : pts2[i], j])
           allprofiles[i].err_mprof[j]             = ptr_new(esmproft[pt0[i]  : pts2[i], j])

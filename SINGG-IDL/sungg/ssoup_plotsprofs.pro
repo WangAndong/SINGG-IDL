@@ -36,9 +36,9 @@ PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=integ
   rtitle    = '!3 semi-major axis [arcsec]'
   if keyword_set(integrated) then begin
       hftitle   = 'test'
-      abtitle   = 'test'
+      abtitle   = 'm(r) [ABmag]'
       abctitle  = '!3 integrated surface color'
-      abrange   = [28.0,10.0]
+      abrange   = [27.0,9.0]
   endif else begin
       hftitle   = '!3 log(F!dH!4a!3!n/f!dFUV!n,f!dR!N ['+aa+'])'
       abtitle   = '!4 l!3 [ABmag arcssec!u-2!n]'

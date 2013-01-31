@@ -40,7 +40,7 @@ PRO halflight,Flux,Ferr,binA,Aend, Ahalf,Aerr, $
 ; where it's pretty much monotonically increasing.
 
 ; First, do the center curve.
-  Fmax = MAX(Flux[0:endbin],maxbin)
+  Fmax = MAX(Flux[0:endbin],maxbin,/nan)
   index = WHERE(Flux GT (Fmax+Fout[0])*thresh/2.0 AND $
                 binA LE binA[(maxbin+1)],count)
   IF count GE 2 AND Fout[0]/Fmax LT (1.0/thresh - 1.0) THEN BEGIN
