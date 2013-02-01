@@ -136,6 +136,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ;
   ; initialize skylevr
   skylevr  = 0.0d
+  skysigbx = dblarr(nbandavail)
   ;
   ; loop through bands
   ; this requires R band to execute first, otherwise it will break!
@@ -165,6 +166,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
      eslev      = sxpar(hd, 'SKYSIGBX', count=count)
      IF count NE 1 THEN stop, '**** should be one & only one SKYSIGBX in header, found '+numstr(count)
      plog,ll,prog,'    SKYSIGBX = '+numstr(eslev)
+     skysigbx[ii] = eslev
      skylev     = sxpar(hd, 'SKYLEV', count=count)
      IF count NE 1 THEN stop, '**** should be one & only one SKYLEV in header, found '+numstr(count)
      IF bandavail[ii] EQ band.HALPHA THEN BEGIN 
