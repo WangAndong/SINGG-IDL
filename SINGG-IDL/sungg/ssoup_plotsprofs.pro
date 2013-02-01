@@ -38,10 +38,10 @@ PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=integ
       hftitle   = 'test'
       abtitle   = 'm(r) [ABmag]'
       abctitle  = '!3 integrated surface color'
-      abrange   = [27.0,9.0]
+      abrange   = [23.0,4.0]
   endif else begin
       hftitle   = '!3 log(F!dH!4a!3!n/f!dFUV!n,f!dR!N ['+aa+'])'
-      abtitle   = '!4 l!3 [ABmag arcssec!u-2!n]'
+      abtitle   = '!4 l!3 [ABmag arcsec!u-2!n]'
       abctitle  = '!3 surface colour'
       abrange   = [32.0,14.0]
   endelse

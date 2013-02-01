@@ -133,12 +133,11 @@ PRO ssoup_compresults, ll, sname, photplam, ebv, fprofs, fcomp
         m0      = sxpar(hd, 'magzpt1')
         flx_p   = m0 - 2.5*alog10(dredf[ii]*fluxf/fscale)
         eflx_p  = 2.5*alog10(1.0+flsigskyf/fluxf)
-        r50_p   = ref
      ENDIF ELSE BEGIN
         flx_p   = alog10(fluxf*dredf[ii])
         eflx_p  = alog10(1.0+(flsigskyf^2 + flsigcntf^2)/fluxf)
-        r50_p   = ref
      ENDELSE 
+     r50_p   = ref
      ;
      ; print results for this band to log and output file
      str = ljust(sname,15)+ljust(bandavail[ii],8)+'  '+$

@@ -27,6 +27,8 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ;
   ;  G. Meurer 5/2010;  based on sample.pro by J.H. Kim
   ;            7/2010;  added polynomial sky surface fitting
+  ;  S. Andrews 1/2013; dump results to IDL saveset
+  ;                     some refactoring
   ;
   ; set constants and default parameters
   asdeg      = 3600.0           ; arcsec/degree
@@ -329,7 +331,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
       average    : ptr_new(!null) ,$ ; average
       x          : ptr_new(!null) ,$ ; box x position
       y          : ptr_new(!null) ,$ ; box y position
-      sigma      : ptr_new(!null) ,$ ; detection in sigma(?)
+      sigma      : ptr_new(!null) ,$ ; sky surface brightness(?)
       fit        : ptr_new(!null) ,$ ; fitted value
       residual   : ptr_new(!null)  $ ; residual from fit
   }

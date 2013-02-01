@@ -30,7 +30,7 @@ pro ssoup_plotsprofs_mir, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=i
       abtitle   = 'm(r) [ABmag]'
   endif else begin
       abrange   = [27.0,10.0] 
-      abtitle = '!4 l!3 [ABmag arcssec!u-2!n]'
+      abtitle = '!4 l!3 [ABmag arcsec!u-2!n]'
   endelse
   rtitle    = '!3 semi-major axis [arcsec]' 
   

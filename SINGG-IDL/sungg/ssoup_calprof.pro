@@ -38,6 +38,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ; S. Andrews (ICRAR/UWA) 1/2013
   ;    * significantly refactored
   ;    * dump results to IDL saveset
+  ;    * added r20, r50, r80
   ;
   ; setup stuff
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
@@ -397,7 +398,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ca   =  0.570
   cb   =  0.671
   cc   =  3.220
-  lirx =  alog10(10.0^(ca + cb*smcfn)-cc)
+  lirx =  alog10(10.0^(ca + cb*smcfn)-cc) ; log(FIR/FUV)
   afuv = -0.0333*lirx^3+0.3522*lirx^2+1.1960*lirx+0.4967  ; A(FUV) as a function of radius
   pf   = where(bandavail EQ band.FUV, npf)
   IF npp NE 1 THEN stop, 'there should be one and only one FUV band'
@@ -527,6 +528,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
            efbprofs0[ptt0:ptt1] = sqrt(total((anarea*esbprofs0[ptt0:ptt1])^2,/cumulative,/nan))
         ENDIF 
      ; calculate radii
+     ; TODO: different from ssoup_compresults...
      halflight, fbprof0[ptt0:ptt1,ii], efbproft0[ptt0:ptt1,ii], rad[ptt0:ptt1]/1.5, rad[ptt1]/1.5, r20a, err20a, thresh=0.2
      r20[jj,ii] = 1.5*r20a & err20[jj,ii] = 1.5*err20a ; convert from pixels to arcsec
      halflight, fbprof0[ptt0:ptt1,ii], efbproft0[ptt0:ptt1,ii], rad[ptt0:ptt1]/1.5, rad[ptt1]/1.5, r50a, err50a, thresh=0.5
@@ -562,11 +564,11 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   profilestr = { $
       radius                      : ptr_new(!null),     $ ; galactocentric radius along major axis (arcsec)
       radius_int                  : ptr_new(!null),     $ ; like radius, but for integrated quantities
-      r20                         : dblarr(nbandavail), $ ; radius enclosing 20% of flux
+      r20                         : dblarr(nbandavail), $ ; radius enclosing 20% of flux (dust corrected)
       err20                       : dblarr(nbandavail), $ ; error in above
-      r50                         : dblarr(nbandavail), $ ; radius enclosing 50% of flux
+      r50                         : dblarr(nbandavail), $ ; radius enclosing 50% of flux (dust corrected)
       err50                       : dblarr(nbandavail), $ ; error in above
-      r80                         : dblarr(nbandavail), $ ; radius enclosing 80% of flux
+      r80                         : dblarr(nbandavail), $ ; radius enclosing 80% of flux (dust corrected)
       err80                       : dblarr(nbandavail), $ ; error in above
       mprof                       : ptrarr(nbandavail), $ ; surface brightness profile, corresponds (like everything below) 1-1 with bname
       err_mprof                   : ptrarr(nbandavail), $ ; total error in mprof

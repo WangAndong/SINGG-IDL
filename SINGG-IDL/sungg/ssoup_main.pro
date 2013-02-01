@@ -65,7 +65,7 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
   ;
   IF inputstr.status THEN BEGIN
      ; flush JPGs and PSs
-     spawn,"rm *.jpg *.eps *.ps"
+     spawn,"rm -f *.jpg *.eps *.ps"
      ;
      ; image alignment
      plog,ll,prog,'starting image alignment'
