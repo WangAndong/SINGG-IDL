@@ -1,4 +1,4 @@
-PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, ngal, verbose=verbose, shapepar=shapepar
+PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=shapepar
   ;
   ;  ll       -> logical unit of log file
   ;  fimages  -> array list of input fits images.
@@ -16,7 +16,6 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, ngal, verbose=verbose, sha
   ;                    (default)
   ;              UV  : take uv parameters from sungg_derived
   ;              AVG : take average of optical and UV
-  ; ngal      <- number of galaxies detected
   ;
   ; G. Meurer (ICRAR/UWA) 5/2010 - first written
   ; G. Meurer (ICRAR/UWA) 6/2011 - fixed bug aa ,bb, abin need to be 
@@ -205,5 +204,4 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, ngal, verbose=verbose, sha
      plog,ll,prog,'closing output ASCII file'
      free_lun, lu
   ENDFOR
-  ngal = nelg
 END 

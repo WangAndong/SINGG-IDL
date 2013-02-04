@@ -1,4 +1,4 @@
-PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $ 
+PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $ 
                   uselink=uselink, abridged=abridged
   ;
   ; Makes a web page showing the output from a ssoup run.  
@@ -11,7 +11,6 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   ;   basedir      -> base directory for output
   ;   outdir       -> output directory. 
   ;   inputstr     -> the input structure made by ssoup_inputs.pro
-  ;   ngal         -> the number of galaxies detected
   ;   uselink      -> if set, then link files to outdir, otherwise they 
   ;                   are copied.
   ;   abridged     -> if set, output a shorter summary version to index.html
@@ -25,6 +24,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   ;           - added abridged output
   ;           - added MIR profiles
   ;           - added integrated profiles
+  ;           - added galaxy photometry section
   ;
   prog      = 'SSOUP_MKHTML: '
   subtitle  = keyword_set(abridged) ? 'Selected Results from SSOUP' : 'Results from SSOUP'
@@ -35,6 +35,9 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
   widths    = 600
   ;
   COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo
+  ; photometry data
+  restore,inputstr.hname + "_profiles.save"
+  ngal = n_elements(allprofiles)
   ;
   ; expand base and source directories
   bdir = basedir EQ '.' ? file_expand_path(basedir) : expand_path(basedir)
@@ -181,6 +184,27 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, ngal, $
       ssoup_imcell,ll,lu,mir_intprofjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
   endfor
   printf,lu,'</tr></table><hr>'
+  
+  ; mark up photometry
+  plog,ll,prog,'marking up galaxy photometry'
+  printf,lu,'<h3>Dust corrected galaxy photometry (test)</h3>'
+  for i=0,ngal-1 do begin
+      printf,lu,"<table border=1 cellpadding=3><caption>Galaxy " + numstr(i) + "</caption>"
+      printf,lu,"<tr><th>Band</th><th>r<sub>20</sub></th><th>Error</th><th>r<sub>50</sub></th><th>Error</th>"
+      printf,lu,"<th>r<sub>80</sub></th><th>Error</th><th>r<sub>Kron</sub></th><th>m<sub>Kron</sub></th></tr>"
+      for j=0,nbandavail-1 do begin
+          printf,lu,"<tr><td>" + bandavail[j] + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].r20[j]) + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].err20[j]) + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].r50[j]) + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].err50[j]) + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].r80[j]) + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].err80[j]) + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].rkron[j]) + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].kronmag[j]) + "</td></tr>"
+      endfor
+      printf,lu,"</table><br><br>"
+  endfor
   ;
   ; mark up Halpha/FUV versus surface brightness plots
   plog,ll,prog,'marking up Halpha/FUV vs surface brightness plots'
