@@ -397,13 +397,14 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ;
   ; derive internal extinction vector, using IRX-beta fit of Boissier
   ; et al. (2007, ApJS, 173, 524-537; see pg528)
-  ca   =  0.570
-  cb   =  0.671
-  cc   =  3.220
-  lirx =  alog10(10.0^(ca + cb*smcfn)-cc) ; log(FIR/FUV)
-  afuv = -0.0333*lirx^3+0.3522*lirx^2+1.1960*lirx+0.4967  ; A(FUV) as a function of radius
+  ca   =  0.570d
+  cb   =  0.671d
+  cc   =  3.220d
+  lirx =  alog10(10.0d^(ca + cb*smcfn)-cc) ; log(FIR/FUV)
   pf   = where(bandavail EQ band.FUV, npf)
-  IF npp NE 1 THEN stop, 'there should be one and only one FUV band'
+  IF npf NE 1 THEN stop, 'there should be one and only one FUV band'
+  mir_model = 10.0d^lirx * sbprof[*,pf]
+  afuv = -0.0333d*lirx^3+0.3522d*lirx^2+1.1960d*lirx+0.4967d  ; A(FUV) as a function of radius
   ;
   ; derive dust corrected maximum good radius
   plog,ll,prog,'deriving dust corrected maximum radii'

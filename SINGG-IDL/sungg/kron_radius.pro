@@ -6,7 +6,7 @@ pro kron_radius, prof, errprof, rad, magzpt, skysigbx, kron_radius, err_kr, kron
   ; errprof     -> error in above
   ; rad         -> corresponding radii at which sigma(r) is sampled (same units as prof)
   ; magzpt      -> magnitude zero point
-  ; skysigbx    -> Sky background. R_max = where profile < 0.01*skysigbx 
+  ; skysigbx    -> Sky background. R_max = where profile < k*skysigbx 
   ; kron_radius <- the Kron radius $r_k(Rmax) = \frac{ \int_0^Rmax I(r) r^2 dr} {\int_0^Rmax I(r) r dr}
   ; err_kr      <- error in above
   ; kron_mag    <- the flux enclosed by 2.5 r_k where 2.5 r_k is the Kron aperture. Cuts off at 
@@ -19,7 +19,7 @@ pro kron_radius, prof, errprof, rad, magzpt, skysigbx, kron_radius, err_kr, kron
   inner_rad = [0.0d, rad]
   
   ; calculate rmax, then the Kron radius
-  rmax = min(where(prof lt 0.01d*skysigbx, count), /nan)
+  rmax = min(where(prof lt 1.0d*skysigbx and prof neq 0 and finite(prof), count))
   if count lt 1 then rmax = n_elements(rad)-1
   temp    = (rad[0:rmax]^2 - inner_rad[0:rmax]^2) * rad[0:rmax] * prof[0:rmax]
   temperr = (rad[0:rmax]^2 - inner_rad[0:rmax]^2) * rad[0:rmax] * errprof[0:rmax]
