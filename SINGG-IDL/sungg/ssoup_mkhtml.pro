@@ -191,7 +191,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   for i=0,ngal-1 do begin
       printf,lu,"<table border=1 cellpadding=3><caption>Galaxy " + numstr(i) + "</caption>"
       printf,lu,"<tr><th>Band</th><th>r<sub>20</sub></th><th>Error</th><th>r<sub>50</sub></th><th>Error</th>"
-      printf,lu,"<th>r<sub>80</sub></th><th>Error</th><th>r<sub>Kron</sub></th><th>m<sub>Kron</sub></th></tr>"
+      printf,lu,"<th>r<sub>80</sub></th><th>Error</th><th>r<sub>Kron</sub></th><th>Error</th><th>m<sub>Kron</sub><th>Error</th></th></tr>"
       for j=0,nbandavail-1 do begin
           printf,lu,"<tr><td>" + bandavail[j] + "</td>"
           printf,lu,"<td>" + numstr(allprofiles[i].r20[j]) + "</td>"
@@ -201,7 +201,9 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
           printf,lu,"<td>" + numstr(allprofiles[i].r80[j]) + "</td>"
           printf,lu,"<td>" + numstr(allprofiles[i].err80[j]) + "</td>"
           printf,lu,"<td>" + numstr(allprofiles[i].rkron[j]) + "</td>"
-          printf,lu,"<td>" + numstr(allprofiles[i].kronmag[j]) + "</td></tr>"
+          printf,lu,"<td>" + numstr(allprofiles[i].errkron[j]) + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].kronmag[j]) + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].errkronmag[j]) + "</td></tr>"
       endfor
       printf,lu,"</table><br><br>"
   endfor

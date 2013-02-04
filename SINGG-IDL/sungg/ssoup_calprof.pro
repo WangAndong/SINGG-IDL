@@ -507,14 +507,16 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ssoup_cp_ccolours, ll, mag0, phfl, smprof0, esmproft0, smcfn0, esmcfn0, smcnr0, esmcnr0, slewr0, eslewr0, slewf0, eslewf0, $
                      mflag, emflag, lflag, elflag, clflag, cuflag
   ;
-  r20     = dblarr(ngal, nbandavail)
-  r50     = dblarr(ngal, nbandavail)
-  r80     = dblarr(ngal, nbandavail)
-  err20   = dblarr(ngal, nbandavail)
-  err50   = dblarr(ngal, nbandavail)
-  err80   = dblarr(ngal, nbandavail)
-  rkron   = dblarr(ngal, nbandavail)
-  kronmag = dblarr(ngal, nbandavail)
+  r20        = dblarr(ngal, nbandavail)
+  r50        = dblarr(ngal, nbandavail)
+  r80        = dblarr(ngal, nbandavail)
+  err20      = dblarr(ngal, nbandavail)
+  err50      = dblarr(ngal, nbandavail)
+  err80      = dblarr(ngal, nbandavail)
+  rkron      = dblarr(ngal, nbandavail)
+  errkron    = dblarr(ngal, nbandavail)
+  kronmag    = dblarr(ngal, nbandavail)
+  errkronmag = dblarr(ngal, nbandavail)
   ; reintegrate linear surface brightnesses to get fluxes
   plog,ll,prog,'integrating dust corrected surface brightness profiles to get dust corrected enclosed fluxes '
   FOR jj = 0, ngal-1 DO BEGIN 
@@ -539,8 +541,9 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
         r50[jj,ii] = 1.5*r50a & err50[jj,ii] = 1.5*err50a
         halflight, fbprof0[ptt0:ptt1,ii], efbproft0[ptt0:ptt1,ii], rad[ptt0:ptt1]/1.5, rad[ptt1]/1.5, r80a, err80a, thresh=0.8
         r80[jj,ii] = 1.5*r80a & err80[jj,ii] = 1.5*err80a
-        kron_radius, sbprof0[ptt0:ptt1, ii], esbproft0[ptt0:ptt1, ii], rad[ptt0:ptt1]/1.5, mag0[ii], skysigbx1[ii]*phfl[ii], rk, km
-        rkron[jj,ii] = 1.5*rk & kronmag[jj,ii] = km
+        kron_radius, sbprof0[ptt0:ptt1, ii], esbproft0[ptt0:ptt1, ii], rad[ptt0:ptt1]/1.5, mag0[ii], skysigbx1[ii]*phfl[ii], rk, erk, km, ekm
+        rkron[jj,ii] = 1.5*rk & errkron[jj,ii] = 1.5*erk
+        kronmag[jj,ii] = km & errkronmag[jj,ii] = ekm
      ENDFOR 
   ENDFOR  
   ;
@@ -577,7 +580,9 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       r80                         : dblarr(nbandavail), $ ; radius enclosing 80% of flux (dust corrected)
       err80                       : dblarr(nbandavail), $ ; error in above
       rkron                       : dblarr(nbandavail), $ ; Kron radius (dust corrected)
+      errkron                     : dblarr(nbandavail), $ ; error in above
       kronmag                     : dblarr(nbandavail), $ ; Kron magnitude (dust corrected)
+      errkronmag                  : dblarr(nbandavail), $ ; error in above
       mprof                       : ptrarr(nbandavail), $ ; surface brightness profile, corresponds (like everything below) 1-1 with bname
       err_mprof                   : ptrarr(nbandavail), $ ; total error in mprof
       mprof_int                   : ptrarr(nbandavail), $ ; integrated (enclosed) surface brightness profile
@@ -632,7 +637,9 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       allprofiles[i].r80        = r80[i,*]
       allprofiles[i].err80      = err80[i,*]
       allprofiles[i].rkron      = rkron[i,*]
+      allprofiles[i].errkron    = errkron[i,*]
       allprofiles[i].kronmag    = kronmag[i,*]
+      allprofiles[i].errkronmag = errkronmag[i,*]
       for j=0,nbandavail-1 do begin
           allprofiles[i].mprof[j]                 = ptr_new(smprof[pt0[i]    : pts2[i], j])
           allprofiles[i].err_mprof[j]             = ptr_new(esmproft[pt0[i]  : pts2[i], j])
