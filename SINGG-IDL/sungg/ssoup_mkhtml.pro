@@ -205,6 +205,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
       endfor
       printf,lu,"</table><br><br>"
   endfor
+  printf,lu,"<hr>"
   ;
   ; mark up Halpha/FUV versus surface brightness plots
   plog,ll,prog,'marking up Halpha/FUV vs surface brightness plots'

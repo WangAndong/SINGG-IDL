@@ -539,8 +539,8 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
         r50[jj,ii] = 1.5*r50a & err50[jj,ii] = 1.5*err50a
         halflight, fbprof0[ptt0:ptt1,ii], efbproft0[ptt0:ptt1,ii], rad[ptt0:ptt1]/1.5, rad[ptt1]/1.5, r80a, err80a, thresh=0.8
         r80[jj,ii] = 1.5*r80a & err80[jj,ii] = 1.5*err80a
-        kron_radius, fbprof0[ptt0:ptt1, ii], rad[ptt0:ptt1], mag0[ii], skysigbx1[ii]*phfl[ii], rk, km
-        rkron[jj,ii] = rk & kronmag[jj,ii] = km
+        kron_radius, sbprof0[ptt0:ptt1, ii], esbproft0[ptt0:ptt1, ii], rad[ptt0:ptt1]/1.5, mag0[ii], skysigbx1[ii]*phfl[ii], rk, km
+        rkron[jj,ii] = 1.5*rk & kronmag[jj,ii] = km
      ENDFOR 
   ENDFOR  
   ;
