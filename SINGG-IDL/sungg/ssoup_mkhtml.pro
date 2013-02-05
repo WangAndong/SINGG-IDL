@@ -34,6 +34,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   widthh    = 400
   widths    = 600
   ;
+  compile_opt idl2
   COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo
   ; photometry data
   restore,inputstr.saveprofile
@@ -75,15 +76,23 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
                (inputstr.fjpg_imlow3), inputstr.fjpg_imhigh3, inputstr.fcompare, inputstr.scalprof, $
                (inputstr.fcalprof), inputstr.scalprof0, inputstr.fcalprof0, inputstr.fbplotj, $
                inputstr.fbplote]
-  hafuvjpg   = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg + '")')
-  hafuvjpg0  = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg0 + '")')
-  hafuvps    = string(indgen(ngal), format='(%"' + inputstr.hafuvps + '")')
-  hafuvps0   = string(indgen(ngal), format='(%"' + inputstr.hafuvps0 + '")')
-  profjpg    = string(indgen(ngal), format='(%"' + inputstr.profjpg + '")')
-  profps     = string(indgen(ngal), format='(%"' + inputstr.profps + '")')
-  intprofjpg = string(indgen(ngal), format='(%"' + inputstr.intprofjpg + '")')
-  intprofps  = string(indgen(ngal), format='(%"' + inputstr.intprofps + '")')
-  f2cp = [f2cp, hafuvjpg, hafuvjpg0, hafuvps, hafuvps0, profjpg, profps, intprofjpg, intprofps]
+  ; deformat
+  hafuvjpg       = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg + '")')
+  hafuvjpg0      = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg0 + '")')
+  hafuvps        = string(indgen(ngal), format='(%"' + inputstr.hafuvps + '")')
+  hafuvps0       = string(indgen(ngal), format='(%"' + inputstr.hafuvps0 + '")')
+  profjpg        = string(indgen(ngal), format='(%"' + inputstr.profjpg + '")')
+  profps         = string(indgen(ngal), format='(%"' + inputstr.profps + '")')
+  intprofjpg     = string(indgen(ngal), format='(%"' + inputstr.intprofjpg + '")')
+  intprofps      = string(indgen(ngal), format='(%"' + inputstr.intprofps + '")')
+  fir_profjpg    = string(indgen(ngal), format='(%"' + inputstr.fir_profjpg + '")')
+  fir_profps     = string(indgen(ngal), format='(%"' + inputstr.fir_profps + '")')
+  fir_intprofjpg = string(indgen(ngal), format='(%"' + inputstr.fir_intprofjpg + '")')
+  fir_intprofps  = string(indgen(ngal), format='(%"' + inputstr.fir_intprofps + '")')
+  kronjpg        = string(indgen(ngal), format='(%"' + inputstr.kronjpg + '")')
+  kronps         = string(indgen(ngal), format='(%"' + inputstr.kronps + '")')
+  f2cp = [f2cp, hafuvjpg, hafuvjpg0, hafuvps, hafuvps0, profjpg, intprofjpg, fir_profjpg, $
+    kronjpg, fir_intprofjpg]
   ; add mid-infrared profiles if we have them
   w1 = where(bandavail eq band.mir_W1, count_w1)
   w2 = where(bandavail eq band.mir_W2, count_w2)
@@ -167,6 +176,11 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
       uannot='TEST IMAGE <a href="'+mir_profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
       ssoup_imcell,ll,lu,mir_profjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
   endfor
+  printf,lu,"<tr><td>FIR (test)</td>
+  for i=0,ngal-1 do begin
+      uannot='TEST IMAGE <a href="'+fir_profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
+      ssoup_imcell,ll,lu,fir_profjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
+  endfor
   printf,lu,'</tr></table><hr>'
   
   ; mark-up integrated plots
@@ -182,6 +196,11 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   for i=0,ngal-1 do begin
       uannot='TEST IMAGE <a href="'+mir_intprofps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
       ssoup_imcell,ll,lu,mir_intprofjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
+  endfor
+  printf,lu,"<tr><td>FIR (test)</td>
+  for i=0,ngal-1 do begin
+      uannot='TEST IMAGE <a href="'+fir_intprofps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
+      ssoup_imcell,ll,lu,fir_intprofjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
   endfor
   printf,lu,'</tr></table><hr>'
   
@@ -205,9 +224,24 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
           printf,lu,"<td>" + numstr(allprofiles[i].kronmag[j]) + "</td>"
           printf,lu,"<td>" + numstr(allprofiles[i].errkronmag[j]) + "</td></tr>"
       endfor
-      printf,lu,"</table><br><br>"
+      printf,lu,"</table><p>"
   endfor
   printf,lu,"<hr>"
+  ;
+  ; markup Kron radius plots
+  if not keyword_set(abridged) then begin
+      plog,ll,prog,"Marking up kron radius plots"
+      printf,lu,"<h3>Kron radius convergence (beta)</h3>'
+      printf,lu,"<table border=1 cellpadding=3><tr>"
+      for i=0,ngal-1 do printf,lu,"<th>Galaxy " + numstr(i) + "</th>"
+      printf,lu,"</tr><tr>"
+      for i=0,ngal-1 do begin
+          uannot = '<a href="'+kronps[i]+'">PS</a>'
+          ssoup_imcell,ll,lu,kronjpg[i], fjpgo, width=widthp, uannot=uannot, noresize=noresize, /plot
+      endfor
+      printf,lu,"</tr></table><hr><p>"
+  endif
+      
   ;
   ; mark up Halpha/FUV versus surface brightness plots
   plog,ll,prog,'marking up Halpha/FUV vs surface brightness plots'

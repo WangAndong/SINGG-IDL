@@ -39,7 +39,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ; S. Andrews (ICRAR/UWA) 1/2013
   ;    * significantly refactored
   ;    * dump results to IDL saveset
-  ;    * added r20, r50, r80, kron stuff
+  ;    * added r20, r50, r80, kron stuff, fir model
   ;
   ; setup stuff
    COMMON bands, band, nband, bandnam, bandavail, nbandavail
@@ -363,14 +363,6 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
      ptf2[jj]     = pt0[jj]+kfsnlimg
   ENDFOR 
   ;
-  ; write output files
-  plog,ll,prog,'writing calibrated surface brightnesses and colors'
-  ssoup_cp_wmagfile, ll, 0, fscalprof, ngal, pt0, pts2, radan, smprof, esmproft, esmprofs, esmprofc, $
-                     smcfn, esmcfnt, smcnr, esmcnrt, slewr, eslewrt, slewf, eslewft
-  plog,ll,prog,'writing calibrated integrated magnitudes and colors'
-  ssoup_cp_wmagfile, ll, 1, ffcalprof, ngal, pt0, ptf2, rad, fmprof, efmproft, efmprofs, efmprofc, $
-                     fmcfn, efmcfnt, fmcnr, efmcnrt, flewr, eflewrt, flewf, eflewft
-  ;
   ; derive dust corrected colors and flux ratios
   ;
   ; make arrays for reddening corrected quantities
@@ -404,8 +396,18 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   lirx =  alog10(10.0d^(ca + cb*smcfn)-cc) ; log(FIR/FUV)
   pf   = where(bandavail EQ band.FUV, npf)
   IF npf NE 1 THEN stop, 'there should be one and only one FUV band'
-  mir_model = 10.0d^lirx * sbprof[*,pf]
+  fir_model = 10.0d^lirx * sbprof[*,pf]
+  bogus = where(fir_model gt 1 or fir_model le 0, /null)
+  fir_model[bogus] = !values.f_nan
   afuv = -0.0333d*lirx^3+0.3522d*lirx^2+1.1960d*lirx+0.4967d  ; A(FUV) as a function of radius
+  ;
+  ; write output files
+  plog,ll,prog,'writing calibrated surface brightnesses and colors'
+  ssoup_cp_wmagfile, ll, 0, fscalprof, ngal, pt0, pts2, radan, smprof, esmproft, esmprofs, esmprofc, $
+                     smcfn, esmcfnt, smcnr, esmcnrt, slewr, eslewrt, slewf, eslewft
+  plog,ll,prog,'writing calibrated integrated magnitudes and colors'
+  ssoup_cp_wmagfile, ll, 1, ffcalprof, ngal, pt0, ptf2, rad, fmprof, efmproft, efmprofs, efmprofc, $
+                     fmcfn, efmcfnt, fmcnr, efmcnrt, flewr, eflewrt, flewf, eflewft
   ;
   ; derive dust corrected maximum good radius
   plog,ll,prog,'deriving dust corrected maximum radii'
@@ -509,16 +511,17 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ssoup_cp_ccolours, ll, mag0, phfl, smprof0, esmproft0, smcfn0, esmcfn0, smcnr0, esmcnr0, slewr0, eslewr0, slewf0, eslewf0, $
                      mflag, emflag, lflag, elflag, clflag, cuflag
   ;
-  r20        = dblarr(ngal, nbandavail)
-  r50        = dblarr(ngal, nbandavail)
-  r80        = dblarr(ngal, nbandavail)
-  err20      = dblarr(ngal, nbandavail)
-  err50      = dblarr(ngal, nbandavail)
-  err80      = dblarr(ngal, nbandavail)
-  rkron      = dblarr(ngal, nbandavail)
-  errkron    = dblarr(ngal, nbandavail)
-  kronmag    = dblarr(ngal, nbandavail)
-  errkronmag = dblarr(ngal, nbandavail)
+  r20           = dblarr(ngal, nbandavail)
+  r50           = dblarr(ngal, nbandavail)
+  r80           = dblarr(ngal, nbandavail)
+  err20         = dblarr(ngal, nbandavail)
+  err50         = dblarr(ngal, nbandavail)
+  err80         = dblarr(ngal, nbandavail)
+  rkron         = dblarr(ngal, nbandavail)
+  errkron       = dblarr(ngal, nbandavail)
+  kronmag       = dblarr(ngal, nbandavail)
+  errkronmag    = dblarr(ngal, nbandavail)
+  fir_model_int = dblarr(nrtot)
   ; reintegrate linear surface brightnesses to get fluxes
   plog,ll,prog,'integrating dust corrected surface brightness profiles to get dust corrected enclosed fluxes '
   FOR jj = 0, ngal-1 DO BEGIN 
@@ -534,7 +537,8 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
         IF ii EQ ih THEN BEGIN 
            efbprofc0[ptt0:ptt1] = sqrt(total((anarea*esbprofc0[ptt0:ptt1])^2,/cumulative,/nan))
            efbprofs0[ptt0:ptt1] = sqrt(total((anarea*esbprofs0[ptt0:ptt1])^2,/cumulative,/nan))
-        ENDIF 
+        ENDIF
+        
         ; calculate radii
         ; TODO: different from ssoup_compresults...
         halflight, fbprof0[ptt0:ptt1,ii], efbproft0[ptt0:ptt1,ii], rad[ptt0:ptt1]/1.5, rad[ptt1]/1.5, r20a, err20a, thresh=0.2
@@ -546,6 +550,9 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
         kron_radius, sbprof0[ptt0:ptt1, ii], esbproft0[ptt0:ptt1, ii], rad[ptt0:ptt1]/1.5, mag0[ii], skysigbx1[ii]*phfl[ii], rk, erk, km, ekm
         rkron[jj,ii] = 1.5*rk & errkron[jj,ii] = 1.5*erk
         kronmag[jj,ii] = km & errkronmag[jj,ii] = ekm
+        ;
+        ; integrate FIR model
+        fir_model_int[ptt0:ptt1] = total(anarea * fir_model[ptt0:ptt1], /cumulative, /nan)
      ENDFOR
   ENDFOR
 
@@ -625,7 +632,9 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       log_ha_r_dustcor_int        : ptr_new(!null),     $ ; integrated dust corrected log(flux in Ha/flux in R)
       err_log_ha_r_dustcor_int    : ptr_new(!null),     $ ; error in above
       log_ha_fuv_dustcor_int      : ptr_new(!null),     $ ; integrated dust corrected log(flux in Ha/flux in FUV)
-      err_log_ha_fuv_dustcor_int  : ptr_new(!null)      $ ; error in above
+      err_log_ha_fuv_dustcor_int  : ptr_new(!null),     $ ; error in above
+      fir_model                   : ptr_new(!null),     $ ; fir model flux
+      fir_model_int               : ptr_new(!null)      $ ; integrated fir model flux
   }
   allprofiles = replicate(profilestr, ngal) ; one entry for each galaxy 
   ; populate structure
@@ -685,7 +694,9 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       allprofiles[i].err_log_ha_r_dustcor_int    = ptr_new(eflewr0[pt0[i] : a])
       allprofiles[i].log_ha_fuv_dustcor_int      = ptr_new(flewf0[pt0[i]  : a])
       allprofiles[i].err_log_ha_fuv_dustcor_int  = ptr_new(eflewf0[pt0[i] : a])
-    endfor
+      allprofiles[i].fir_model                   = ptr_new(fir_model[pt0[i] : pt1[i]])
+      allprofiles[i].fir_model_int               = ptr_new(fir_model_int[pt0[i] : pt1[i]])    
+  endfor
   bname = bandavail
   save,filename=saveprof,hname,bname,allprofiles
   plog,ll,prog,'finished '

@@ -168,10 +168,12 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
      plog,ll,prog,'Creating surface brightness and color profiles'
      ssoup_plotsprofs,     ll, inputstr.saveprofile, inputstr.profjpg, inputstr.profps, epilepsy=epilepsy
      ssoup_plotsprofs_mir, ll, inputstr.saveprofile, inputstr.mir_profjpg, inputstr.mir_profps, epilepsy=epilepsy
+     ssoup_plotsprofs_fir, ll, inputstr.saveprofile, inputstr.fir_profjpg, inputstr.fir_profps, epilepsy=epilepsy
      IF slow THEN keywait, 'type any key to continue: '    
      plog,ll,prog,'Creating integrated surface brightness and color profiles'     
      ssoup_plotsprofs,     ll, inputstr.saveprofile, inputstr.intprofjpg, inputstr.intprofps, epilepsy=epilepsy, /integrated
-     ssoup_plotsprofs_mir, ll, inputstr.saveprofile, inputstr.mir_intprofjpg, inputstr.mir_intprofjpg, epilepsy=epilepsy, /integrated
+     ssoup_plotsprofs_mir, ll, inputstr.saveprofile, inputstr.mir_intprofjpg, inputstr.mir_intprofps, epilepsy=epilepsy, /integrated
+     ssoup_plotsprofs_fir, ll, inputstr.saveprofile, inputstr.fir_intprofjpg, inputstr.fir_intprofps, epilepsy=epilepsy, /integrated
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; create Ha/FUV plots 

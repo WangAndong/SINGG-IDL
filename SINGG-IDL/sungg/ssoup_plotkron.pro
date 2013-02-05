@@ -37,19 +37,19 @@ pro ssoup_plotkron, ll, savprofile, fjpg, feps, epilepsy=epilepsy
       fjpg1 = string(k, format='(%"' + fjpg + '")') 
       feps1 = string(k, format='(%"' + feps + '")')
       rad  = *(allprofiles[k].radius)
-      nr = n_elements(rad)
+      nr = make_array(nb, /integer, value=n_elements(rad))
       
       ; calculate kron radius
-      rkron = dblarr(nb, nr)
+      rkron = dblarr(nr[0], nb)
       inner_rad = [0.0d, rad]
       for j=0,nb-1 do begin
           prof = *(allprofiles[k].mprof[j])
-          nr = min( [n_elements(rad), n_elements(prof)], /nan)
-          for i=0,nr-1 do begin
+          nr[j] = min( [n_elements(rad), n_elements(prof)], /nan)
+          for i=0,nr[j]-1 do begin
               temp = (rad[0:i]^2 - inner_rad[0:i]^2) * rad[0:i] * prof[0:i]
               x = total(temp * rad[0:i], /nan)
               y = total(temp, /nan)
-              rkron[j, i] = x/y
+              rkron[i, j] = x/y
           endfor
       endfor
       
@@ -59,11 +59,11 @@ pro ssoup_plotkron, ll, savprofile, fjpg, feps, epilepsy=epilepsy
       ssoup_plot_init, feps1, xs, ys, xoff, yoff
       !p.noerase = 1
       colors = [ !black, !green, !blue, !red, !yellow, !magenta, !cyan, !brown ]
-      plot, rad, rkron[0,*], xrange=xrange, yrange=yrange, xstyle=1, ystyle=1, $
+      plot, rad[0:nr[0]-1], rkron[*,0], xrange=xrange, yrange=yrange, xstyle=1, ystyle=1, $
               charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
               xtitle=xtitle, ytitle=ytitle, title=hname, charthick=thick, $
               xmargin=[8,8], ymargin=[4,4]
-      for i=1,nb-1 do oplot, rad, rkron[i,*], thick=thick, color=colors[i], linestyle=1
+      for i=1,nb-1 do oplot, rad[0:nr[i]-1], rkron[*,i], thick=thick, color=colors[i], linestyle=1
       plog,ll,prog,'Writing plot file: ' + feps1
       ssoup_plot_finish, fjpg1, feps1, wxsize, epilepsy=epilepsy
   endfor

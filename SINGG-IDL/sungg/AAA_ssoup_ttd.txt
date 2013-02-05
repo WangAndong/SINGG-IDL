@@ -27,7 +27,7 @@ SSOUP Programming Things To Do
   + show rejected boxes
 
 * Model fits to surface brightness profiles
-  + kron radius, aperture, fluxes
+  + kron radius, aperture, fluxes (done 01/13 -- Stephen)
   + exponential fit
   + sersic profile fit
 
@@ -49,11 +49,6 @@ SSOUP Programming Things To Do
 * Write out model FIR surface brightness and enclosed flux profile
   [SSOUP_CALPROF.PRO] 
   + calculate modeled FIR flux.
-
-* Make plots of enclosed quantities (with and without dust correction)
-  + fluxes/mag (FUV, NUV, R, Halpha) (done 01/13 - Stephen)
-  + color (FUV-NUV, NUV-R, EW(Halpha), Halpha/FUV) (done 01/13 - Stephen)
-  + calculate and show R_20, R_80: radii containing 20% and 80% of fluxes
 
 * Stand alone or initial SExtractor pipeline
   + SE input file band dependent
@@ -98,11 +93,17 @@ Finished
     # Done 8/2012
 
 * Put it in to SVN or GitHub
-  # Done 12/2012
+  # Done 12/2012 -- Stephen
 
 * Put input parameters in a structure
   - this will make it easier to add parameters
-  # Done 12/2012 - Stephen
+  # Done 12/2012 -- Stephen
+
+* Make plots of enclosed quantities (with and without dust correction)
+  + fluxes/mag (FUV, NUV, R, Halpha)
+  + color (FUV-NUV, NUV-R, EW(Halpha), Halpha/FUV)
+  + calculate and show R_20, R_80: radii containing 20% and 80% of fluxes
+  # Done 01/2013 -- Stephen
 
 Notes
 -----
