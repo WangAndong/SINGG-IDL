@@ -36,7 +36,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   ;
   COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo
   ; photometry data
-  restore,inputstr.hname + "_profiles.save"
+  restore,inputstr.saveprofile
   ngal = n_elements(allprofiles)
   ;
   ; expand base and source directories

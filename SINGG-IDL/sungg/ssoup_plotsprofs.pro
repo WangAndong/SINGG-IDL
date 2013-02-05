@@ -1,9 +1,8 @@
-PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=integrated
+PRO ssoup_plotsprofs, ll, saveprofile, fjpg, feps, epilepsy=epilepsy, integrated=integrated
   ;
   ; plot surface brightness and surface colour profiles
   ;
   ;   ll         -> logical unit number for plot
-  ;   sname      -> Source name
   ;   fjpg       -> output plot file name (JPG), must contain "%d"
   ;   feps       -> optput plot file name (EPS), must contain "%d"
   ;   epilepsy   -> whether we should display images on the screen
@@ -52,7 +51,7 @@ PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=integ
   ; read in profile files
   COMMON bands, band
   plog,ll,prog,'reading in surface brightness profile saveset'
-  restore,sname+"_profiles.save"
+  restore,saveprofile
   for i=0,n_elements(allprofiles)-1 do begin
     ; reform filenames based on galaxy number
     fjpg_1 = string(i, format='(%"' + fjpg + '")') 
@@ -228,7 +227,7 @@ PRO ssoup_plotsprofs, ll, sname, fjpg, feps, epilepsy=epilepsy, integrated=integ
     !p.noerase = 1
     plot, sma[0:1], sr[0:1], xrange=rrange, yrange=abrange, xstyle=1, ystyle=1, $
           charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
-          xtitle=rtitle, ytitle=abtitle, title=sname, charthick=thick, $
+          xtitle=rtitle, ytitle=abtitle, title=hname, charthick=thick, $
           xmargin=[8,8], ymargin=[2,4], /nodata
     ssoup_overlay_prof, sma, sr, sr0, esr0, symsize, thick, !dorange, jr, kr, lr, mr, njr, nkr, $
       nlr, nmr, jr0, kr0, lr0, mr0, njr0, nkr0, nlr0, nmr0

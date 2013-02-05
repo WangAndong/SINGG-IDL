@@ -1,14 +1,14 @@
-PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=epilepsy
+PRO ssoup_plothafuv, ll, saveprofile, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=epilepsy
   ;
   ; plot Halpha/FUV vs Halpha and R surface brightnesses
   ;
-  ;  ll       -> logical unit of log file
-  ;  sname    -> name of singg/hipass source
-  ;  fjpg     -> name of output file (JPG)
-  ;  feps     -> name of output file (EPS)
-  ;  dcorr    -> if set then the plot is set for dust corrected
-  ;              values.
-  ;  epilepsy -> if set, displays plots on screen
+  ;  ll          -> logical unit of log file
+  ;  saveprofile -> filename of profile saveset
+  ;  fjpg        -> name of output file (JPG)
+  ;  feps        -> name of output file (EPS)
+  ;  dcorr       -> if set then the plot is set for dust corrected
+  ;                 values.
+  ;  epilepsy    -> if set, displays plots on screen
   ;
   ; G. Meurer (ICRAR/UWA) 6/2010
   ; G. Meurer (ICRAR/UWA) 9/2010 add points from databases
@@ -33,6 +33,11 @@ PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=e
   prog      = 'SSOUP_PLOTHAFUV: '
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
   ;
+  ; read files
+  plog,ll,prog,'reading in surface brightness profile saveset'
+  restore,saveprofile
+  COMMON bands, band
+  
   ; conversion constants
   plog,ll,prog,'setting constants and plotting parameters'
   csfr      = 7.9d-42             ; Kennicutt et al 1994, salpeter IMF
@@ -87,7 +92,7 @@ PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=e
   ;
   ; set titles according to dust correction
   IF keyword_set(dcorr) THEN BEGIN 
-     title     = sname
+     title     = hname
      ytitle    = "!3 log(F!dH!4a!3!n/f!dFUV!n ["+aa+"])"
      xtitleh   = "!3 log(!4R!3!dH!4a!3!n [W kpc!u-2!n])"
      xtitler   = "!3 log(!4R!3!dR!n [L!dR,sun!n kpc!u-2!n])"
@@ -99,7 +104,7 @@ PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=e
      namh      = 'HALPHA0'
      namhf     = 'log(HALPHA/FUV)0'
   ENDIF ELSE BEGIN 
-     title     = sname+" (raw)"
+     title     = hname+" (raw)"
      ytitle    = "!3 log(F'!dH!4a!3!n/f'!dFUV!n ["+aa+"])"
      xtitleh   = "!3 log(!4R'!3!dH!4a!3!n [W kpc!u-2!n])"
      xtitler   = "!3 log(!4R'!3!dR!n [L!dR,sun!n kpc!u-2!n])"
@@ -112,10 +117,6 @@ PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=e
      namhf     = 'log(HALPHA/FUV)'
   ENDELSE 
   ;
-  ; read files
-  plog,ll,prog,'reading in surface brightness profile saveset'
-  restore,sname+"_profiles.save"
-  COMMON bands, band
   ih   = (where(bname eq band.HALPHA, a))[0]
   ir   = (where(bname eq band.R, z))[0]
   inuv = (where(bname eq band.NUV, z))[0]
@@ -125,7 +126,7 @@ PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=e
       ; reform filenames based on galaxy number
       fjpg_1 = string(i, format='(%"' + fjpg + '")') 
       feps_1 = string(i, format='(%"' + feps + '")') 
-      ; will do a find and replace      
+    
       sma = *(allprofiles[i].radius)
       if keyword_set(dustcor) then begin
           sr = *(allprofiles[i].mprof_dustcor[ir])
@@ -184,9 +185,9 @@ PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=e
       elewf     = eslewf         ; its error
       ;
       ; get quantities from databases
-      ssoup_dbhafuvsb, ll, sname, nfound1, lsha1, elsha1, lsr1, elsr1, lhafuv1, elhafuv1, odb=odb, udb=udb1, raw=raw
-      ssoup_dbhafuvsb, ll, sname, nfound2, lsha2, elsha2, lsr2, elsr2, lhafuv2, elhafuv2, odb=odb, udb=udb2, raw=raw
-      ssoup_dbhafuvsb, ll, sname, nfound3, lsha3, elsha3, lsr3, elsr3, lhafuv3, elhafuv3, odb=odb, udb=udb3, raw=raw
+      ssoup_dbhafuvsb, ll, hname, nfound1, lsha1, elsha1, lsr1, elsr1, lhafuv1, elhafuv1, odb=odb, udb=udb1, raw=raw
+      ssoup_dbhafuvsb, ll, hname, nfound2, lsha2, elsha2, lsr2, elsr2, lhafuv2, elhafuv2, odb=odb, udb=udb2, raw=raw
+      ssoup_dbhafuvsb, ll, hname, nfound3, lsha3, elsha3, lsr3, elsr3, lhafuv3, elhafuv3, odb=odb, udb=udb3, raw=raw
       plog,ll,prog,'number of records found = '+strtrim(string(nfound1),2)+' in optical db = '$
            +strupcase(odb)+' matched to UV db = '+strupcase(udb1)
       plog,ll,prog,'number of records found = '+strtrim(string(nfound2),2)+' in optical db = '$
@@ -196,15 +197,15 @@ PRO ssoup_plothafuv, ll, sname, fjpg, feps, dcorr=dcorr, kline=kline, epilepsy=e
       ;
       ; read in old data for under-plotting
       plog,ll,prog,'reading old results for under-plotting - normal galaxies: '+oldfn
-      readcol, oldfn, snameon, lshaon, lsron, lewfon, format=fmtold
+      readcol, oldfn, hnameon, lshaon, lsron, lewfon, format=fmtold
       plog,ll,prog,'reading old results for under-plotting - weak detections: '+oldfw
-      readcol, oldfw, snameow, lshaow, lsrow, lewfow, format=fmtold
+      readcol, oldfw, hnameow, lshaow, lsrow, lewfow, format=fmtold
       plog,ll,prog,'reading old results for under-plotting - Ha upper limits: '+oldfu
-      readcol, oldfu, snameou, lshaou, lsrou, lewfou, format=fmtold
+      readcol, oldfu, hnameou, lshaou, lsrou, lewfou, format=fmtold
       ;
       ; match weak and non-detections
-      pw       = where(strtrim(snameow,2) eq sname, npw)
-      pu       = where(strtrim(snameou,2) eq sname, npu)
+      pw       = where(strtrim(hnameow,2) eq hname, npw)
+      pu       = where(strtrim(hnameou,2) eq hname, npu)
       plog,ll,prog,'Number of weak H-alpha detection matches: '+strtrim(string(npw),2)
       plog,ll,prog,'Number of (nominal) H-alpha non-detection matches: '+strtrim(string(npu),2)
       ;

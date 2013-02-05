@@ -1,11 +1,11 @@
-PRO ssoup_plotboxes, ll, sname, bn, fjpg, feps, outline=outline, epilepsy=epilepsy
+PRO ssoup_plotboxes, ll, savesky, bn, fjpg, feps, outline=outline, epilepsy=epilepsy
   ;
-  ;  ll     -> logical unit of log file
-  ;  sname  -> name of singg/hipass source
-  ;  bn     -> name of band
-  ;  fimage -> Name of image
-  ;  fjpg   -> name of output file (JPG)
-  ;  feps   -> name of output file (EPS)
+  ;  ll      -> logical unit of log file
+  ;  savesky -> where to find the sky model data
+  ;  bn      -> name of band
+  ;  fimage  -> Name of image
+  ;  fjpg    -> name of output file (JPG)
+  ;  feps    -> name of output file (EPS)
   ;  outline -> if set outline each box otherwise just the grayscale
   ;             in each box is shown with no outline.
   ;
@@ -20,11 +20,8 @@ PRO ssoup_plotboxes, ll, sname, bn, fjpg, feps, outline=outline, epilepsy=epilep
   ytitle    = 'y [pixel]'
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
   ;
-  ; make title
-  title     = 'Source: '+sname+' filter: '+bn
-  ;
   ; read file
-  restore,sname+"_skymodel.save"
+  restore,savesky
   idx = (where(bname eq bn, /null))[0]
   bx = *(skymodeldata[idx].x)
   by = *(skymodeldata[idx].y)
@@ -34,6 +31,8 @@ PRO ssoup_plotboxes, ll, sname, bn, fjpg, feps, outline=outline, epilepsy=epilep
   bfit = *(skymodeldata[idx].fit)
   bxsiz = skymodeldata[idx].boxsize
   nb        = n_elements(bavg)
+  ; make title
+  title     = 'Source: '+hname+' filter: '+bn
   ;
   ; get rms of residuals
   rms       = sqrt(total(bresid^2)/float(nb))

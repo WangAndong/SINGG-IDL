@@ -164,6 +164,14 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   hafuvps         = hname+'_aligned_hafuv_%d.ps'
   hafuvjpg0       = hname+'_aligned_hafuv0_%d.jpg'
   hafuvps0        = hname+'_aligned_hafuv0_%d.ps'
+  kronjpg         = hname+'_kronradius_%d.jpg'
+  kronps          = hname+'_kronradius_%d.ps'
+  firprofjpg      = hname+'_aligned_fir_sprof_%d.jpg'
+  firprofps       = hname+'_aligned_fir_sprof_%d.ps'
+  firintprofjpg   = hname+'_aligned_fir_fprof_%d.jpg'
+  firintprofps    = hname+'_aligned_fir_fprof_%d.ps'
+  savprofile      = hname+'_profiles.save'
+  savsky          = hname+'_skymodel.save'
   
   ; combos
   ncombo = factorial(nbandavail)/(6*factorial(nbandavail-3)) ; number of 3 color combos
@@ -287,6 +295,18 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   plog,ll,'','HAFUVJPG0       = '+hafuvjpg0
   printf,lu, 'HAFUVPS0        = '+hafuvps0
   plog,ll,'','HAFUVPS0        = '+hafuvps0
+  printf,lu, 'KRONJPG         = '+kronjpg
+  plog,ll,'','KRONJPG         = '+kronjpg
+  printf,lu, 'KRONPS          = '+kronps
+  plog,ll,'','KRONPS          = '+kronps
+  printf,lu, 'FIRPROFJPG      = '+firprofjpg
+  plog,ll,'','FIRPROFJPG      = '+firprofjpg
+  printf,lu, 'FIRPROFPS       = '+firprofps
+  plog,ll,'','FIRPROFPS       = '+firprofps
+  printf,lu, 'FIRINTPROFJPG   = '+firintprofjpg
+  plog,ll,'','FIRINTPROFJPG   = '+firintprofjpg
+  printf,lu, 'FIRINTPROFPS    = '+firintprofps
+  plog,ll,'','FIRINTPROFPS    = '+firintprofps
   ; add mid-infrared profiles if we have them
   w1 = where(bandavail eq band.mir_W1, count_w1)
   w2 = where(bandavail eq band.mir_W2, count_w2)
@@ -306,6 +326,10 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
       plog,ll,'','MIRINTPROFPS  = ' + mirintprofps
       printf,lu, 'MIRINTPROFPS  = ' + mirintprofps
   endif
+  printf,lu, 'SAVE_PROFILE         = '+savprofile
+  plog,ll,'','SAVE_PROFILE         = '+savprofile
+  printf,lu, 'SAVE_SKYMODEL        = '+savsky
+  plog,ll,'','SAVE_SKYMODEL        = '+savsky
   ;
   ; close output file
   free_lun,lu

@@ -25,10 +25,10 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ;               keywait.pro are used to slow down the processing
   ;               to a speed a user can monitor.
   ;
-  ;  G. Meurer 5/2010;  based on sample.pro by J.H. Kim
-  ;            7/2010;  added polynomial sky surface fitting
-  ;  S. Andrews 1/2013; dump results to IDL saveset
-  ;                     some refactoring
+  ;  G. Meurer  5/2010;  based on sample.pro by J.H. Kim
+  ;             7/2010;  added polynomial sky surface fitting
+  ;  S. Andrews 1/2013;  dump results to IDL saveset
+  ;                      some refactoring
   ;
   ; set constants and default parameters
   asdeg      = 3600.0           ; arcsec/degree
@@ -471,6 +471,7 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   ; create saveset
   plog,ll,prog,"creating IDL save set"
   bname = bandavail
-  save,filename=inputstr.hname+"_skymodel.save",bname,skymodeldata
+  hname = inputstr.hname
+  save,filename=inputstr.savesky,hname,bname,skymodeldata
   plog,ll,prog,'finished '
 end 

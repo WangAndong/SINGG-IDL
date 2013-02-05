@@ -1,5 +1,5 @@
 PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fscalprof0, ffcalprof0, $
-                   fecntrat=fecntrat
+                   saveprof, fecntrat=fecntrat
   ;
   ; calibrate surface brightness profiles and their errors
   ; tabulate results into a single multiband output file.
@@ -20,6 +20,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ;                brightness and error profiles
   ;  ffcalprof0 -> name of file for output dust corrected enclosed 
   ;                flux and error profiles.
+  ;  saveprof   -> filename for profile saveset
   ;  fecntrat   -> If set the the fractional error in the continuum
   ;                scaling ratio.  Otherwise the error in the scaling 
   ;                ratio is taken from the net Halpha image fits 
@@ -546,8 +547,6 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
         rkron[jj,ii] = 1.5*rk & errkron[jj,ii] = 1.5*erk
         kronmag[jj,ii] = km & errkronmag[jj,ii] = ekm
      ENDFOR
-     ; Kron radii plot
-     ssoup_plotkron,"temp" + numstr(jj) + ".jpg", "temp" + numstr(jj) + ".eps", sbprof[ptt0:ptt1,*], rad[ptt0:ptt1], /epilepsy
   ENDFOR
 
   ;
@@ -678,16 +677,17 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       allprofiles[i].err_log_ha_r_int            = ptr_new(eflewrt[pt0[i] : a])
       allprofiles[i].log_ha_fuv_int              = ptr_new(flewf[pt0[i]   : a])
       allprofiles[i].err_log_ha_fuv_int          = ptr_new(eflewft[pt0[i] : a])
-      allprofiles[i].log_ha_r_dustcor            = ptr_new(slewr0[pt0[i]   : a])
+      allprofiles[i].log_ha_r_dustcor            = ptr_new(slewr0[pt0[i]  : a])
       allprofiles[i].err_log_ha_r_dustcor        = ptr_new(eslewr0[pt0[i] : a])
-      allprofiles[i].log_ha_fuv_dustcor          = ptr_new(slewf0[pt0[i]   : a])
+      allprofiles[i].log_ha_fuv_dustcor          = ptr_new(slewf0[pt0[i]  : a])
       allprofiles[i].err_log_ha_fuv_dustcor      = ptr_new(eslewf0[pt0[i] : a])
-      allprofiles[i].log_ha_r_dustcor_int        = ptr_new(flewr0[pt0[i]   : a])
+      allprofiles[i].log_ha_r_dustcor_int        = ptr_new(flewr0[pt0[i]  : a])
       allprofiles[i].err_log_ha_r_dustcor_int    = ptr_new(eflewr0[pt0[i] : a])
-      allprofiles[i].log_ha_fuv_dustcor_int      = ptr_new(flewf0[pt0[i]   : a])
+      allprofiles[i].log_ha_fuv_dustcor_int      = ptr_new(flewf0[pt0[i]  : a])
       allprofiles[i].err_log_ha_fuv_dustcor_int  = ptr_new(eflewf0[pt0[i] : a])
     endfor
   bname = bandavail
-  save,filename=hname+"_profiles.save",bname,allprofiles
+  save,filename=saveprof,hname,bname,allprofiles
+  plog,ll,prog,'finished '
 END
 

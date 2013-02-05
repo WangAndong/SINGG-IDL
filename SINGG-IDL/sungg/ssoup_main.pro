@@ -65,7 +65,7 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
   ;
   IF inputstr.status THEN BEGIN
      ; flush JPGs and PSs
-     spawn,"rm -f *.jpg *.eps *.ps"
+     spawn,"rm -f *.jpg *.eps *.ps *.save"
      ;
      ; image alignment
      plog,ll,prog,'starting image alignment'
@@ -74,7 +74,7 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
      ; make sky box plots
      plog,ll,prog,'making plots of sky boxes'
      FOR ii = 0, nbandavail-1 DO BEGIN 
-        ssoup_plotboxes, ll, inputstr.hname, bandavail[ii], inputstr.fbplotj[ii], inputstr.fbplote[ii], epilepsy=epilepsy
+        ssoup_plotboxes, ll, inputstr.savesky, bandavail[ii], inputstr.fbplotj[ii], inputstr.fbplote[ii], epilepsy=epilepsy
      ENDFOR 
       epilepsy=0
      ;
@@ -156,25 +156,30 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
      ; calibrate surface brightness profiles
      plog,ll,prog,'making calibrated profiles'
      ssoup_calprof, ll, inputstr.hname, phpl, ebv, (inputstr.fprofs_out), inputstr.scalprof, inputstr.fcalprof, $
-                    (inputstr.scalprof0), inputstr.fcalprof0, fecntrat=fecntrat
+                    (inputstr.scalprof0), inputstr.fcalprof0, inputstr.saveprofile, fecntrat=fecntrat
+     IF slow THEN keywait, 'type any key to continue: '
+     ;
+     ; check kron radii
+     plog,ll,prog,'checking kron radius converges'
+     ssoup_plotkron, ll, inputstr.saveprofile, inputstr.kronjpg, inputstr.kronps, epilepsy=epilepsy
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; plot surface brightness profiles
      plog,ll,prog,'Creating surface brightness and color profiles'
-     ssoup_plotsprofs, ll, inputstr.hname, inputstr.profjpg, inputstr.profps, epilepsy=epilepsy
-     ssoup_plotsprofs_mir, ll, inputstr.hname, inputstr.mir_profjpg, inputstr.mir_profps, epilepsy=epilepsy
+     ssoup_plotsprofs,     ll, inputstr.saveprofile, inputstr.profjpg, inputstr.profps, epilepsy=epilepsy
+     ssoup_plotsprofs_mir, ll, inputstr.saveprofile, inputstr.mir_profjpg, inputstr.mir_profps, epilepsy=epilepsy
      IF slow THEN keywait, 'type any key to continue: '    
      plog,ll,prog,'Creating integrated surface brightness and color profiles'     
-     ssoup_plotsprofs, ll, inputstr.hname, inputstr.intprofjpg, inputstr.intprofps, epilepsy=epilepsy, /integrated
-     ssoup_plotsprofs_mir, ll, inputstr.hname, inputstr.mir_intprofjpg, inputstr.mir_intprofjpg, epilepsy=epilepsy, /integrated
+     ssoup_plotsprofs,     ll, inputstr.saveprofile, inputstr.intprofjpg, inputstr.intprofps, epilepsy=epilepsy, /integrated
+     ssoup_plotsprofs_mir, ll, inputstr.saveprofile, inputstr.mir_intprofjpg, inputstr.mir_intprofjpg, epilepsy=epilepsy, /integrated
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; create Ha/FUV plots 
      plog,ll,prog,'Creating raw Halpha/FUV versus surface brightness plots'
-     ssoup_plothafuv, ll, inputstr.hname, inputstr.hafuvjpg, inputstr.hafuvps, epilepsy=epilepsy
+     ssoup_plothafuv, ll, inputstr.saveprofile, inputstr.hafuvjpg, inputstr.hafuvps, epilepsy=epilepsy
      IF slow THEN keywait, 'type any key to continue: '
      plog,ll,prog,'Creating dust corrected Halpha/FUV versus surface brightness plots'
-     ssoup_plothafuv, ll, inputstr.hname, inputstr.hafuvjpg0, inputstr.hafuvps0, /dcorr, epilepsy=epilepsy
+     ssoup_plothafuv, ll, inputstr.saveprofile, inputstr.hafuvjpg0, inputstr.hafuvps0, /dcorr, epilepsy=epilepsy
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; Mark up results 

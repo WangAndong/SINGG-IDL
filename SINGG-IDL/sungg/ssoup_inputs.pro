@@ -50,6 +50,10 @@ pro ssoup_inputs, fili, ll, inputstr
    ;   hafuvps0     <- name of output dust corr Halpha/fuv plot in ps format (with %d as above)
    ;   mir_profjpg  <- JPG filename for mid-infrared profile plot (with %d as above)
    ;   mir_profps   <- PS filename for mid-infrared profile plot (with %d as above)
+   ;   fir_profjpg  <- ditto, but far-infrared
+   ;   fir_profps   <- ditto, but far-infrared
+   ;   save_profile <- location of profile saveset
+   ;   save_sky     <- location of sky model saveset
    ;   status       <- status
    ;
    ; G. Meurer 6/2010 (ICRAR/UWA)
@@ -57,7 +61,7 @@ pro ssoup_inputs, fili, ll, inputstr
    ; S. Andrews 1/2013 (ICRAR/UWA)
    ;    * Made band independent
    ;    * Use IDL structures
-   ;    * Added inputs for mid-infrared and integrated profiles
+   ;    * Added inputs for mid-infrared, far-infrared and integrated profiles and kron plots
    ;    * Refactored significantly
    ;
    prog         = 'SSOUP_INPUTS: '
@@ -148,6 +152,14 @@ pro ssoup_inputs, fili, ll, inputstr
      mir_profps     : '', $
      mir_intprofjpg : '', $
      mir_intprofps  : '', $
+     fir_profjpg    : '', $
+     fir_profps     : '', $
+     fir_intprofjpg : '', $
+     fir_intprofps  : '', $
+     kronjpg        : '', $
+     kronps         : '', $
+     saveprofile    : '', $
+     savesky        : '', $
      status         : 0b $
    }
    ; read stuff in
@@ -197,6 +209,14 @@ pro ssoup_inputs, fili, ll, inputstr
    inputstr.mir_profps       = pfplt_kwdread('MIRPROFPS',keywd,value,'',usetype='STRING')
    inputstr.mir_intprofjpg   = pfplt_kwdread('MIRINTPROFJPG',keywd,value,'',usetype='STRING')
    inputstr.mir_intprofps    = pfplt_kwdread('MIRINTPROFPS',keywd,value,'',usetype='STRING')
+   inputstr.fir_profjpg      = pfplt_kwdread('FIRPROFJPG',keywd,value,'',usetype='STRING')
+   inputstr.fir_profps       = pfplt_kwdread('FIRPROFPS',keywd,value,'',usetype='STRING')
+   inputstr.fir_intprofjpg   = pfplt_kwdread('FIRINTPROFJPG',keywd,value,'',usetype='STRING')
+   inputstr.fir_intprofps    = pfplt_kwdread('FIRINTPROFPS',keywd,value,'',usetype='STRING')
+   inputstr.kronjpg          = pfplt_kwdread('KRONJPG',keywd,value,'',usetype='STRING')
+   inputstr.kronps           = pfplt_kwdread('KRONPS',keywd,value,'',usetype='STRING')
+   inputstr.saveprofile      = pfplt_kwdread('SAVE_PROFILE',keywd,value,'',usetype='STRING')
+   inputstr.savesky          = pfplt_kwdread('SAVE_SKYMODEL',keywd,value,'',usetype='STRING')
    ;
    ; **** should probably allow badvalues to be read in...
    ;
