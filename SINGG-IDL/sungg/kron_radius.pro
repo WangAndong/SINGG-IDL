@@ -19,7 +19,7 @@ pro kron_radius, prof, errprof, rad, magzpt, skysigbx, kron_radius, err_kr, kron
   inner_rad = [0.0d, rad]
   
   ; calculate rmax, then the Kron radius
-  rmax = min(where(prof lt 1.0d*skysigbx and prof neq 0 and finite(prof), count))
+  rmax = min(where(prof lt 1.0d*skysigbx and prof ne 0 and finite(prof), count))
   if count lt 1 then rmax = n_elements(rad)-1
   temp    = (rad[0:rmax]^2 - inner_rad[0:rmax]^2) * rad[0:rmax] * prof[0:rmax]
   temperr = (rad[0:rmax]^2 - inner_rad[0:rmax]^2) * rad[0:rmax] * errprof[0:rmax]

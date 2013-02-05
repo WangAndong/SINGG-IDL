@@ -41,7 +41,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ;    * added r20, r50, r80, kron stuff
   ;
   ; setup stuff
-   COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
+   COMMON bands, band, nband, bandnam, bandavail, nbandavail
    compile_opt idl2
   hlines1 = '# Surface quantities (in annuli)'
   hlines2 = '#  sma   mu_R   err     lSHa   esky  ecnt  etot   mu_nuv err    mu_fuv err     C(f-n) err    C(n-R) err    lHa/R err     lHa/f err  '
@@ -545,8 +545,11 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
         kron_radius, sbprof0[ptt0:ptt1, ii], esbproft0[ptt0:ptt1, ii], rad[ptt0:ptt1]/1.5, mag0[ii], skysigbx1[ii]*phfl[ii], rk, erk, km, ekm
         rkron[jj,ii] = 1.5*rk & errkron[jj,ii] = 1.5*erk
         kronmag[jj,ii] = km & errkronmag[jj,ii] = ekm
-     ENDFOR 
-  ENDFOR  
+     ENDFOR
+     ; Kron radii plot
+     ssoup_plotkron,"temp" + numstr(jj) + ".jpg", "temp" + numstr(jj) + ".eps", sbprof[ptt0:ptt1,*], rad[ptt0:ptt1], /epilepsy
+  ENDFOR
+
   ;
   ; now convert fluxes to magnitudes / log, this is done 
   ; in another call to ssoup_cp_calcmags.
