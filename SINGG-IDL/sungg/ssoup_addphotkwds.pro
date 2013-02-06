@@ -3,6 +3,8 @@ pro ssoup_addphotkwds, bname, hdr
   ; add photometric keywords to a header based on the observed band
   ;
   ; G. Meurer 6/2010
+  ;
+  ; S. Andrews (ICRAR/UWA) 01/2013 - added Wise
   COMMON bands, band
   mag0     = [18.82, 20.08]
   emag0    = [0.05, 0.03]

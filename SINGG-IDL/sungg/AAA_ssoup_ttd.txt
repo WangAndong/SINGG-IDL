@@ -48,7 +48,7 @@ SSOUP Programming Things To Do
 
 * Write out model FIR surface brightness and enclosed flux profile
   [SSOUP_CALPROF.PRO] 
-  + calculate modeled FIR flux.
+  + calculate modeled FIR flux. (done? 01/2013 -- Stephen)
 
 * Stand alone or initial SExtractor pipeline
   + SE input file band dependent

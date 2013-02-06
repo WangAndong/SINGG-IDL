@@ -34,9 +34,9 @@ PRO ssoup_plotsprofs, ll, saveprofile, fjpg, feps, epilepsy=epilepsy, integrated
   aa        = angstsym()
   rtitle    = '!3 semi-major axis [arcsec]'
   if keyword_set(integrated) then begin
-      hftitle   = 'test'
-      abtitle   = 'm(r) [ABmag]'
-      abctitle  = '!3 integrated surface color'
+      hftitle   = '!3 enclosed log(F!dH!4a!3!n/f!dFUV!n,f!dR!N ['+aa+'])'
+      abtitle   = '!3 m(r) [ABmag]'
+      abctitle  = '!3 enclosed color'
       abrange   = [23.0,4.0]
   endif else begin
       hftitle   = '!3 log(F!dH!4a!3!n/f!dFUV!n,f!dR!N ['+aa+'])'

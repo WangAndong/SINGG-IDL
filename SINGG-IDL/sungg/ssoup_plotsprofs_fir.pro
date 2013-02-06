@@ -28,11 +28,11 @@ pro ssoup_plotsprofs_fir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
   if keyword_set(integrated) then begin
       ;abrange   = [20.0,0.0] 
       abrange = [46, 29]
-      abtitle   = 'm(r) [ABmag]'
+      abtitle   = 'm(r) [Fakemag]'
   endif else begin
       ;abrange   = [27.0,10.0] 
       abrange = [51, 39]
-      abtitle = '!4 l!3 [ABmag arcsec!u-2!n]'
+      abtitle = '!4 l!3 [Fakemag arcsec!u-2!n]'
   endelse
   rtitle    = '!3 semi-major axis [arcsec]' 
   
