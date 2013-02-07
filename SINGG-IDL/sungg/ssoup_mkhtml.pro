@@ -224,6 +224,10 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
           printf,lu,"<td>" + numstr(allprofiles[i].kronmag[j]) + "</td>"
           printf,lu,"<td>" + numstr(allprofiles[i].errkronmag[j]) + "</td></tr>"
       endfor
+      printf,lu,"<tr><td>FIR model</td><td>" + numstr(allprofiles[i].fir_model_r20)
+      printf,lu,"</td><td> --- </td><td>" + numstr(allprofiles[i].fir_model_r50)
+      printf,lu,"</td><td> --- </td><td>" + numstr(allprofiles[i].fir_model_r80)
+      printf,lu,"</td><td> --- </td><td> --- </td><td> --- </td><td> --- </td><td> --- </td></tr>"
       printf,lu,"</table><p>"
   endfor
   printf,lu,"<hr>"
@@ -231,7 +235,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   ; markup Kron radius plots
   if not keyword_set(abridged) then begin
       plog,ll,prog,"Marking up kron radius plots"
-      printf,lu,"<h3>Kron radius convergence (beta)</h3>'
+      printf,lu,"<h3>Kron radius convergence (beta)</h3>"
       printf,lu,"<table border=1 cellpadding=3><tr>"
       for i=0,ngal-1 do printf,lu,"<th>Galaxy " + numstr(i) + "</th>"
       printf,lu,"</tr><tr>"

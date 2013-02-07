@@ -634,7 +634,12 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       log_ha_fuv_dustcor_int      : ptr_new(!null),     $ ; integrated dust corrected log(flux in Ha/flux in FUV)
       err_log_ha_fuv_dustcor_int  : ptr_new(!null),     $ ; error in above
       fir_model                   : ptr_new(!null),     $ ; fir model flux
-      fir_model_int               : ptr_new(!null)      $ ; integrated fir model flux
+      fir_model_int               : ptr_new(!null),     $ ; integrated fir model flux
+      fir_model_r20               : 0.0d,               $ ; fir model r20
+      fir_model_r50               : 0.0d,               $ ; fir model r50
+      fir_model_r80               : 0.0d,               $ ; fir model r80
+     ; fir_model_rkron             : 0.0d,               $ ; fir model kron radius
+     ; fir_model_kronmag           : 0.0d                $ ; fir model kron mag
   }
   allprofiles = replicate(profilestr, ngal) ; one entry for each galaxy 
   ; populate structure
@@ -695,7 +700,17 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       allprofiles[i].log_ha_fuv_dustcor_int      = ptr_new(flewf0[pt0[i]  : a])
       allprofiles[i].err_log_ha_fuv_dustcor_int  = ptr_new(eflewf0[pt0[i] : a])
       allprofiles[i].fir_model                   = ptr_new(fir_model[pt0[i] : pt1[i]])
-      allprofiles[i].fir_model_int               = ptr_new(fir_model_int[pt0[i] : pt1[i]])    
+      allprofiles[i].fir_model_int               = ptr_new(fir_model_int[pt0[i] : pt1[i]])
+      ; calculate FIR model stuff
+      halflight, *(allprofiles[i].fir_model_int), 0, rad[pt0[i]:pt1[i]]/1.5, rad[pt1[i]]/1.5, temp1, a, thresh=0.2
+      allprofiles[i].fir_model_r20 = 1.5*temp1
+      halflight, *(allprofiles[i].fir_model_int), 0, rad[pt0[i]:pt1[i]]/1.5, rad[pt1[i]]/1.5, temp1, a, thresh=0.5
+      allprofiles[i].fir_model_r50 = 1.5*temp1      
+      halflight, *(allprofiles[i].fir_model_int), 0, rad[pt0[i]:pt1[i]]/1.5, rad[pt1[i]]/1.5, temp1, a, thresh=0.8
+      allprofiles[i].fir_model_r80 = 1.5*temp1
+      ;kron_radius, *(allprofiles[i].fir_model), dblarr(pt1[i]-pt0[i]+1), rad[pt0[i]:pt1[i]]/1.5, rad[pt1[i]]/1.5, 0, 1.0e-19, temp1, temp2
+      ;allprofiles[i].fir_model_rkron = 1.5*temp1
+      ;allprofiles[i].fir_model_kronmag = temp2
   endfor
   bname = bandavail
   save,filename=saveprof,hname,bname,allprofiles
