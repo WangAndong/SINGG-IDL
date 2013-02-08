@@ -157,19 +157,19 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   scalprof0       = hname+'_aligned_sprof0.dat'
   fcalprof0       = hname+'_aligned_fprof0.dat'
   profjpg         = hname+'_aligned_sprof_%d.jpg'
-  profps          = hname+'_aligned_sprof_%d.ps'
+  profps          = hname+'_aligned_sprof_%d.eps'
   intprofjpg      = hname+'_aligned_fprof_%d.jpg'
-  intprofps       = hname+'_aligned_fprof_%d.ps'
+  intprofps       = hname+'_aligned_fprof_%d.eps'
   hafuvjpg        = hname+'_aligned_hafuv_%d.jpg'
-  hafuvps         = hname+'_aligned_hafuv_%d.ps'
+  hafuvps         = hname+'_aligned_hafuv_%d.eps'
   hafuvjpg0       = hname+'_aligned_hafuv0_%d.jpg'
-  hafuvps0        = hname+'_aligned_hafuv0_%d.ps'
+  hafuvps0        = hname+'_aligned_hafuv0_%d.eps'
   kronjpg         = hname+'_kronradius_%d.jpg'
-  kronps          = hname+'_kronradius_%d.ps'
+  kronps          = hname+'_kronradius_%d.eps'
   firprofjpg      = hname+'_aligned_fir_sprof_%d.jpg'
-  firprofps       = hname+'_aligned_fir_sprof_%d.ps'
+  firprofps       = hname+'_aligned_fir_sprof_%d.eps'
   firintprofjpg   = hname+'_aligned_fir_fprof_%d.jpg'
-  firintprofps    = hname+'_aligned_fir_fprof_%d.ps'
+  firintprofps    = hname+'_aligned_fir_fprof_%d.eps'
   savprofile      = hname+'_profiles.save'
   savsky          = hname+'_skymodel.save'
   
@@ -314,9 +314,9 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
   w4 = where(bandavail eq band.mir_W4, count_w4)
   if count_w1 + count_w2 + count_w3 + count_w4 ge 1 then begin
       mirprofjpg         = hname+'_aligned_mir_sprof_%d.jpg'
-      mirprofps          = hname+'_aligned_mir_sprof_%d.ps'
+      mirprofps          = hname+'_aligned_mir_sprof_%d.eps'
       mirintprofjpg      = hname+'_aligned_mir_fprof_%d.jpg'
-      mirintprofps       = hname+'_aligned_mir_fprof_%d.ps'
+      mirintprofps       = hname+'_aligned_mir_fprof_%d.eps'
       plog,ll,'','MIRPROFJPG    = ' + mirprofjpg
       printf,lu, 'MIRPROFJPG    = ' + mirprofjpg
       plog,ll,'','MIRPROFPS     = ' + mirprofps

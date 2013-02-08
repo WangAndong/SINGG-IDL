@@ -637,7 +637,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       fir_model_int               : ptr_new(!null),     $ ; integrated fir model flux
       fir_model_r20               : 0.0d,               $ ; fir model r20
       fir_model_r50               : 0.0d,               $ ; fir model r50
-      fir_model_r80               : 0.0d,               $ ; fir model r80
+      fir_model_r80               : 0.0d               $ ; fir model r80
      ; fir_model_rkron             : 0.0d,               $ ; fir model kron radius
      ; fir_model_kronmag           : 0.0d                $ ; fir model kron mag
   }
