@@ -57,11 +57,12 @@ pro ssoup_plotkron, ll, savprofile, fjpg, feps, epilepsy=epilepsy
       yrange    = [min(rkron, /nan)*0.9, max(rkron, /nan)*1.1]
       xrange    = [0, max(rad, /nan)*1.1]
       ssoup_plot_init, feps1, xs, ys, xoff, yoff
+      title = ngal gt 1 ? hname + ":S" + numstr(k+1) : hname
       !p.noerase = 1
       colors = [ !black, !green, !blue, !red, !yellow, !magenta, !cyan, !brown ]
       plot, rad[0:nr[0]-1], rkron[*,0], xrange=xrange, yrange=yrange, xstyle=1, ystyle=1, $
               charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
-              xtitle=xtitle, ytitle=ytitle, title=hname, charthick=thick, $
+              xtitle=xtitle, ytitle=ytitle, title=title, charthick=thick, $
               xmargin=[8,8], ymargin=[4,4]
       for i=1,nb-1 do begin
           oplot, rad[0:nr[i]-1], rkron[*,i], thick=thick, color=colors[i], linestyle=1

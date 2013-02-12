@@ -163,19 +163,23 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   printf,lu,'<hr>'
   ;
   ; mark-up profile plots
+  x = where(bandavail eq band.mir_W1 or bandavail eq band.mir_W2 or bandavail eq band.mir_W3 or bandavail eq band.mir_W4, hasmir)
   plog,ll,prog,'marking up profile plots'
   printf,lu,'<h3>Surface brightness profile</h3><table border=1 cellpadding=3><tr><th>Bands</th>'
-  for i=0,ngal-1 do printf,lu,"<th>Galaxy " + numstr(i) + "</th>
+  if ngal gt 1 then for i=1,ngal do printf,lu,"<th>" + inputstr.hname+":S" + numstr(i) + "</th>" $
+  else printf,lu,"<th>" + inputstr.hname + "</th>
   printf,lu,"<tr><td>Optical/UV</td>
   for i=0,ngal-1 do begin
       uannot = '<a href="'+profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a>
       ssoup_imcell,ll,lu,profjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
   endfor
-  printf,lu,"<tr><td>MIR (test)</td>
-  for i=0,ngal-1 do begin
-      uannot='TEST IMAGE <a href="'+mir_profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
-      ssoup_imcell,ll,lu,mir_profjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
-  endfor
+  if hasmir gt 0 then begin
+      printf,lu,"<tr><td>MIR (test)</td>
+      for i=0,ngal-1 do begin
+          uannot='TEST IMAGE <a href="'+mir_profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
+          ssoup_imcell,ll,lu,mir_profjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
+      endfor
+  endif
   printf,lu,"<tr><td>FIR (test)</td>
   for i=0,ngal-1 do begin
       uannot='TEST IMAGE <a href="'+fir_profps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
@@ -186,17 +190,20 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   ; mark-up integrated plots
   plog,ll,prog,'marking up integrated profile plots'
   printf,lu,'<h3>Integrated surface brightness profile (TEST)</h3><table border=1 cellpadding=3><tr><th>Bands</th>'
-  for i=0,ngal-1 do printf,lu,"<th>Galaxy " + numstr(i) + "</th>
+  if ngal gt 1 then for i=1,ngal do printf,lu,"<th>" + inputstr.hname+":S" + numstr(i) + "</th>" $
+  else printf,lu,"<th>" + inputstr.hname + "</th>
   printf,lu,"<tr><td>Optical/UV</td>
   for i=0,ngal-1 do begin
       uannot = '<a href="'+intprofps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a>
       ssoup_imcell,ll,lu,intprofjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
   endfor
-  printf,lu,"<tr><td>MIR (test)</td>
-  for i=0,ngal-1 do begin
-      uannot='TEST IMAGE <a href="'+mir_intprofps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
-      ssoup_imcell,ll,lu,mir_intprofjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
-  endfor
+  if hasmir gt 0 then begin
+      printf,lu,"<tr><td>MIR (test)</td>
+      for i=0,ngal-1 do begin
+          uannot='TEST IMAGE <a href="'+mir_intprofps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
+          ssoup_imcell,ll,lu,mir_intprofjpg[i],fjpgo,width=widthp,uannot=uannot,noresize=noresize,/plot
+      endfor
+  endif
   printf,lu,"<tr><td>FIR (test)</td>
   for i=0,ngal-1 do begin
       uannot='TEST IMAGE <a href="'+fir_intprofps[i]+'">PS</a> &nbsp; Text: <a href="'+inputstr.scalprof+'">raw</a>, <a href="'+inputstr.scalprof0+'">dust corr.</a></td>'
@@ -208,7 +215,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   plog,ll,prog,'marking up galaxy photometry'
   printf,lu,'<h3>Dust corrected galaxy photometry (test)</h3>'
   for i=0,ngal-1 do begin
-      printf,lu,"<table border=1 cellpadding=3><caption>Galaxy " + numstr(i) + "</caption>"
+      printf,lu,"<table border=1 cellpadding=3><caption>" + (ngal gt 1 ? inputstr.hname + ":S" + numstr(i+1) : inputstr.hname) + "</caption>"
       printf,lu,"<tr><th>Band</th><th>r<sub>20</sub></th><th>Error</th><th>r<sub>50</sub></th><th>Error</th>"
       printf,lu,"<th>r<sub>80</sub></th><th>Error</th><th>r<sub>Kron</sub></th><th>Error</th><th>m<sub>Kron</sub><th>Error</th></th></tr>"
       for j=0,nbandavail-1 do begin
@@ -237,7 +244,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
       plog,ll,prog,"Marking up kron radius plots"
       printf,lu,"<h3>Kron radius convergence (beta)</h3>"
       printf,lu,"<table border=1 cellpadding=3><tr>"
-      for i=0,ngal-1 do printf,lu,"<th>Galaxy " + numstr(i) + "</th>"
+      if ngal gt 1 then for i=1,ngal do printf,lu,"<th>" + inputstr.hname+":S" + numstr(i) + "</th>"
       printf,lu,"</tr><tr>"
       for i=0,ngal-1 do begin
           uannot = '<a href="'+kronps[i]+'">PS</a>'
@@ -257,7 +264,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   printf,lu,'  <th><b>H&alpha;/FUV versus &Sigma; , dust corrected</b></th>'
   printf,lu,'</tr>'
   for i=0,ngal-1 do begin
-      printf,lu,'<tr><td>' + numstr(i) + "</td>
+      printf,lu,'<tr><td>' + (ngal gt 1 ? inputstr.hname + ":S" + numstr(i+1) : inputstr.hname) + "</td>
       ssoup_imcell,ll,lu,hafuvjpg[i],fjpgo,width=widthh,uannot='<a href="'+hafuvps[i]+'">PS</a>',/plot,noresize=noresize
       ssoup_imcell,ll,lu,hafuvjpg0[i],fjpgo,width=widthh,uannot='<a href="'+hafuvps0[i]+'">PS</a>',/plot,noresize=noresize
       printf,lu,'</tr>'

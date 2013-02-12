@@ -92,7 +92,6 @@ PRO ssoup_plothafuv, ll, saveprofile, fjpg, feps, dcorr=dcorr, kline=kline, epil
   ;
   ; set titles according to dust correction
   IF keyword_set(dcorr) THEN BEGIN 
-     title     = hname
      ytitle    = "!3 log(F!dH!4a!3!n/f!dFUV!n ["+aa+"])"
      xtitleh   = "!3 log(!4R!3!dH!4a!3!n [W kpc!u-2!n])"
      xtitler   = "!3 log(!4R!3!dR!n [L!dR,sun!n kpc!u-2!n])"
@@ -104,7 +103,6 @@ PRO ssoup_plothafuv, ll, saveprofile, fjpg, feps, dcorr=dcorr, kline=kline, epil
      namh      = 'HALPHA0'
      namhf     = 'log(HALPHA/FUV)0'
   ENDIF ELSE BEGIN 
-     title     = hname+" (raw)"
      ytitle    = "!3 log(F'!dH!4a!3!n/f'!dFUV!n ["+aa+"])"
      xtitleh   = "!3 log(!4R'!3!dH!4a!3!n [W kpc!u-2!n])"
      xtitler   = "!3 log(!4R'!3!dR!n [L!dR,sun!n kpc!u-2!n])"
@@ -122,13 +120,14 @@ PRO ssoup_plothafuv, ll, saveprofile, fjpg, feps, dcorr=dcorr, kline=kline, epil
   inuv = (where(bname eq band.NUV, z))[0]
   ifuv = (where(bname eq band.FUV, b))[0]
   if a eq 0 or b eq 0 then stop,"Cannot plot Ha/FUV when either Ha or FUV is absent!"
-  for i=0,n_elements(allprofiles)-1 do begin
+  ngal = n_elements(allprofiles)
+  for i=0,ngal-1 do begin
       ; reform filenames based on galaxy number
       fjpg_1 = string(i, format='(%"' + fjpg + '")') 
       feps_1 = string(i, format='(%"' + feps + '")') 
     
       sma = *(allprofiles[i].radius)
-      if keyword_set(dustcor) then begin
+      if keyword_set(dcorr) then begin
           sr = *(allprofiles[i].mprof_dustcor[ir])
           esr = *(allprofiles[i].err_mprof_dustcor[ir])
           sha = *(allprofiles[i].mprof_dustcor[ih])
@@ -214,6 +213,8 @@ PRO ssoup_plothafuv, ll, saveprofile, fjpg, feps, dcorr=dcorr, kline=kline, epil
       ; left panel Halpha/FUV versus Halpha surface brightness
       !p.noerase = 0
       !p.multi   = [2, 2, 1] ; left panel
+      title = ngal gt 1 ? hname + ":S" + numstr(i+1) : hname
+      if not keyword_set(dcorr) then title = title + " (raw)"
       plog,ll,prog,'plotting Halpha/FUV vs Halpha surf bright.'
       plot, lsha, lewf, xrange=xrange1, yrange=yrange, xstyle=1, ystyle=1, psym=gsym(9), $
             xtitle=xtitleh, ytitle=ytitle, title=title, charsize=charsize, symsize=symsize, $

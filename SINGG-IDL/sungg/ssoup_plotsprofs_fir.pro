@@ -39,7 +39,8 @@ pro ssoup_plotsprofs_fir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
   ; read in profile files
   plog,ll,prog,'reading in surface brightness profile saveset'
   restore,savprof
-  for i=0,n_elements(allprofiles)-1 do begin
+  ngal = n_elements(allprofiles)
+  for i=0,ngal-1 do begin
     ; reform filenames based on galaxy number
     fjpg_1 = string(i, format='(%"' + fjpg + '")') 
     feps_1 = string(i, format='(%"' + feps + '")')
@@ -65,10 +66,11 @@ pro ssoup_plotsprofs_fir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
     ansize   = 1.0
     ssoup_plot_init,feps_1,xs,ys,xoff,yoff
     plog,ll,prog,'plotting fir surface brightness profiles'
+    title = ngal gt 1 ? hname + ":S" + numstr(i+1) : hname    
     !p.noerase = 1
     plot, radius, -2.5*alog10(model), xrange=rrange, yrange=abrange, xstyle=1, ystyle=1, $
           charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
-          xtitle=rtitle, ytitle=abtitle, title=hname, charthick=thick, $
+          xtitle=rtitle, ytitle=abtitle, title=title, charthick=thick, $
           xmargin=[8,8], ymargin=[4,4]
     ;
     ;
