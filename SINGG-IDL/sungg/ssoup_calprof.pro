@@ -524,6 +524,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   kronmagam     = dblarr(ngal, nbandavail)
   errkronmagam  = dblarr(ngal, nbandavail)
   fir_model_int = dblarr(nrtot)
+  fir_model_am  = dblarr(ngal)
   ; reintegrate linear surface brightnesses to get fluxes
   plog,ll,prog,'integrating dust corrected surface brightness profiles to get dust corrected enclosed fluxes '
   FOR jj = 0, ngal-1 DO BEGIN 
@@ -558,15 +559,16 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
      ENDFOR
      ; calculate aperture matched Kron magnitudes based on R
      r_rkron = 2.5d*rkron[jj, ir]
+     limit = min(where(rout gt r_rkron, count), /nan)
+     if count lt 1 then limit = ptt1
+     anarea = !pi * (rout[0:limit]^2 - rin[0:limit]^2)
      for ii=0, nbandavail-1 do begin
-        limit = min(where(rout gt r_rkron, count), /nan)
-        if count lt 1 then limit = ptt1
-        anarea = !pi * (rout[0:limit]^2 - rin[0:limit]^2)
         amflux = total(anarea * sbprof0[ptt0:limit+ptt0, ii], /nan)
         kronmagam[jj,ii] = flux2mag(amflux, mag0[ii])
         amerr = sqrt(total( (anarea*esbproft0[ptt0:limit+ptt0,ii])^2, /nan))
         errkronmagam[jj,ii] = alog10(1+amerr/amflux)
     endfor
+    fir_model_am[jj] = -2.5*alog10(total(anarea * fir_model[ptt0:limit+ptt0], /nan))
   ENDFOR
   ;
   ; now convert fluxes to magnitudes / log, this is done 
@@ -651,9 +653,10 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       fir_model_int               : ptr_new(!null),     $ ; integrated fir model flux
       fir_model_r20               : 0.0d,               $ ; fir model r20
       fir_model_r50               : 0.0d,               $ ; fir model r50
-      fir_model_r80               : 0.0d               $ ; fir model r80
+      fir_model_r80               : 0.0d,               $ ; fir model r80
      ; fir_model_rkron             : 0.0d,               $ ; fir model kron radius
-     ; fir_model_kronmag           : 0.0d                $ ; fir model kron mag
+     ; fir_model_kronmag           : 0.0d,               $ ; fir model kron mag
+     fir_model_kronmag_am         : 0.0d                $ ; fir model kron aperture matched mag
   }
   allprofiles = replicate(profilestr, ngal) ; one entry for each galaxy 
   ; populate structure
@@ -727,6 +730,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       ;kron_radius, *(allprofiles[i].fir_model), dblarr(pt1[i]-pt0[i]+1), rad[pt0[i]:pt1[i]]/1.5, rad[pt1[i]]/1.5, 0, 1.0e-19, temp1, temp2
       ;allprofiles[i].fir_model_rkron = 1.5*temp1
       ;allprofiles[i].fir_model_kronmag = temp2
+      allprofiles[i].fir_model_kronmag_am = fir_model_am[i]
   endfor
   bname = bandavail
   save,filename=saveprof,hname,bname,allprofiles

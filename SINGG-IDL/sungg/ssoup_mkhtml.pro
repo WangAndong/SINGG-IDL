@@ -217,7 +217,8 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   for i=0,ngal-1 do begin
       printf,lu,"<table border=1 cellpadding=3><caption>" + (ngal gt 1 ? inputstr.hname + ":S" + numstr(i+1) : inputstr.hname) + "</caption>"
       printf,lu,"<tr><th>Band</th><th>r<sub>20</sub></th><th>Error</th><th>r<sub>50</sub></th><th>Error</th>"
-      printf,lu,"<th>r<sub>80</sub></th><th>Error</th><th>r<sub>Kron</sub></th><th>Error</th><th>m<sub>Kron</sub><th>Error</th></th></tr>"
+      printf,lu,"<th>r<sub>80</sub></th><th>Error</th><th>r<sub>Kron</sub></th><th>Error</th><th>m<sub>Kron</sub><th>Error</th>"
+      printf,lu,"<th>m<sub>am</sub></th><th>Error</th></tr>"
       for j=0,nbandavail-1 do begin
           printf,lu,"<tr><td>" + bandavail[j] + "</td>"
           printf,lu,"<td>" + numstr(allprofiles[i].r20[j]) + "</td>"
@@ -229,12 +230,15 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
           printf,lu,"<td>" + numstr(allprofiles[i].rkron[j]) + "</td>"
           printf,lu,"<td>" + numstr(allprofiles[i].errkron[j]) + "</td>"
           printf,lu,"<td>" + numstr(allprofiles[i].kronmag[j]) + "</td>"
-          printf,lu,"<td>" + numstr(allprofiles[i].errkronmag[j]) + "</td></tr>"
+          printf,lu,"<td>" + numstr(allprofiles[i].errkronmag[j]) + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].kronmag_am[j]) + "</td>"
+          printf,lu,"<td>" + numstr(allprofiles[i].errkronmag_am[j]) + "</td></tr>
       endfor
       printf,lu,"<tr><td>FIR model</td><td>" + numstr(allprofiles[i].fir_model_r20)
       printf,lu,"</td><td> --- </td><td>" + numstr(allprofiles[i].fir_model_r50)
       printf,lu,"</td><td> --- </td><td>" + numstr(allprofiles[i].fir_model_r80)
-      printf,lu,"</td><td> --- </td><td> --- </td><td> --- </td><td> --- </td><td> --- </td></tr>"
+      printf,lu,"</td><td> --- </td><td> --- </td><td> --- </td><td> --- </td><td> --- </td>"
+      printf,lu,"<td>" + numstr(allprofiles[i].fir_model_kronmag_am) + "</td><td> --- </td></tr>"
       printf,lu,"</table><p>"
   endfor
   printf,lu,"<hr>"
