@@ -521,6 +521,8 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   errkron       = dblarr(ngal, nbandavail)
   kronmag       = dblarr(ngal, nbandavail)
   errkronmag    = dblarr(ngal, nbandavail)
+  kronmagam     = dblarr(ngal, nbandavail)
+  errkronmagam  = dblarr(ngal, nbandavail)
   fir_model_int = dblarr(nrtot)
   ; reintegrate linear surface brightnesses to get fluxes
   plog,ll,prog,'integrating dust corrected surface brightness profiles to get dust corrected enclosed fluxes '
@@ -547,15 +549,25 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
         r50[jj,ii] = 1.5*r50a & err50[jj,ii] = 1.5*err50a
         halflight, fbprof0[ptt0:ptt1,ii], efbproft0[ptt0:ptt1,ii], rad[ptt0:ptt1]/1.5, rad[ptt1]/1.5, r80a, err80a, thresh=0.8
         r80[jj,ii] = 1.5*r80a & err80[jj,ii] = 1.5*err80a
-        kron_radius, sbprof0[ptt0:ptt1, ii], esbproft0[ptt0:ptt1, ii], rad[ptt0:ptt1]/1.5, mag0[ii], skysigbx1[ii]*phfl[ii], rk, erk, km, ekm
-        rkron[jj,ii] = 1.5*rk & errkron[jj,ii] = 1.5*erk
+        kron_radius, sbprof0[ptt0:ptt1, ii], esbproft0[ptt0:ptt1, ii], rad[ptt0:ptt1], mag0[ii], skysigbx1[ii]*phfl[ii], rk, erk, km, ekm
+        rkron[jj,ii] = rk & errkron[jj,ii] = erk
         kronmag[jj,ii] = km & errkronmag[jj,ii] = ekm
         ;
         ; integrate FIR model
         fir_model_int[ptt0:ptt1] = total(anarea * fir_model[ptt0:ptt1], /cumulative, /nan)
      ENDFOR
+     ; calculate aperture matched Kron magnitudes based on R
+     r_rkron = 2.5d*rkron[jj, ir]
+     for ii=0, nbandavail-1 do begin
+        limit = min(where(rout gt r_rkron, count), /nan)
+        if count lt 1 then limit = ptt1
+        anarea = !pi * (rout[0:limit]^2 - rin[0:limit]^2)
+        amflux = total(anarea * sbprof0[ptt0:limit+ptt0, ii], /nan)
+        kronmagam[jj,ii] = flux2mag(amflux, mag0[ii])
+        amerr = sqrt(total( (anarea*esbproft0[ptt0:limit+ptt0,ii])^2, /nan))
+        errkronmagam[jj,ii] = alog10(1+amerr/amflux)
+    endfor
   ENDFOR
-
   ;
   ; now convert fluxes to magnitudes / log, this is done 
   ; in another call to ssoup_cp_calcmags.
@@ -593,6 +605,8 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       errkron                     : dblarr(nbandavail), $ ; error in above
       kronmag                     : dblarr(nbandavail), $ ; Kron magnitude (dust corrected)
       errkronmag                  : dblarr(nbandavail), $ ; error in above
+      kronmag_am                  : dblarr(nbandavail), $ ; aperture matched Kron magnitude
+      errkronmag_am               : dblarr(nbandavail), $ ; error in above
       mprof                       : ptrarr(nbandavail), $ ; surface brightness profile, corresponds (like everything below) 1-1 with bname
       err_mprof                   : ptrarr(nbandavail), $ ; total error in mprof
       mprof_int                   : ptrarr(nbandavail), $ ; integrated (enclosed) surface brightness profile
@@ -645,18 +659,20 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ; populate structure
   for i=0,ngal-1 do begin
       a = max([pts2[i],ptf2[i],pts3[i],ptf3[i]])
-      allprofiles[i].radius     = ptr_new(radan[pt0[i] : a ])
-      allprofiles[i].radius_int = ptr_new(rad[pt0[i]   : a ])
-      allprofiles[i].r20        = r20[i,*]
-      allprofiles[i].err20      = err20[i,*]
-      allprofiles[i].r50        = r50[i,*]
-      allprofiles[i].err50      = err50[i,*]
-      allprofiles[i].r80        = r80[i,*]
-      allprofiles[i].err80      = err80[i,*]
-      allprofiles[i].rkron      = rkron[i,*]
-      allprofiles[i].errkron    = errkron[i,*]
-      allprofiles[i].kronmag    = kronmag[i,*]
-      allprofiles[i].errkronmag = errkronmag[i,*]
+      allprofiles[i].radius        = ptr_new(radan[pt0[i] : a ])
+      allprofiles[i].radius_int    = ptr_new(rad[pt0[i]   : a ])
+      allprofiles[i].r20           = r20[i,*]
+      allprofiles[i].err20         = err20[i,*]
+      allprofiles[i].r50           = r50[i,*]
+      allprofiles[i].err50         = err50[i,*]
+      allprofiles[i].r80           = r80[i,*]
+      allprofiles[i].err80         = err80[i,*]
+      allprofiles[i].rkron         = rkron[i,*]
+      allprofiles[i].errkron       = errkron[i,*]
+      allprofiles[i].kronmag       = kronmag[i,*]
+      allprofiles[i].errkronmag    = errkronmag[i,*]
+      allprofiles[i].kronmag_am    = kronmagam[i,*]
+      allprofiles[i].errkronmag_am = errkronmagam[i,*]
       for j=0,nbandavail-1 do begin
           allprofiles[i].mprof[j]                 = ptr_new(smprof[pt0[i]    : pts2[i], j])
           allprofiles[i].err_mprof[j]             = ptr_new(esmproft[pt0[i]  : pts2[i], j])

@@ -12,7 +12,7 @@ pro ssoup_plotkron, ll, savprofile, fjpg, feps, epilepsy=epilepsy
   ;
   ; S. Andrews (ICRAR/UWA) 01/2013
   
-  prog = 'SSOUP_PLOTKRON:'
+  prog = 'SSOUP_PLOTKRON: '
   plog,ll,prog,'------------------------- starting '+prog+'---------------------------------'
   ; restore/rename
   restore,savprofile
@@ -40,32 +40,29 @@ pro ssoup_plotkron, ll, savprofile, fjpg, feps, epilepsy=epilepsy
       nr = make_array(nb, /integer, value=n_elements(rad))
       
       ; calculate kron radius
-      rkron = dblarr(nr[0], nb)
+      rkron = ptrarr(nb)
       inner_rad = [0.0d, rad]
       for j=0,nb-1 do begin
-          prof = *(allprofiles[k].mprof[j])
-          nr[j] = min( [n_elements(rad), n_elements(prof)], /nan)
-          for i=0,nr[j]-1 do begin
-              temp = (rad[0:i]^2 - inner_rad[0:i]^2) * rad[0:i] * prof[0:i]
-              x = total(temp * rad[0:i], /nan)
-              y = total(temp, /nan)
-              rkron[i, j] = x/y
-          endfor
+          prof = 10.0^(-0.4**(allprofiles[k].mprof[j]))
+          i = min( [n_elements(rad), n_elements(prof)], /nan) -1
+          x = total((rad[0:i] - inner_rad[0:i]) * rad[0:i]^2 * prof[0:i], /nan, /cumulative, /double)
+          y = total((rad[0:i] - inner_rad[0:i]) * rad[0:i]   * prof[0:i], /nan, /cumulative, /double)
+          rkron[j] = ptr_new(x/y)
       endfor
       
       ; set up plot
-      yrange    = [min(rkron, /nan)*0.9, max(rkron, /nan)*1.1]
+      yrange    = [0, max(*rkron[0], /nan)*1.1]
       xrange    = [0, max(rad, /nan)*1.1]
       ssoup_plot_init, feps1, xs, ys, xoff, yoff
       title = ngal gt 1 ? hname + ":S" + numstr(k+1) : hname
       !p.noerase = 1
-      colors = [ !black, !green, !blue, !red, !yellow, !magenta, !cyan, !brown ]
-      plot, rad[0:nr[0]-1], rkron[*,0], xrange=xrange, yrange=yrange, xstyle=1, ystyle=1, $
+      colors = [ !black, !green, !blue, !red, !dyellow, !magenta, !cyan, !brown ]
+      plot, rad[0:nr[0]-1], *(rkron[0]), xrange=xrange, yrange=yrange, xstyle=1, ystyle=1, $
               charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
               xtitle=xtitle, ytitle=ytitle, title=title, charthick=thick, $
               xmargin=[8,8], ymargin=[4,4]
       for i=1,nb-1 do begin
-          oplot, rad[0:nr[i]-1], rkron[*,i], thick=thick, color=colors[i], linestyle=1
+          oplot, rad[0:nr[i]-1], *(rkron[i]), thick=thick, color=colors[i], linestyle=1
           plots, [allprofiles[k].r50[i], allprofiles[k].r50[i]], color=colors[i]
       endfor
       plog,ll,prog,'Writing plot file: ' + feps1

@@ -20,22 +20,22 @@ pro kron_radius, prof, errprof, rad, magzpt, skysigbx, kron_radius, err_kr, kron
   
   ; calculate rmax, then the Kron radius
   rmax = min(where(prof lt 1.0d*skysigbx and prof ne 0 and finite(prof), count))
-  if count lt 1 then rmax = n_elements(rad)-1
-  temp    = (rad[0:rmax]^2 - inner_rad[0:rmax]^2) * rad[0:rmax] * prof[0:rmax]
-  temperr = (rad[0:rmax]^2 - inner_rad[0:rmax]^2) * rad[0:rmax] * errprof[0:rmax]
-  x = total(temp * rad[0:rmax], /nan)
-  dx = sqrt(total( (temperr*rad[0:rmax])^2 , /nan))
+  if count lt 1 then rmax = n_elements(rad)-2
+  temp    = (rad[0:rmax] - inner_rad[0:rmax]) * rad[0:rmax] * prof[0:rmax]
+  temperr = (rad[0:rmax] - inner_rad[0:rmax]) * rad[0:rmax] * errprof[0:rmax]
+  x = total(temp * rad[0:rmax], /nan, /double)
+  dx = sqrt(total( (temperr*rad[0:rmax])^2 , /nan, /double))
   y = total(temp, /nan)
   dy = sqrt(total(temperr^2, /nan))
   kron_radius = x/y
-  err_kr = (x/y)*sqrt( (dx/x)^2 + (dy/y)^2 )
+  err_kr = kron_radius*sqrt( (dx/x)^2 + (dy/y)^2 )
   
   ; now integrate I(r) out to 2.5 r_k, or as far as we can
   aperture = min(where(rad gt 2.5d*kron_radius, count), /nan)
-  if count lt 1 then aperture = n_elements(rad)-1
+  if count lt 1 then aperture = n_elements(rad)-2
   temp = !pi * (rad[0:aperture]^2 - inner_rad[0:aperture]^2)
-  kron_flux = total(temp * prof[0:aperture], /nan)
-  err_flux = sqrt( total( (temp*errprof[0:aperture])^2 , /nan ))
+  kron_flux = total(temp * prof[0:aperture], /nan, /double)
+  err_flux = sqrt( total( (temp*errprof[0:aperture])^2 , /nan, /double))
   kron_mag = flux2mag(kron_flux, magzpt)
   err_mag = alog10(1 + err_flux/kron_flux)
 end
