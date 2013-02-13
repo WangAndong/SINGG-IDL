@@ -731,5 +731,6 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   bname = bandavail
   save,filename=saveprof,hname,bname,allprofiles
   plog,ll,prog,'finished '
+  undefine,allprofiles
 END
 

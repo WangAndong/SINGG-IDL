@@ -81,5 +81,6 @@ pro ssoup_plotsprofs_fir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
     !p.noerase = 0
     ssoup_plot_finish,fjpg_1,feps_1,wxsize,epilepsy=epilepsy 
  endfor
+ undefine,allprofiles
  plog,ll,prog,'finished '
 end

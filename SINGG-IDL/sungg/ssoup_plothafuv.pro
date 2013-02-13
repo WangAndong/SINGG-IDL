@@ -316,4 +316,5 @@ PRO ssoup_plothafuv, ll, saveprofile, fjpg, feps, dcorr=dcorr, kline=kline, epil
       !p.noerase = 0
       ssoup_plot_finish,fjpg_1,feps_1,1200,epilepsy=epilepsy
   endfor
+  undefine,allprofiles
 END

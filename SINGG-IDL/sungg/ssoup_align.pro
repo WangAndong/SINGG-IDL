@@ -473,5 +473,6 @@ pro ssoup_align, ll, inputstr, goslow=goslow
   bname = bandavail
   hname = inputstr.hname
   save,filename=inputstr.savesky,hname,bname,skymodeldata
+  undefine,skymodeldata
   plog,ll,prog,'finished '
 end 

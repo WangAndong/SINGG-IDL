@@ -317,9 +317,11 @@ PRO ssoup_plotsprofs, ll, saveprofile, fjpg, feps, epilepsy=epilepsy, integrated
     ;
     ; ------------------------------------------------------------------
     ; finish plot
-    plog,ll,prog,'finishing. Will write plotfile: '+feps_1
+    plog,ll,prog,'Will write plotfile: '+feps_1
     !p.multi   = 0
     !p.noerase = 0
     ssoup_plot_finish,fjpg_1,feps_1,wxsize,epilepsy=epilepsy
   endfor
+  undefine,allprofiles
+  plog,ll,prog,'finished.'
 END 

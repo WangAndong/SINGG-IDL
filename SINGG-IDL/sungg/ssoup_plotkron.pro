@@ -68,6 +68,7 @@ pro ssoup_plotkron, ll, savprofile, fjpg, feps, epilepsy=epilepsy
       plog,ll,prog,'Writing plot file: ' + feps1
       ssoup_plot_finish, fjpg1, feps1, wxsize, epilepsy=epilepsy
   endfor
+  undefine,allprofiles
   plog,ll,prog,'finished.'
 end
   

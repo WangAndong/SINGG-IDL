@@ -133,4 +133,5 @@ PRO ssoup_plotboxes, ll, savesky, bn, fjpg, feps, outline=outline, epilepsy=epil
   !p.multi   = 0
   !p.noerase = 0
   ssoup_plot_finish,fjpg,feps,wxsize,epilepsy=epilepsy
+  undefine,skymodeldata
 END 

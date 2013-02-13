@@ -427,5 +427,6 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   ; finish
   plog,ll,prog,'returning to starting directory: '+cwd
   cd, cwd
+  undefine,allprofiles
   plog,ll,prog,'finished'
 END 
