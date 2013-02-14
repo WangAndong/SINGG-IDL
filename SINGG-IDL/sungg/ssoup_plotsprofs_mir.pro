@@ -15,12 +15,6 @@ pro ssoup_plotsprofs_mir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
   COMMON bands, band
   prog      = 'SSOUP_PLOTSPROFS_MIR: '
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
-  
-  w1 = (where(bname eq band.mir_W1, cw1))[0]
-  w2 = (where(bname eq band.mir_W2, cw2))[0]
-  w3 = (where(bname eq band.mir_W3, cw3))[0]
-  w4 = (where(bname eq band.mir_W4, cw4))[0]
-  if cw1+cw2+cw3+cw4 lt 1 then return,"No mid-infrared data to plot!"
     
   ; flags
   mflag   =  99.999  ; magnitude flag value
@@ -43,6 +37,14 @@ pro ssoup_plotsprofs_mir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
   ; read in profile files
   plog,ll,prog,'reading in surface brightness profile saveset'
   restore,savprof
+  w1 = (where(bname eq band.mir_W1, cw1))[0]
+  w2 = (where(bname eq band.mir_W2, cw2))[0]
+  w3 = (where(bname eq band.mir_W3, cw3))[0]
+  w4 = (where(bname eq band.mir_W4, cw4))[0]
+  if cw1+cw2+cw3+cw4 lt 1 then begin
+      plog,ll,"No mid-infrared data to plot!"
+      return
+  endif
   ngal = n_elements(allprofiles)
   for i=0,ngal-1 do begin
     ; reform filenames based on galaxy number
