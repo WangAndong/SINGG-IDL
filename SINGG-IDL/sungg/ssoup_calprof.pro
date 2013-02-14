@@ -64,8 +64,8 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   plog,ll,prog,'----------------- starting '+prog+'----------------------'
   ;
   ; convert S/N limit to err limits in mag and dex
-  edlim   = alog10(1.0+1.0/snlimit)    ; dex
-  emlim   = 2.5*edlim                  ; mag
+  edlim   = alog10(1.0d+1.0d/snlimit)   ; dex
+  emlim   = 2.5d*edlim                  ; mag
   ;
   ; read R header just to get number of galaxies
   ir = (where(bandavail eq band.R, nir))[0]
@@ -452,12 +452,12 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
      afact       = acalzlaw[ii]/acalzlaw[pf]      ; factor to multiply A_FUV by to get A_band
      afact       = afact[0]                       ; have to convert this to a scalar...
      aband       = -1.0*afuv*afact                ; magnitude correction this should now be an array, since afuv is an array
-     sbfact      = 10.0^(-0.4*aband)
+     sbfact      = 10.0d^(-0.4d*aband)
      flgtest     = mflag
      eflgtest    = emflag
      IF bandavail[ii] EQ band.HALPHA THEN  BEGIN 
-        aband    = -0.4*aband                     ; convert to dex for Halpha
-        sbfact   = 10.0^(aband)
+        aband    = -0.4d*aband                     ; convert to dex for Halpha
+        sbfact   = 10.0d^(aband)
         flgtest  = lflag
         eflgtest = elflag
      ENDIF 
@@ -501,8 +501,8 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   ; first the foreground dust corrections are kludged to 1.0
   ; since they have been done, and set zeropoints so they work
   ; with fluxes rather than count rates
-  dummy = 0.0*dredf+1.0
-  mag1  = 0.0*mag0
+  dummy = 0.0d*dredf+1.0d
+  mag1  = 0.0d*mag0
   for ii = 0, nbandavail-1 do if ii ne ih then mag1[ii] = mag0[ii]+2.5*alog10(phfl[ii])
   ssoup_cp_calcmags, ll, mag1, dummy, snlimit, sbprof0, esbproft0, esbprofc0, esbprofs0, $
                      smprof0, esmproft0, esmprofc0, esmprofs0, mflag, emflag, lflag, elflag

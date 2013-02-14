@@ -12,6 +12,9 @@ PRO ssoup_plotboxes, ll, savesky, bn, fjpg, feps, outline=outline, epilepsy=epil
   ; G. Meurer 6/2011  (ICRAR/UWA)
   ; G. Meurer 9/2012  (ICRAR/UWA)
   ;    * add outline keyword
+  ; S. Andrews 1/2013 (ICRAR/UWA)
+  ;    * added epilepsy
+  ;    * read from saveset
   ;
   prog      = 'SSOUP_PLOTBOXES: '
   charsize  = 2.1

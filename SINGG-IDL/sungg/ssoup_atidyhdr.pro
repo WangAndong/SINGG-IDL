@@ -14,7 +14,8 @@ PRO ssoup_atidyhdr, ll, bname, fnami, fnamo, kfwhm, im, hdin, hdout, astr
   ;           structure then this is copied into the new header
   ;           otherwise it is taken from the current header
   ;
-  ; G. Meurer 5/2010 ICRAR/UWA      
+  ; G. Meurer 5/2010 ICRAR/UWA
+  ; S. Andrews 2/2013 ICRAR/UWA added Wise, refactoring 
   COMMON bands, band, nband, bandnam, bandavail, nbandavail
   findpro,"ssoup_atidyhdr",/noprint,dirlist=temp123 ; directory containing template headers 
   prog      = 'SSOUP_ATIDYHDR: '

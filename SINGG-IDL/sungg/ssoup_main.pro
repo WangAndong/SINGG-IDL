@@ -33,6 +33,7 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
   ;                      * implement sky box plotting
   ;                        (required changes to ssoup_inputs, ssoup_mkhtml)
   ;                      * improve documentation
+  ; S. Andrews (ICRAR/UWA) - significant overhauling (see individual files)
   ;
   fili      = 'ssoup.in'
   flog      = 'ssoup.log'

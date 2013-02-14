@@ -27,6 +27,7 @@ PRO ssoup_cp_ccolours, ll, mag0, phfl, mg, emg, colfn, ecolfn, colnr, ecolnr, $
   ;  cuflaf -> color or log(flux ratio) is an upper limit
   ;
   ; G. Meurer (ICRAR/UWA) 4/2011
+  ; S. Andrews (ICRAR/UWA) refactored
   ;
   ;mflag   =  99.999  ; magnitude flag value
   ;emflag  =   9.999  ; error mag flag

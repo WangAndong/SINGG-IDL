@@ -20,6 +20,7 @@ PRO ssoup_profiles, ll, fimages, fmask, hname, fprof, verbose=verbose, shapepar=
   ; G. Meurer (ICRAR/UWA) 5/2010 - first written
   ; G. Meurer (ICRAR/UWA) 6/2011 - fixed bug aa ,bb, abin need to be 
   ;                                in pixels when passed to calc_growth
+  ; S. Andrews (ICRAR/UWA) 1/2013 - refactoring
   ;
   ; prelims
   dbo      = 'singg_derived'       ; get optical measurements from this DB

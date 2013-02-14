@@ -31,6 +31,7 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ;              responsibility for any epileptic seizures that occur.
    ;
    ; G. Meurer (ICRAR/UWA) 06/2010  based on sample.pro by Ji Hoon Kim
+   ; S. Andrews (ICRAR/UWA) 01/2013 added WISE, refactoring, epilepsy
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
    ;beta    = -1
    beta    = 0
