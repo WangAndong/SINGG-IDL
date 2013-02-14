@@ -72,19 +72,6 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
      plog,ll,prog,'starting image alignment'
      ssoup_align, ll, inputstr, goslow=slow
      ;
-     ; make sky box plots
-     plog,ll,prog,'making plots of sky boxes'
-     FOR ii = 0, nbandavail-1 DO BEGIN 
-        ssoup_plotboxes, ll, inputstr.savesky, bandavail[ii], inputstr.fbplotj[ii], inputstr.fbplote[ii], epilepsy=epilepsy
-     ENDFOR 
-      epilepsy=0
-     ;
-     ; extract radial profiles
-     IF slow THEN keywait, 'type any key to continue: '
-     plog,ll,prog,'extracting profiles'
-     ssoup_profiles, ll, inputstr.fimages_out, inputstr.fmask_out, inputstr.hname, $ 
-                     (inputstr.fprofs_out), shapepar='OPT'
-     ;
      ; get foreground dust absorption
      dbopen,sdb
      lista = dbmatch('name', inputstr.hname)
@@ -93,16 +80,13 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
      dbclose
      plog,ll,prog,'using E(B-V) = '+numstr(ebv)
      ;
-     IF slow THEN keywait, 'type any key to continue: '
-     plog,ll,prog,'preparing to make colour images'
-     phpl = make_array(nbandavail,/float,value=0.0)
-     phfl = phpl
-     ;
      ; read in the output fits images so as to create 3 color 
      ; preview images.  First just read a header to get image size
      fits_read, inputstr.fimages_out[4], img, hd, /header_only
      nx   = sxpar(hd,'NAXIS1')
      ny   = sxpar(hd,'NAXIS2')
+     phpl = make_array(nbandavail,/float,value=0.0)
+     phfl = phpl
      imgc = make_array(nx,ny,nbandavail,/float,value=0.0)
      FOR ii = 0, nbandavail-1 DO BEGIN
         fits_read, inputstr.fimages_out[ii], img, hd
@@ -110,9 +94,34 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
         IF bandavail[ii] EQ band.HALPHA THEN phfl[ii] = sxpar(hd,'photflux') ELSE phfl[ii] = sxpar(hd,'photflam')
         phpl[ii] = sxpar(hd, 'photplam')
      ENDFOR
+     IF slow THEN keywait, 'type any key to continue: '
+     ;
+     ; extract radial profiles
+     IF slow THEN keywait, 'type any key to continue: '
+     plog,ll,prog,'extracting profiles'
+     ssoup_profiles, ll, inputstr.fimages_out, inputstr.fmask_out, inputstr.hname, $ 
+                     (inputstr.fprofs_out), shapepar='OPT'
+     ;
+     ; calibrate surface brightness profiles
+     plog,ll,prog,'making calibrated profiles'
+     ssoup_calprof, ll, inputstr.hname, phpl, ebv, (inputstr.fprofs_out), inputstr.scalprof, inputstr.fcalprof, $
+                    (inputstr.scalprof0), inputstr.fcalprof0, inputstr.saveprofile, fecntrat=fecntrat
+     IF slow THEN keywait, 'type any key to continue: '
+     ;
+     ; check kron radii
+     plog,ll,prog,'checking kron radius converges'
+     ssoup_plotkron, ll, inputstr.saveprofile, inputstr.kronjpg, inputstr.kronps, epilepsy=epilepsy
+     IF slow THEN keywait, 'type any key to continue: '
+     ;
+     ; make sky box plots
+     plog,ll,prog,'making plots of sky boxes'
+     FOR ii = 0, nbandavail-1 DO BEGIN 
+        ssoup_plotboxes, ll, inputstr.savesky, inputstr.saveprofile, bandavail[ii], inputstr.fbplotj[ii], inputstr.fbplote[ii], epilepsy=epilepsy
+     ENDFOR 
      ;
      ; make preview images
      IF slow THEN keywait, 'type any key to continue: '
+     epilepsy=0
      plog,ll,prog,'making low cut jpg images'
      ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_low,ebv=ebv,goslow=slow,epilepsy=epilepsy
      plog,ll,prog,'making high cut jpg images'
@@ -152,17 +161,6 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
      ; Compare results to database values
      plog,ll,prog,'comparing db vs ssoup results'
      ssoup_compresults, ll, inputstr.hname, phpl, ebv, inputstr.fprofs_out, inputstr.fcompare
-     IF slow THEN keywait, 'type any key to continue: '
-     ;
-     ; calibrate surface brightness profiles
-     plog,ll,prog,'making calibrated profiles'
-     ssoup_calprof, ll, inputstr.hname, phpl, ebv, (inputstr.fprofs_out), inputstr.scalprof, inputstr.fcalprof, $
-                    (inputstr.scalprof0), inputstr.fcalprof0, inputstr.saveprofile, fecntrat=fecntrat
-     IF slow THEN keywait, 'type any key to continue: '
-     ;
-     ; check kron radii
-     plog,ll,prog,'checking kron radius converges'
-     ssoup_plotkron, ll, inputstr.saveprofile, inputstr.kronjpg, inputstr.kronps, epilepsy=epilepsy
      IF slow THEN keywait, 'type any key to continue: '
      ;
      ; plot surface brightness profiles

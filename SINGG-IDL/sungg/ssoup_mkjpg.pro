@@ -1,34 +1,36 @@
 PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
                  highcut=highcut, maskcmd=maskcmd, omask=omask, smask=smask, $
-                 goslow=goslow, epilepsy=epilepsy
+                 goslow=goslow, epilepsy=epilepsy, apertures=apertures
    ;
    ; make 3 color images.
    ; 
-   ;  ll       -> logical unit of log file (should be open)
-   ;  imcube   -> image cube storing the multi-wavelength data
-   ;              in individual planes
-   ;  photfl   -> the PHOTFLAM or PHOTFLUX (Halpha) for each plane
-   ;              of the cube
-   ;  photplam -> Pivot wavelength of each of the planes.
-   ;  filo     -> Output filenames. 
-   ;  ebv      -> galactic foreground extinction
-   ;  highcut  -> if set the maximum levels will be at the "high" level
+   ;  ll        -> logical unit of log file (should be open)
+   ;  imcube    -> image cube storing the multi-wavelength data
+   ;               in individual planes
+   ;  photfl    -> the PHOTFLAM or PHOTFLUX (Halpha) for each plane
+   ;               of the cube
+   ;  photplam  -> Pivot wavelength of each of the planes.
+   ;  filo      -> Output filenames. 
+   ;  ebv       -> galactic foreground extinction
+   ;  highcut   -> if set the maximum levels will be at the "high" level
    ;              otherwise the "low" levels will be used
-   ;  maskcmd  -> details what type of masking is to be done
-   ;               0 : no mask applied (default)
-   ;               1 : bad objects masked out
-   ;               2 : show only pixels used for sky calcs
-   ;               3 : show only pixels used to measure objects
-   ;              -1 : inverse of 1
-   ;              -2 : inverse of 2
-   ;              -3 : inverse of 3
-   ;  omask    -> bad objects mask
-   ;  smask    -> sky mask
-   ;  goslow   -> if set then stragetically placed calls to 
-   ;              keywait.pro are used to slow down the processing
-   ;              to a speed a user can monitor.
-   ;  epilepsy -> display 3 color images on the screen. We accept no
-   ;              responsibility for any epileptic seizures that occur.
+   ;  maskcmd   -> details what type of masking is to be done
+   ;                0 : no mask applied (default)
+   ;                1 : bad objects masked out
+   ;                2 : show only pixels used for sky calcs
+   ;                3 : show only pixels used to measure objects
+   ;               -1 : inverse of 1
+   ;               -2 : inverse of 2
+   ;               -3 : inverse of 3
+   ;  omask     -> bad objects mask
+   ;  smask     -> sky mask
+   ;  goslow    -> if set then stragetically placed calls to 
+   ;               keywait.pro are used to slow down the processing
+   ;               to a speed a user can monitor.
+   ;  epilepsy  -> display 3 color images on the screen. We accept no
+   ;               responsibility for any epileptic seizures that occur.
+   ;  apertures -> if set, show apertures. Set to where we can find the
+   ;               save profile.
    ;
    ; G. Meurer (ICRAR/UWA) 06/2010  based on sample.pro by Ji Hoon Kim
    ; S. Andrews (ICRAR/UWA) 01/2013 added WISE, refactoring, epilepsy
@@ -58,6 +60,13 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ; set up combo names
    cname     = strjoin(bandavail[combo], ",")
    nfo       = N_elements(filo)
+   
+   if keyword_set(apertures) then begin
+       temp   = combo
+       combo  = [ [ band.HALPHA, band.R, band.NUV ], [band.mir_W4, band.mir_W3, band.mir_W1 ] ]
+       ncombo = 2
+       restore,apertures
+   endif
    
    IF nfo NE ncombo THEN BEGIN 
       plog,ll,prog,'Number of output files ('+numstr(nfo)+') does not equal number of combos ('+numstr(ncombo)+')'
@@ -252,5 +261,11 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
       write_jpeg,filo[ii],rgbim,TRUE=3,quality=100
       if not keyword_set(epilepsy) then set_plot, thisdevice
       IF slow THEN keywait, 'type any key to continue: '
-   ENDFOR 
+   ENDFOR
+   
+   if keyword_set(apertures) then begin
+       undefine,allprofiles
+       combo = temp
+       ncombo = n_elements(combo)
+   endif
 END 

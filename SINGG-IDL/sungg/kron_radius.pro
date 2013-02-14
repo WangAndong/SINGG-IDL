@@ -1,4 +1,4 @@
-pro kron_radius, prof, errprof, rad, magzpt, skysigbx, kron_radius, err_kr, kron_mag, err_mag
+pro kron_radius, prof, errprof, rad, magzpt, skysigbx, kron_radius, err_kr, kron_mag, err_mag, rmax
   ;
   ; Calculates 2D Kron radii and magnitudes (like Source Extractor).
   ; 
@@ -12,6 +12,7 @@ pro kron_radius, prof, errprof, rad, magzpt, skysigbx, kron_radius, err_kr, kron
   ; kron_mag    <- the flux enclosed by 2.5 r_k where 2.5 r_k is the Kron aperture. Cuts off at 
   ;                maximum radius if the surface brightness profile doesn't go that far out.
   ; err_mag     <- error in above
+  ; rmax        <- integration radius (above)
   ;
   ; S. Andrews (ICRAR/UWA) - 01/2013
   ;
@@ -38,4 +39,5 @@ pro kron_radius, prof, errprof, rad, magzpt, skysigbx, kron_radius, err_kr, kron
   err_flux = sqrt( total( (temp*errprof[0:aperture])^2 , /nan, /double))
   kron_mag = flux2mag(kron_flux, magzpt)
   err_mag = alog10(1 + err_flux/kron_flux)
+  rmax = rad[rmax]
 end

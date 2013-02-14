@@ -64,7 +64,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   plog,ll,prog,'----------------- starting '+prog+'----------------------'
   ;
   ; convert S/N limit to err limits in mag and dex
-  edlim   = alog10(1.0d+1.0d/snlimit)   ; dex
+  edlim   = alog10(1.0+1.0/snlimit)    ; dex
   emlim   = 2.5d*edlim                  ; mag
   ;
   ; read R header just to get number of galaxies
@@ -394,9 +394,9 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   cb   =  0.671d
   cc   =  3.220d
   lirx =  alog10(10.0d^(ca + cb*smcfn)-cc) ; log(FIR/FUV)
-  pf   = where(bandavail EQ band.FUV, npf)
+  pf   = (where(bandavail EQ band.FUV, npf))[0]
   IF npf NE 1 THEN stop, 'there should be one and only one FUV band'
-  fir_model = 10.0d^lirx * sbprof[*,pf]
+  fir_model = 10.0d^lirx * photplam[pf] * sbprof[*,pf]
   bogus = where(fir_model gt 1 or fir_model le 0, /null)
   fir_model[bogus] = !values.f_nan
   afuv = -0.0333d*lirx^3+0.3522d*lirx^2+1.1960d*lirx+0.4967d  ; A(FUV) as a function of radius
@@ -525,6 +525,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
   errkronmagam  = dblarr(ngal, nbandavail)
   fir_model_int = dblarr(nrtot)
   fir_model_am  = dblarr(ngal)
+  rmax          = dblarr(ngal, nbandavail)
   ; reintegrate linear surface brightnesses to get fluxes
   plog,ll,prog,'integrating dust corrected surface brightness profiles to get dust corrected enclosed fluxes '
   FOR jj = 0, ngal-1 DO BEGIN 
@@ -550,9 +551,10 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
         r50[jj,ii] = 1.5*r50a & err50[jj,ii] = 1.5*err50a
         halflight, fbprof0[ptt0:ptt1,ii], efbproft0[ptt0:ptt1,ii], rad[ptt0:ptt1]/1.5, rad[ptt1]/1.5, r80a, err80a, thresh=0.8
         r80[jj,ii] = 1.5*r80a & err80[jj,ii] = 1.5*err80a
-        kron_radius, sbprof0[ptt0:ptt1, ii], esbproft0[ptt0:ptt1, ii], rad[ptt0:ptt1], mag0[ii], skysigbx1[ii]*phfl[ii], rk, erk, km, ekm
+        kron_radius, sbprof0[ptt0:ptt1, ii], esbproft0[ptt0:ptt1, ii], rad[ptt0:ptt1], mag0[ii], skysigbx1[ii]*phfl[ii], rk, erk, km, ekm, rma
         rkron[jj,ii] = rk & errkron[jj,ii] = erk
         kronmag[jj,ii] = km & errkronmag[jj,ii] = ekm
+        rmax[jj,ii] = rma
         ;
         ; integrate FIR model
         fir_model_int[ptt0:ptt1] = total(anarea * fir_model[ptt0:ptt1], /cumulative, /nan)
@@ -568,7 +570,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
         amerr = sqrt(total( (anarea*esbproft0[ptt0:limit+ptt0,ii])^2, /nan))
         errkronmagam[jj,ii] = alog10(1+amerr/amflux)
     endfor
-    fir_model_am[jj] = -2.5*alog10(total(anarea * fir_model[ptt0:limit+ptt0], /nan))
+    fir_model_am[jj] = total(anarea * fir_model[ptt0:limit+ptt0], /nan)
   ENDFOR
   ;
   ; now convert fluxes to magnitudes / log, this is done 
@@ -605,6 +607,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       err80                       : dblarr(nbandavail), $ ; error in above
       rkron                       : dblarr(nbandavail), $ ; Kron radius (dust corrected)
       errkron                     : dblarr(nbandavail), $ ; error in above
+      rmax                        : dblarr(nbandavail), $ ; Kron integration radius
       kronmag                     : dblarr(nbandavail), $ ; Kron magnitude (dust corrected)
       errkronmag                  : dblarr(nbandavail), $ ; error in above
       kronmag_am                  : dblarr(nbandavail), $ ; aperture matched Kron magnitude
@@ -649,14 +652,14 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       err_log_ha_r_dustcor_int    : ptr_new(!null),     $ ; error in above
       log_ha_fuv_dustcor_int      : ptr_new(!null),     $ ; integrated dust corrected log(flux in Ha/flux in FUV)
       err_log_ha_fuv_dustcor_int  : ptr_new(!null),     $ ; error in above
-      fir_model                   : ptr_new(!null),     $ ; fir model flux
-      fir_model_int               : ptr_new(!null),     $ ; integrated fir model flux
+      fir_model                   : ptr_new(!null),     $ ; fir model flux (erg cm^-2 s^-1)
+      fir_model_int               : ptr_new(!null),     $ ; integrated fir model flux (erg cm^-2 s^-1)
       fir_model_r20               : 0.0d,               $ ; fir model r20
       fir_model_r50               : 0.0d,               $ ; fir model r50
-      fir_model_r80               : 0.0d,               $ ; fir model r80
+      fir_model_r80               : 0.0d               $ ; fir model r80
      ; fir_model_rkron             : 0.0d,               $ ; fir model kron radius
      ; fir_model_kronmag           : 0.0d,               $ ; fir model kron mag
-     fir_model_kronmag_am         : 0.0d                $ ; fir model kron aperture matched mag
+     ; fir_model_kronmag_am         : 0.0d                $ ; fir model kron aperture matched mag
   }
   allprofiles = replicate(profilestr, ngal) ; one entry for each galaxy 
   ; populate structure
@@ -672,6 +675,7 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       allprofiles[i].err80         = err80[i,*]
       allprofiles[i].rkron         = rkron[i,*]
       allprofiles[i].errkron       = errkron[i,*]
+      allprofiles[i].rmax          = rmax[i,*]
       allprofiles[i].kronmag       = kronmag[i,*]
       allprofiles[i].errkronmag    = errkronmag[i,*]
       allprofiles[i].kronmag_am    = kronmagam[i,*]
@@ -730,10 +734,10 @@ PRO ssoup_calprof, ll, hname, photplam, ebvg, fprofs, fscalprof, ffcalprof, fsca
       ;kron_radius, *(allprofiles[i].fir_model), dblarr(pt1[i]-pt0[i]+1), rad[pt0[i]:pt1[i]]/1.5, rad[pt1[i]]/1.5, 0, 1.0e-19, temp1, temp2
       ;allprofiles[i].fir_model_rkron = 1.5*temp1
       ;allprofiles[i].fir_model_kronmag = temp2
-      allprofiles[i].fir_model_kronmag_am = fir_model_am[i]
+      ;allprofiles[i].fir_model_kronmag_am = fir_model_am[i]
   endfor
   bname = bandavail
-  save,filename=saveprof,hname,bname,allprofiles
+  save,filename=saveprof,hname,bname,allprofiles, mag0, xcenter, ycenter
   plog,ll,prog,'finished '
   undefine,allprofiles
 END

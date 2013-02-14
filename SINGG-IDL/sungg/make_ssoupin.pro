@@ -207,6 +207,7 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
       fjpgl_imsk3[i] = hname + '_aligned_imsk3_' + combostr[i] + '1.jpg'
       fjpgh_imsk3[i] = hname + '_aligned_imsk3_' + combostr[i] + '2.jpg'
   endfor
+  aperture = hname + '_aligned_aperture_harnu.jpg'
   ;
   ; open output file
   IF NOT keyword_set(file) THEN file = 'ssoup.in'
@@ -317,15 +318,20 @@ PRO make_ssoupin, status, ll=ll, wd=wd, hname=hname, file=file
       mirprofps          = hname+'_aligned_mir_sprof_%d.eps'
       mirintprofjpg      = hname+'_aligned_mir_fprof_%d.jpg'
       mirintprofps       = hname+'_aligned_mir_fprof_%d.eps'
-      plog,ll,'','MIRPROFJPG    = ' + mirprofjpg
-      printf,lu, 'MIRPROFJPG    = ' + mirprofjpg
-      plog,ll,'','MIRPROFPS     = ' + mirprofps
-      printf,lu, 'MIRPROFPS     = ' + mirprofps
-      plog,ll,'','MIRINTPROFJPG = ' + mirintprofjpg
-      printf,lu, 'MIRINTPROFJPG = ' + mirintprofjpg
-      plog,ll,'','MIRINTPROFPS  = ' + mirintprofps
-      printf,lu, 'MIRINTPROFPS  = ' + mirintprofps
+      miraperture        = hname+'_aligned_aperture_w4w3w1.jpg'
+      plog,ll,'','MIRPROFJPG     = ' + mirprofjpg
+      printf,lu, 'MIRPROFJPG     = ' + mirprofjpg
+      plog,ll,'','MIRPROFPS      = ' + mirprofps
+      printf,lu, 'MIRPROFPS      = ' + mirprofps
+      plog,ll,'','MIRINTPROFJPG  = ' + mirintprofjpg
+      printf,lu, 'MIRINTPROFJPG  = ' + mirintprofjpg
+      plog,ll,'','MIRINTPROFPS   = ' + mirintprofps
+      printf,lu, 'MIRINTPROFPS   = ' + mirintprofps
+      plog,ll,'','MIRAPERTUREJPG = ' + miraperture
+      printf,lu, 'MIRAPERTUREJPG = ' + miraperture
   endif
+  printf,lu, 'APERTUREJPG          = '+aperture
+  plog,ll,'','APERTUREJPG          = '+aperture
   printf,lu, 'SAVE_PROFILE         = '+savprofile
   plog,ll,'','SAVE_PROFILE         = '+savprofile
   printf,lu, 'SAVE_SKYMODEL        = '+savsky

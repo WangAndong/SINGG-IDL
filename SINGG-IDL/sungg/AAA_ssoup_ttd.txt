@@ -1,4 +1,4 @@
-SSOUP Programming Things To Do
+`SSOUP Programming Things To Do
 ==============================
 
 * Save results for each galaxy as an IDL saveset?
@@ -22,9 +22,13 @@ SSOUP Programming Things To Do
   + ideally the Halpha error model will be fixed ...
 
 * Make QA plots for the sky fitting
-  + overlay apertures
   + overlay masks
   + show rejected boxes
+
+* Overlay apertures on:
+  + JPGs (Ha, R, NUV; W4, W3, W1)
+  + sky box plots
+  + ...
 
 * Model fits to surface brightness profiles
   + kron radius, aperture, fluxes (done 01/13 -- Stephen)

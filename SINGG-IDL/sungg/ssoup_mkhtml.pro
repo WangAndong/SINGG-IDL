@@ -238,7 +238,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
       printf,lu,"</td><td> --- </td><td>" + numstr(allprofiles[i].fir_model_r50)
       printf,lu,"</td><td> --- </td><td>" + numstr(allprofiles[i].fir_model_r80)
       printf,lu,"</td><td> --- </td><td> --- </td><td> --- </td><td> --- </td><td> --- </td>"
-      printf,lu,"<td>" + numstr(allprofiles[i].fir_model_kronmag_am) + "</td><td> --- </td></tr>"
+      printf,lu,"<td> --- </td><td> --- </td></tr>"
       printf,lu,"</table><p>"
   endfor
   printf,lu,"<hr>"

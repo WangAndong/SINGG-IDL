@@ -1,13 +1,14 @@
-PRO ssoup_plotboxes, ll, savesky, bn, fjpg, feps, outline=outline, epilepsy=epilepsy
+PRO ssoup_plotboxes, ll, savesky, saveprofile, bn, fjpg, feps, outline=outline, epilepsy=epilepsy
   ;
-  ;  ll      -> logical unit of log file
-  ;  savesky -> where to find the sky model data
-  ;  bn      -> name of band
-  ;  fimage  -> Name of image
-  ;  fjpg    -> name of output file (JPG)
-  ;  feps    -> name of output file (EPS)
-  ;  outline -> if set outline each box otherwise just the grayscale
-  ;             in each box is shown with no outline.
+  ;  ll          -> logical unit of log file
+  ;  savesky     -> where to find the sky model data
+  ;  saveprofile -> where to find the Kron aperture data
+  ;  bn          -> name of band
+  ;  fimage      -> Name of image
+  ;  fjpg        -> name of output file (JPG)
+  ;  feps        -> name of output file (EPS)
+  ;  outline     -> if set outline each box otherwise just the grayscale
+  ;                 in each box is shown with no outline.
   ;
   ; G. Meurer 6/2011  (ICRAR/UWA)
   ; G. Meurer 9/2012  (ICRAR/UWA)
@@ -15,6 +16,7 @@ PRO ssoup_plotboxes, ll, savesky, bn, fjpg, feps, outline=outline, epilepsy=epil
   ; S. Andrews 1/2013 (ICRAR/UWA)
   ;    * added epilepsy
   ;    * read from saveset
+  ;    * plot apertures
   ;
   prog      = 'SSOUP_PLOTBOXES: '
   charsize  = 2.1
@@ -23,7 +25,7 @@ PRO ssoup_plotboxes, ll, savesky, bn, fjpg, feps, outline=outline, epilepsy=epil
   ytitle    = 'y [pixel]'
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
   ;
-  ; read file
+  ; read files
   restore,savesky
   idx = (where(bname eq bn, /null))[0]
   bx = *(skymodeldata[idx].x)
@@ -33,6 +35,7 @@ PRO ssoup_plotboxes, ll, savesky, bn, fjpg, feps, outline=outline, epilepsy=epil
   bresid = *(skymodeldata[idx].residual)
   bfit = *(skymodeldata[idx].fit)
   bxsiz = skymodeldata[idx].boxsize
+  restore,saveprofile
   nb        = n_elements(bavg)
   ; make title
   title     = 'Source: '+hname+' filter: '+bn
@@ -93,6 +96,19 @@ PRO ssoup_plotboxes, ll, savesky, bn, fjpg, feps, outline=outline, epilepsy=epil
      IF keyword_set(outline) THEN oplot, xx, yy, thick=1
   ENDFOR
   ;
+  ; draw apertures
+  setplotcolors
+  for i=0,n_elements(allprofiles)-1 do begin
+      oplot,[xcenter[i]], [ycenter[i]], color=!black, psym=7, symsize=0.6
+      kr = allprofiles[i].rkron[idx]/1.5
+      tvcircle, kr, xcenter[i], ycenter[i], color=!green, /data
+      tvcircle, 2.5*kr, xcenter[i], ycenter[i], color=!red, /data
+      tvcircle, allprofiles[i].rmax[idx], xcenter[i], ycenter[i], color=!cyan, /data
+      tvcircle, allprofiles[i].r50[idx], xcenter[i], ycenter[i], color=!magenta, /data
+  endfor
+  loadct, 0
+  setbgfg, ncolor-1, 0
+  ;
   ; center panel
   !p.noerase = 0
   !p.multi   = [2, 3, 1] ; center panel
@@ -109,6 +125,19 @@ PRO ssoup_plotboxes, ll, savesky, bn, fjpg, feps, outline=outline, epilepsy=epil
      polyfill, xx, yy, color=ibfit[ii]
       IF keyword_set(outline) THEN oplot, xx, yy, thick=1
   ENDFOR
+  ;
+  ; draw apertures
+  setplotcolors
+  for i=0,n_elements(allprofiles)-1 do begin
+      oplot,[xcenter[i]], [ycenter[i]], color=!black, psym=7, symsize=0.6
+      kr = allprofiles[i].rkron[idx]/1.5
+      tvcircle, kr, xcenter[i], ycenter[i], color=!green, /data
+      tvcircle, 2.5*kr, xcenter[i], ycenter[i], color=!red, /data
+      tvcircle, allprofiles[i].rmax[idx], xcenter[i], ycenter[i], color=!cyan, /data
+      tvcircle, allprofiles[i].r50[idx], xcenter[i], ycenter[i], color=!magenta, /data
+  endfor
+  loadct, 0
+  setbgfg, ncolor-1, 0
   ;
   ; right panel
   !p.noerase = 0
@@ -130,11 +159,24 @@ PRO ssoup_plotboxes, ll, savesky, bn, fjpg, feps, outline=outline, epilepsy=epil
       IF keyword_set(outline) THEN oplot, xx, yy, thick=1
   ENDFOR
   ;
+  ; draw apertures
+  setplotcolors
+  for i=0,n_elements(allprofiles)-1 do begin
+      oplot,[xcenter[i]], [ycenter[i]], color=!black, psym=7, symsize=0.6
+      kr = allprofiles[i].rkron[idx]/1.5
+      tvcircle, kr, xcenter[i], ycenter[i], color=!green, /data
+      tvcircle, 2.5*kr, xcenter[i], ycenter[i], color=!red, /data
+      tvcircle, allprofiles[i].rmax[idx], xcenter[i], ycenter[i], color=!cyan, /data
+      tvcircle, allprofiles[i].r50[idx], xcenter[i], ycenter[i], color=!magenta, /data
+  endfor
+  loadct, 0
+  setbgfg, ncolor-1, 0
+  ;
   ; ------------------------------------------------------------------
   ; finish plot
   plog,ll,prog,'finishing. Will write plotfile: '+feps
   !p.multi   = 0
   !p.noerase = 0
   ssoup_plot_finish,fjpg,feps,wxsize,epilepsy=epilepsy
-  undefine,skymodeldata
+  undefine,skymodeldata, allprofiles
 END 

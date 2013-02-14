@@ -12,7 +12,6 @@ pro ssoup_plotsprofs_fir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
   ;   
   ; S. Andrews (ICRAR/UWA) 1/2013
   ;
-  COMMON bands, band
   prog      = 'SSOUP_PLOTSPROFS_FIR: '
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
   
@@ -27,12 +26,12 @@ pro ssoup_plotsprofs_fir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
   thick     = 2
   if keyword_set(integrated) then begin
       ;abrange   = [20.0,0.0] 
-      abrange = [46, 29]
-      abtitle   = 'm(r) [Fakemag]'
+      abrange = [-15, -9]
+      abtitle   = '!3 log F!dFUV!n [erg cm!u-2!ns!u-1!n]'
   endif else begin
       ;abrange   = [27.0,10.0] 
-      abrange = [51, 39]
-      abtitle = '!4 l!3 [Fakemag arcsec!u-2!n]'
+      abrange = [-17, -11]
+      abtitle = '!3 log F!dFUV!n [erg cm!u-2!ns!u-1!n arcsec!u-2!n]'
   endelse
   rtitle    = '!3 semi-major axis [arcsec]' 
   
@@ -68,7 +67,7 @@ pro ssoup_plotsprofs_fir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
     plog,ll,prog,'plotting fir surface brightness profiles'
     title = ngal gt 1 ? hname + ":S" + numstr(i+1) : hname    
     !p.noerase = 1
-    plot, radius, -2.5*alog10(model), xrange=rrange, yrange=abrange, xstyle=1, ystyle=1, $
+    plot, radius, alog10(model), xrange=rrange, yrange=abrange, xstyle=1, ystyle=1, $
           charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
           xtitle=rtitle, ytitle=abtitle, title=title, charthick=thick, $
           xmargin=[8,8], ymargin=[4,4]
