@@ -62,7 +62,7 @@ pro ssoup_plotkron, ll, savprofile, fjpg, feps, epilepsy=epilepsy
               xtitle=xtitle, ytitle=ytitle, title=title, charthick=thick, $
               xmargin=[8,8], ymargin=[4,4]
       for i=1,nb-1 do begin
-          oplot, rad[0:nr[i]-1], *(rkron[i]), thick=thick, color=colors[i], linestyle=1
+          oplot, rad[0:nr[i]-1], *(rkron[i]), thick=thick, color=colors[i]
           plots, [allprofiles[k].r50[i], allprofiles[k].r50[i]], color=colors[i]
       endfor
       plog,ll,prog,'Writing plot file: ' + feps1

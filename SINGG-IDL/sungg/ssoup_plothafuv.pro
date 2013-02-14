@@ -15,6 +15,11 @@ PRO ssoup_plothafuv, ll, saveprofile, fjpg, feps, dcorr=dcorr, kline=kline, epil
   ; G. Meurer (ICRAR/UWA) 5/2011:
   ;    * plot upper and lower limits, and handle flags
   ;    * reads new file format
+  ; S. Andrews (ICRAR/UWA) 02/2013:
+  ;    * reads from IDL saveset
+  ;    * better handling of multiple galaxies
+  ;    * epilepsy option
+  ;    * refactoring
   ;
   snlimit   = 2.0
   mflag   =  99.999  ; magnitude flag value

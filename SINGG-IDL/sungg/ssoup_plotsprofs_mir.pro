@@ -16,6 +16,12 @@ pro ssoup_plotsprofs_mir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
   prog      = 'SSOUP_PLOTSPROFS_MIR: '
   plog,ll,prog,'--------------------- starting '+prog+'---------------------------------'
   
+  w1 = (where(bname eq band.mir_W1, cw1))[0]
+  w2 = (where(bname eq band.mir_W2, cw2))[0]
+  w3 = (where(bname eq band.mir_W3, cw3))[0]
+  w4 = (where(bname eq band.mir_W4, cw4))[0]
+  if cw1+cw2+cw3+cw4 lt 1 then return,"No mid-infrared data to plot!"
+    
   ; flags
   mflag   =  99.999  ; magnitude flag value
   emflag  =   9.999  ; error mag flag
@@ -26,10 +32,10 @@ pro ssoup_plotsprofs_mir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
   symsize   = 1.0
   thick     = 2
   if keyword_set(integrated) then begin
-      abrange   = [20.0,0.0] 
+      abrange   = [26.0,9.0] 
       abtitle   = 'm(r) [ABmag]'
   endif else begin
-      abrange   = [27.0,10.0] 
+      abrange   = [29.0,19.0] 
       abtitle = '!4 l!3 [ABmag arcsec!u-2!n]'
   endelse
   rtitle    = '!3 semi-major axis [arcsec]' 
@@ -43,10 +49,6 @@ pro ssoup_plotsprofs_mir, ll, savprof, fjpg, feps, epilepsy=epilepsy, integrated
     fjpg_1 = string(i, format='(%"' + fjpg + '")') 
     feps_1 = string(i, format='(%"' + feps + '")')
 
-    w1 = (where(bname eq band.mir_W1, /null))[0]
-    w2 = (where(bname eq band.mir_W2, /null))[0]
-    w3 = (where(bname eq band.mir_W3, /null))[0]
-    w4 = (where(bname eq band.mir_W4, /null))[0]
     ; rename a few things
     radius = *(allprofiles[i].radius)
     if not keyword_set(integrated) then begin

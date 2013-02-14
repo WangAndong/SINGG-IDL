@@ -34,6 +34,7 @@ PRO ssoup_cp_calcmags, ll, mag0, dredf, snlimit, $
   ;                   aperture integrated values.
   ;
   ; G. Meurer 5/2011 (ICRAR/UWA)
+  ; S. Andrews 02/2013 (ICRAR/UWA) - added AB/Vega offsets
   prog    = 'SSOUP_CP_CALCMAGS: '
   ;
   plog,ll,prog,'----------------- starting '+prog+'----------------------'
@@ -75,6 +76,16 @@ PRO ssoup_cp_calcmags, ll, mag0, dredf, snlimit, $
            emagc[kg]    = alog10(1.0+eflxc[kg]/flx[kg,ii])
            emags[kg]    = alog10(1.0+eflxs[kg]/flx[kg,ii])
         ENDELSE 
+        
+        ; AB/Vega offsets
+        ; WISE: http://wise2.ipac.caltech.edu/docs/release/prelim/expsup/sec4_3g.html#WISEZMA
+        case bandavail[ii] of
+            band.mir_W1 : mag[kg,ii] += 2.683
+            band.mir_W2 : mag[kg,ii] += 3.319
+            band.mir_W3 : mag[kg,ii] += 5.242
+            band.mir_W4 : mag[kg,ii] += 6.604
+            else : 
+        endcase
      ENDIF
      IF nkb GT 0 THEN BEGIN 
         ;
@@ -89,7 +100,16 @@ PRO ssoup_cp_calcmags, ll, mag0, dredf, snlimit, $
            emagt[kb,ii] = elflag
            emagc[kb]    = elflag
            emags[kb]    = elflag
-        ENDELSE 
+        ENDELSE
+        ; AB/Vega offsets
+        ; WISE: http://wise2.ipac.caltech.edu/docs/release/prelim/expsup/sec4_3g.html#WISEZMA
+        case bandavail[ii] of
+            band.mir_W1 : mag[kb,ii] += 2.683
+            band.mir_W2 : mag[kb,ii] += 3.319
+            band.mir_W3 : mag[kb,ii] += 5.242
+            band.mir_W4 : mag[kb,ii] += 6.604
+            else : 
+        endcase
      ENDIF
      IF ii EQ ih THEN BEGIN 
         ;
