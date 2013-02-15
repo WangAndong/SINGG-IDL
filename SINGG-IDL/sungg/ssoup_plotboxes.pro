@@ -102,7 +102,7 @@ PRO ssoup_plotboxes, ll, savesky, saveprofile, bn, fjpg, feps, outline=outline, 
       oplot,[xcenter[i]], [ycenter[i]], color=!black, psym=7, symsize=0.6
       kr = allprofiles[i].rkron[idx]/1.5
       tvcircle, kr, xcenter[i], ycenter[i], color=!green, /data
-      tvcircle, 2.5*kr, xcenter[i], ycenter[i], color=!red, /data
+      tvcircle, 2.5*kr, xcenter[i], ycenter[i], color=!dorange, /data
       tvcircle, allprofiles[i].rmax[idx], xcenter[i], ycenter[i], color=!cyan, /data
       tvcircle, allprofiles[i].r50[idx], xcenter[i], ycenter[i], color=!magenta, /data
   endfor
@@ -132,7 +132,7 @@ PRO ssoup_plotboxes, ll, savesky, saveprofile, bn, fjpg, feps, outline=outline, 
       oplot,[xcenter[i]], [ycenter[i]], color=!black, psym=7, symsize=0.6
       kr = allprofiles[i].rkron[idx]/1.5
       tvcircle, kr, xcenter[i], ycenter[i], color=!green, /data
-      tvcircle, 2.5*kr, xcenter[i], ycenter[i], color=!red, /data
+      tvcircle, 2.5*kr, xcenter[i], ycenter[i], color=!dorange, /data
       tvcircle, allprofiles[i].rmax[idx], xcenter[i], ycenter[i], color=!cyan, /data
       tvcircle, allprofiles[i].r50[idx], xcenter[i], ycenter[i], color=!magenta, /data
   endfor
@@ -165,7 +165,7 @@ PRO ssoup_plotboxes, ll, savesky, saveprofile, bn, fjpg, feps, outline=outline, 
       oplot,[xcenter[i]], [ycenter[i]], color=!black, psym=7, symsize=0.6
       kr = allprofiles[i].rkron[idx]/1.5
       tvcircle, kr, xcenter[i], ycenter[i], color=!green, /data
-      tvcircle, 2.5*kr, xcenter[i], ycenter[i], color=!red, /data
+      tvcircle, 2.5*kr, xcenter[i], ycenter[i], color=!dorange, /data
       tvcircle, allprofiles[i].rmax[idx], xcenter[i], ycenter[i], color=!cyan, /data
       tvcircle, allprofiles[i].r50[idx], xcenter[i], ycenter[i], color=!magenta, /data
   endfor

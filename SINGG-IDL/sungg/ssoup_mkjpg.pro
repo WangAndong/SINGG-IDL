@@ -1,6 +1,6 @@
 PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
                  highcut=highcut, maskcmd=maskcmd, omask=omask, smask=smask, $
-                 goslow=goslow, epilepsy=epilepsy, apertures=apertures
+                 goslow=goslow, epilepsy=epilepsy, saveprof=saveprof
    ;
    ; make 3 color images.
    ; 
@@ -29,11 +29,11 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    ;               to a speed a user can monitor.
    ;  epilepsy  -> display 3 color images on the screen. We accept no
    ;               responsibility for any epileptic seizures that occur.
-   ;  apertures -> if set, show apertures. Set to where we can find the
-   ;               save profile.
+   ;  saveprof  -> if set, show apertures. Set to where we can find the
+   ;               profile saveset.
    ;
    ; G. Meurer (ICRAR/UWA) 06/2010  based on sample.pro by Ji Hoon Kim
-   ; S. Andrews (ICRAR/UWA) 01/2013 added WISE, refactoring, epilepsy
+   ; S. Andrews (ICRAR/UWA) 01/2013 added WISE, refactoring, epilepsy, apertures
    COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo, ncombo 
    ;beta    = -1
    beta    = 0
@@ -61,11 +61,15 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
    cname     = strjoin(bandavail[combo], ",")
    nfo       = N_elements(filo)
    
-   if keyword_set(apertures) then begin
+   allprofiles = !null
+   if keyword_set(saveprof) then begin
        temp   = combo
-       combo  = [ [ band.HALPHA, band.R, band.NUV ], [band.mir_W4, band.mir_W3, band.mir_W1 ] ]
+       x1 = where(bandavail eq band.mir_w4, cw4)
+       x2 = where(bandavail eq band.mir_w3, cw3)
+       x3 = where(bandavail eq band.mir_w1, cw1)
+       combo  = [ [ jh, jr, jn ], [x1, x2, x3] ]
        ncombo = 2
-       restore,apertures
+       restore,saveprof
    endif
    
    IF nfo NE ncombo THEN BEGIN 
@@ -250,22 +254,33 @@ PRO ssoup_mkjpg, ll, imcube, photfl, photplam, filo, ebv=ebv, $
           window,0,xsize=nx,ysize=ny
           ;keywait,'type anything to display next image: '
           ;window,0,xsize=nx,ysize=ny
-          tv,rgbim,true=3
       ; or the Z buffer
       endif else begin
           set_plot, 'Z'
           erase
           device, set_resolution=[nx,ny],set_pixel_depth=24, decomposed=1
       endelse
+      tv,rgbim,true=3
+      ; draw circles
+      if keyword_set(saveprof) then begin
+          idx = i eq 0 ? jr : index_w1
+          for jj=0,n_elements(allprofiles)-1 do begin
+              kr = allprofiles[jj].rkron[idx]/1.5
+              tvcircle, kr, xcenter[jj], ycenter[jj], color='green', thick=1.5, /device
+              tvcircle, 2.5*kr, xcenter[jj], ycenter[jj], color='red', thick=1.5, /device
+              tvcircle, allprofiles[jj].rmax[idx], xcenter[jj], ycenter[jj], color='cyan', thick=1.5, /device
+              tvcircle, allprofiles[jj].r50[idx], xcenter[jj], ycenter[jj], color='magenta', thick=1.5, /device
+          endfor
+      endif
       plog,ll,prog,'writing file = '+filo[ii]
-      write_jpeg,filo[ii],rgbim,TRUE=3,quality=100
+      write_jpeg,filo[ii],tvrd(true=3),TRUE=3,quality=100
       if not keyword_set(epilepsy) then set_plot, thisdevice
       IF slow THEN keywait, 'type any key to continue: '
    ENDFOR
    
-   if keyword_set(apertures) then begin
+   if keyword_set(saveprof) then begin
        undefine,allprofiles
        combo = temp
-       ncombo = n_elements(combo)
+       ncombo = factorial(nbandavail)/(6*factorial(nbandavail-3))
    endif
 END 

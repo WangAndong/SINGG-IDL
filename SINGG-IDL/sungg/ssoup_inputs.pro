@@ -135,6 +135,7 @@ pro ssoup_inputs, fili, ll, inputstr
      fjpg_imhigh2   : strarr(ncombo), $
      fjpg_imlow3    : strarr(ncombo), $
      fjpg_imhigh3   : strarr(ncombo), $
+     fjpg_apertures : strarr(2),      $
      fcompare       : '', $
      scalprof       : '', $
      fcalprof       : '', $
@@ -217,6 +218,8 @@ pro ssoup_inputs, fili, ll, inputstr
    inputstr.kronps           = pfplt_kwdread('KRONPS',keywd,value,'',usetype='STRING')
    inputstr.saveprofile      = pfplt_kwdread('SAVE_PROFILE',keywd,value,'',usetype='STRING')
    inputstr.savesky          = pfplt_kwdread('SAVE_SKYMODEL',keywd,value,'',usetype='STRING')
+   inputstr.fjpg_apertures[0]= pfplt_kwdread('APERTUREJPG',keywd,value,'',usetype='STRING')
+   inputstr.fjpg_apertures[1]= pfplt_kwdread('MIRAPERTUREJPG',keywd,value,'',usetype='STRING')
    ;
    ; **** should probably allow badvalues to be read in...
    ;

@@ -75,7 +75,7 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
                (inputstr.fjpg_imhigh1), inputstr.fjpg_imlow2, inputstr.fjpg_imhigh2, $
                (inputstr.fjpg_imlow3), inputstr.fjpg_imhigh3, inputstr.fcompare, inputstr.scalprof, $
                (inputstr.fcalprof), inputstr.scalprof0, inputstr.fcalprof0, inputstr.fbplotj, $
-               inputstr.fbplote]
+               (inputstr.fbplote), inputstr.fjpg_apertures]
   ; deformat
   hafuvjpg       = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg + '")')
   hafuvjpg0      = string(indgen(ngal), format='(%"' + inputstr.hafuvjpg0 + '")')
@@ -161,6 +161,15 @@ PRO ssoup_mkhtml, ll,  srcdir, basedir, outdir, inputstr, $
   endfor
   printf,lu,'</table>'
   printf,lu,'<hr>'
+  ;
+  ; aperture diagnostics
+  plog,ll,prog,'creating aperture table'
+  printf,lu,'<h3>Aperture diagnostics</h3>'
+  printf,lu,'<P><TABLE border=1 cellpadding=3>'
+  printf,lu,'<tr>'
+  ssoup_imcell,ll,lu,inputstr.fjpg_apertures[0],fjpgo,width=widthi,noresize=noresize
+  ssoup_imcell,ll,lu,inputstr.fjpg_apertures[1],fjpgo,width=widthi,noresize=noresize
+  printf,lu,'</tr></table><hr>'
   ;
   ; mark-up profile plots
   x = where(bandavail eq band.mir_W1 or bandavail eq band.mir_W2 or bandavail eq band.mir_W3 or bandavail eq band.mir_W4, hasmir)

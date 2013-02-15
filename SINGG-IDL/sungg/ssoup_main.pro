@@ -121,11 +121,14 @@ pro ssoup_main, infile=infile, logfile=logfile, goslow=goslow
      ;
      ; make preview images
      IF slow THEN keywait, 'type any key to continue: '
-     epilepsy=0
      plog,ll,prog,'making low cut jpg images'
+     epilepsy=0
      ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_low,ebv=ebv,goslow=slow,epilepsy=epilepsy
      plog,ll,prog,'making high cut jpg images'
      ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_high,ebv=ebv,/highcut,goslow=slow,epilepsy=epilepsy
+     ;
+     plog,ll,prog,'making aperture diagnostics'
+     ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_apertures,ebv=ebv,goslow=slow,epilepsy=epilepsy,saveprof=inputstr.saveprofile
      ;
      plog,ll,prog,'making low cut jpg images with bad objects masked out'
      ssoup_mkjpg,ll,imgc,phfl,phpl,inputstr.fjpg_mlow1,ebv=ebv,maskcmd=1,omask=inputstr.fmask_out,smask=inputstr.fmask_sky,goslow=slow,epilepsy=epilepsy

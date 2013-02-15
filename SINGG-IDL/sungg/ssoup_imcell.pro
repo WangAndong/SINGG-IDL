@@ -21,6 +21,7 @@ PRO ssoup_imcell, ll, lu, fjpgi, fjpgo, width=width, uannot=uannot, plot=plot, n
   ; 
   ; G. Meurer (UWA/ICRAR) 07/2010: originally written
   ; G. Meurer (UWA/ICRAR) 08/2012: fix bug with quotes and <font color=>
+  ; S. Andrews (ICRAR/UWA) 01/2013: refactor, add noresize
   ;
   prog      = 'SSOUP_IMCELL: '
   COMMON bands, band, nband, bandnam, bandavail, nbandavail, combo

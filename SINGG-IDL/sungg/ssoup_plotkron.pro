@@ -56,7 +56,7 @@ pro ssoup_plotkron, ll, savprofile, fjpg, feps, epilepsy=epilepsy
       ssoup_plot_init, feps1, xs, ys, xoff, yoff
       title = ngal gt 1 ? hname + ":S" + numstr(k+1) : hname
       !p.noerase = 1
-      colors = [ !black, !green, !blue, !dorange, !dyellow, !magenta, !cyan, !brown ]
+      colors = [ !black, !green, !blue, !red, !dyellow, !magenta, !cyan, !brown ]
       plot, rad[0:nr[0]-1], *(rkron[0]), xrange=xrange, yrange=yrange, xstyle=1, ystyle=1, $
               charsize=charsize, symsize=symsize, thick=thick, xthick=thick, ythick=thick, $
               xtitle=xtitle, ytitle=ytitle, title=title, charthick=thick, $
